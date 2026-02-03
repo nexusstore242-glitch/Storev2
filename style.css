@@ -1197,3 +1197,20 @@ input:focus, select:focus {
     transform: rotate(90deg) scale(0.9); /* Mutar dikit pas ditekan */
     color: var(--red-core);
 }
+/* Styling Link Auth */
+.link-text {
+    color: #888;
+    text-decoration: none;
+    transition: 0.3s;
+    font-size: 0.85rem;
+}
+
+.link-text:hover {
+    color: var(--red-core);
+    text-shadow: 0 0 5px var(--red-core);
+}
+
+.link-text.red-neon {
+    color: var(--red-core);
+    font-weight: bold;
+}

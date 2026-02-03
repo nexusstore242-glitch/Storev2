@@ -10,19 +10,52 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-
     <div id="auth-screen">
         <div class="auth-box">
             <img src="assets/logo.png" class="auth-logo" onerror="this.src='https://via.placeholder.com/100'">
             <h2>NEXUS <span class="red-neon">ACCESS</span></h2>
-            <div class="auth-form">
-                <input type="text" id="reg-username" placeholder="Buat Username" class="cyber-input">
-                <input type="password" id="reg-pin" placeholder="Buat PIN (Angka)" class="cyber-input">
-                <button onclick="registerUser()" class="cyber-btn-glitch full-width">LOGIN SYSTEM</button>
-            </div>
+            
+            <form id="form-login" onsubmit="handleLogin(event)">
+                <div class="auth-form">
+                    <label style="text-align:left; display:block; color:#888; font-size:0.8rem; margin-bottom:5px;">USERNAME</label>
+                    <input type="text" id="login-username" class="cyber-input" placeholder="Masukkan Username" autocomplete="username" required>
+                    
+                    <label style="text-align:left; display:block; color:#888; font-size:0.8rem; margin-bottom:5px;">PIN / PASSWORD</label>
+                    <input type="password" id="login-pin" class="cyber-input" placeholder="Masukkan PIN" autocomplete="current-password" required>
+                    
+                    <div style="text-align:right; margin-bottom:15px;">
+                        <a href="#" onclick="forgotPassword()" class="link-text">Lupa Sandi?</a>
+                    </div>
+
+                    <button type="submit" class="cyber-btn-glitch full-width">MASUK SYSTEM</button>
+                    
+                    <p style="margin-top:20px; font-size:0.9rem; color:#ccc;">
+                        Belum punya akses? <a href="#" onclick="switchAuth('register')" class="link-text red-neon">Daftar Baru</a>
+                    </p>
+                </div>
+            </form>
+
+            <form id="form-register" onsubmit="handleRegister(event)" style="display:none;">
+                <div class="auth-form">
+                    <label style="text-align:left; display:block; color:#888; font-size:0.8rem; margin-bottom:5px;">BUAT USERNAME BARU</label>
+                    <input type="text" id="reg-username" class="cyber-input" placeholder="Cth: NexusUser01" autocomplete="username" required>
+                    
+                    <label style="text-align:left; display:block; color:#888; font-size:0.8rem; margin-bottom:5px;">BUAT PIN (ANGKA)</label>
+                    <input type="password" id="reg-pin" class="cyber-input" placeholder="Min. 4 Angka" autocomplete="new-password" required>
+                    
+                    <button type="submit" class="cyber-btn-outline full-width" style="margin-top:15px;">BUAT AKUN</button>
+                    
+                    <p style="margin-top:20px; font-size:0.9rem; color:#ccc;">
+                        Sudah punya akun? <a href="#" onclick="switchAuth('login')" class="link-text red-neon">Login Disini</a>
+                    </p>
+                </div>
+            </form>
+
             <p class="login-note">SYSTEM V.8.0 // SECURE CONNECTION</p>
         </div>
     </div>
+
+
 
     <div id="processing-overlay" style="display:none;">
         <div class="scanner-box">
@@ -498,7 +531,7 @@
         <div id="variant-list-container" style="display:flex; flex-direction:column; gap:10px;">
             </div>
     </div>
-</div>
+</div> 
 
 
     <script src="script.js"></script>

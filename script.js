@@ -87,11 +87,63 @@ function registerUser() {
     localStorage.setItem("nexus_balance", 0);
     location.reload();
 }
-
+/* --- FUNGSI LOGOUT (FIXED) --- */
 function logout() {
-    Swal.fire({ title: 'Logout?', icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya', background: '#111', color: '#fff' })
-        .then((r) => { if(r.isConfirmed) { localStorage.removeItem("nexus_user"); location.reload(); }});
+    // 1. Tampilkan Konfirmasi (Biar gak kepencet)
+    Swal.fire({
+        title: 'LOGOUT SYSTEM?',
+        text: "Sesi Anda akan diakhiri.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ff003c', // Merah Neon
+        cancelButtonColor: '#333',
+        confirmButtonText: 'YA, KELUAR',
+        cancelButtonText: 'BATAL',
+        background: '#0a0a0a', // Latar Gelap
+        color: '#fff'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            
+            // 2. TUTUP SIDEBAR & OVERLAY (Ini PENTING biar gak nyangkut)
+            const sb = document.getElementById('sidebar');
+            const ov = document.getElementById('sidebar-overlay');
+            
+            if (sb) sb.classList.remove('open'); // Paksa tutup sidebar
+            if (ov) ov.classList.remove('show'); // Paksa hilangin layar gelap
+            
+            // 3. Reset Tampilan
+            document.getElementById('main-interface').style.display = 'none'; // Sembunyikan Menu Utama
+            document.getElementById('auth-screen').style.display = 'flex';    // Munculkan Layar Login
+            
+            // 4. Bersihkan Input Form Login (Biar user harus ketik ulang)
+            const inputUser = document.getElementById('login-username');
+            const inputPin = document.getElementById('login-pin');
+            
+            if(inputUser) inputUser.value = ""; 
+            if(inputPin) inputPin.value = "";
+
+            // 5. Reset Session Variable (Opsional)
+            currentUser = null; 
+
+            // 6. Notifikasi Sukses
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                background: '#000',
+                color: '#fff'
+            });
+            Toast.fire({
+                icon: 'success',
+                title: 'Berhasil Logout'
+            });
+        }
+    });
 }
+
+
 
 // --- [6] NAVIGASI ---
 function showPage(pageId) {
@@ -739,3 +791,114 @@ document.addEventListener("DOMContentLoaded", () => {
     setupBannerAutoSlide();
     renderMissions(); // <--- WAJIB DITAMBAH BIAR MISINYA MUNCUL
 });
+// --- LOGIKA AUTHENTICATION BARU ---
+
+// 1. Pindah Antara Login & Register
+function switchAuth(mode) {
+    const formLogin = document.getElementById('form-login');
+    const formRegister = document.getElementById('form-register');
+    const title = document.querySelector('.auth-box h2');
+
+    if (mode === 'register') {
+        formLogin.style.display = 'none';
+        formRegister.style.display = 'block';
+        title.innerHTML = 'NEXUS <span class="red-neon">REGISTER</span>';
+    } else {
+        formRegister.style.display = 'none';
+        formLogin.style.display = 'block';
+        title.innerHTML = 'NEXUS <span class="red-neon">ACCESS</span>';
+    }
+}
+
+// 2. Handle Login (Dengan Fitur Save Password Browser)
+function handleLogin(e) {
+    e.preventDefault(); // Mencegah refresh halaman
+    
+    const user = document.getElementById('login-username').value;
+    const pin = document.getElementById('login-pin').value;
+
+    // Ambil data dari LocalStorage
+    const storedUser = localStorage.getItem('nexus_user');
+    const storedPin = localStorage.getItem('nexus_pin');
+
+    // Cek Validasi
+    if (user === storedUser && pin === storedPin) {
+        // Login Berhasil
+        currentUser = user;
+        updateUI();
+        
+        // Animasi Masuk
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('main-interface').style.display = 'block';
+        
+        Swal.fire({
+            icon: 'success',
+            title: 'ACCESS GRANTED',
+            text: `Selamat datang kembali, ${user}`,
+            background: '#000',
+            color: '#fff',
+            timer: 2000,
+            showConfirmButton: false
+        });
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'ACCESS DENIED',
+            text: 'Username atau PIN salah!',
+            background: '#000',
+            color: '#fff'
+        });
+    }
+}
+
+// 3. Handle Register
+function handleRegister(e) {
+    e.preventDefault(); // Mencegah refresh halaman
+
+    const user = document.getElementById('reg-username').value;
+    const pin = document.getElementById('reg-pin').value;
+
+    if (user.length < 3 || pin.length < 4) {
+        return Swal.fire('Error', 'Username min 3 huruf, PIN min 4 angka', 'warning');
+    }
+
+    // Simpan ke LocalStorage (Browser akan mendeteksi ini sebagai pendaftaran baru)
+    localStorage.setItem('nexus_user', user);
+    localStorage.setItem('nexus_pin', pin);
+    
+    // Auto Login setelah daftar
+    currentUser = user;
+    
+    Swal.fire({
+        icon: 'success',
+        title: 'AKUN DIBUAT',
+        text: 'Silakan Login untuk menyimpan sandi di Google.',
+        background: '#000',
+        color: '#fff'
+    }).then(() => {
+        // Kembalikan ke menu login agar browser memicu "Save Password" saat user login manual
+        switchAuth('login');
+        // Auto fill form login biar cepat
+        document.getElementById('login-username').value = user;
+        document.getElementById('login-pin').value = pin;
+    });
+}
+
+// 4. Lupa Sandi
+function forgotPassword() {
+    Swal.fire({
+        title: 'LUPA SANDI?',
+        text: 'Hubungi Admin via WhatsApp untuk reset akun manual.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Chat Admin',
+        cancelButtonText: 'Tutup',
+        background: '#000',
+        color: '#fff'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Ganti nomor WA sesuai admin kamu
+            window.open('https://wa.me/6283125398104?text=Halo%20Admin,%20saya%20lupa%20PIN%20akun%20Nexus.', '_blank');
+        }
+    });
+}
