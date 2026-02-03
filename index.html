@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS CORE | MEMBER ACCESS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div id="auth-screen">
+        <div class="auth-box">
+            <img src="assets/logo.png" class="auth-logo" onerror="this.src='https://via.placeholder.com/100'">
+            <h2>NEXUS <span class="red-neon">ACCESS</span></h2>
+            <div class="auth-form">
+                <input type="text" id="reg-username" placeholder="Buat Username" class="cyber-input">
+                <input type="password" id="reg-pin" placeholder="Buat PIN (Angka)" class="cyber-input">
+                <button onclick="registerUser()" class="cyber-btn-glitch full-width">LOGIN SYSTEM</button>
+            </div>
+            <p class="login-note">SYSTEM V.8.0 // SECURE CONNECTION</p>
+        </div>
+    </div>
+
+    <div id="processing-overlay" style="display:none;">
+        <div class="scanner-box">
+            <div class="loader-circle"></div>
+            <h3 class="blink">VERIFIKASI TRANSAKSI...</h3>
+            <p id="process-timer">Menganalisa bukti transfer... 15s</p>
+        </div>
+    </div>
+
+    <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <img src="assets/logo.png" class="sidebar-logo" onerror="this.src='https://via.placeholder.com/50'">
+            <div class="sidebar-user">
+                <h3 id="sidebar-username">GUEST</h3>
+                <small id="sidebar-id">ID: -</small>
+            </div>
+            <button onclick="toggleSidebar()" class="close-btn"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <div class="menu-group">
+                <p class="menu-label">PENGATURAN PROFIL</p>
+                <button onclick="editProfile()" class="sidebar-item"><i class="fas fa-user-edit"></i> Ubah Nama</button>
+                <button onclick="resetPin()" class="sidebar-item"><i class="fas fa-key"></i> Ganti PIN</button>
+            </div>
+
+            <div class="menu-group">
+                <p class="menu-label">INFORMASI</p>
+                <button onclick="showInfo()" class="sidebar-item"><i class="fas fa-info-circle"></i> Tentang Nexus</button>
+                <button onclick="window.open('https://t.me/nexusboost', '_blank')" class="sidebar-item"><i class="fab fa-telegram"></i> CS Telegram</button>
+                <button onclick="window.open('https://wa.me/6283125398104', '_blank')" class="sidebar-item"><i class="fab fa-whatsapp"></i> CS WhatsApp</button>
+            </div>
+
+            <button onclick="logout()" class="sidebar-item logout-item"><i class="fas fa-power-off"></i> LOGOUT</button>
+        </div>
+        <div class="sidebar-footer">NEXUS SYSTEM V.8.0</div>
+    </aside>
+
+    <div id="main-interface" style="display:none;">
+        
+        <header class="cyber-header">
+            <div class="header-inner">
+                <div class="header-left">
+                    <button onclick="toggleSidebar()" class="menu-trigger"><i class="fas fa-bars"></i></button>
+                    <div class="user-display">
+                        <span id="nav-username">GUEST</span>
+                        <small id="nav-balance" class="money-text">Rp 0</small>
+                    </div>
+                </div>
+                <img src="assets/logo.png" class="mini-logo">
+            </div>
+            
+            <nav class="cyber-nav">
+                <button onclick="showPage('home')" class="c-nav active">HOME</button>
+                <button onclick="showPage('store')" class="c-nav">MARKET</button>
+                <button onclick="showPage('deposit')" class="c-nav">DEPOSIT</button>
+                <button onclick="showPage('freelance')" class="c-nav">FREELANCE</button>
+                <button onclick="showPage('history')" class="c-nav">HISTORY</button>
+            </nav>
+        </header>
+
+        <main>
+            <section id="home" class="page active-page">
+                <div class="banner-container">
+                    <div class="banner-wrapper">
+                        <div class="slide"><img src="assets/banner1.jpg" onerror="this.src='https://via.placeholder.com/640x360/111/f00?text=PROMO+NEXUS+1'"></div>
+                        <div class="slide"><img src="assets/banner2.jpg" onerror="this.src='https://via.placeholder.com/640x360/111/0f0?text=BONUS+DEPOSIT'"></div>
+                        <div class="slide"><img src="assets/banner3.jpg" onerror="this.src='https://via.placeholder.com/640x360/111/00f?text=EVENT+MOBILE+LEGENDS'"></div>
+                        <div class="slide"><img src="assets/banner4.jpg" onerror="this.src='https://via.placeholder.com/640x360/111/ff0?text=NETFLIX+MURAH'"></div>
+                        <div class="slide"><img src="assets/banner5.jpg" onerror="this.src='https://via.placeholder.com/640x360/111/0ff?text=JASA+NOKOS'"></div>
+                        <div class="slide"><img src="assets/banner6.jpg" onerror="this.src='https://via.placeholder.com/640x360/111/f0f?text=CONVERT+PULSA'"></div>
+                        <div class="slide"><img src="assets/banner7.jpg" onerror="this.src='https://via.placeholder.com/640x360/111/fff?text=OPEN+JOKI'"></div>
+                        <div class="slide"><img src="assets/banner8.jpg" onerror="this.src='https://via.placeholder.com/640x360/111/aaa?text=FREELANCE+BARU'"></div>
+                        <div class="slide"><img src="assets/banner9.jpg" onerror="this.src='https://via.placeholder.com/640x360/111/555?text=MAINTENANCE'"></div>
+                        <div class="slide"><img src="assets/banner10.jpg" onerror="this.src='https://via.placeholder.com/640x360/111/333?text=JOIN+TELEGRAM'"></div>
+                    </div>
+                    <div class="banner-nav">⬇ GESER UNTUK INFO ⬇</div>
+                </div>
+
+                <div class="hero-card" style="margin-top: 20px;">
+                    <small>SALDO ANDA</small>
+                    <h1 id="home-balance">Rp 0</h1>
+                    <button onclick="showPage('deposit')" class="cyber-btn-outline" style="margin-top:10px;">➕ ISI SALDO</button>
+                </div>
+
+                <div class="quick-menu-grid">
+                    <div class="q-item" onclick="openStoreTab('digital')"><i class="fas fa-mobile-alt"></i><p>Pulsa/Data</p></div>
+                    <div class="q-item" onclick="openStoreTab('game')"><i class="fas fa-gamepad"></i><p>Top Up</p></div>
+                    <div class="q-item" onclick="openStoreTab('sosmed')"><i class="fas fa-thumbs-up"></i><p>Sosmed</p></div>
+                    <div class="q-item" onclick="openStoreTab('digital')"><i class="fas fa-exchange-alt"></i><p>Convert</p></div>
+                </div>
+            </section>
+                        <section id="store" class="page">
+                <h2 class="sect-title">NEXUS <span class="red-neon">MARKET</span></h2>
+                
+                <div id="market-menu">
+                    <p style="color:#888; margin-bottom:15px; font-size:0.9rem;">Pilih kategori layanan:</p>
+                    
+                    <div class="market-nav-grid">
+                        <div class="m-nav-item" onclick="openMarketView('view-game')">
+                            <div class="nav-icon"><i class="fas fa-gamepad"></i></div>
+                            <span>GAME</span>
+                        </div>
+                        <div class="m-nav-item" onclick="openMarketView('view-convert')">
+                            <div class="nav-icon"><i class="fas fa-exchange-alt"></i></div>
+                            <span>CONVERT</span>
+                        </div>
+                        <div class="m-nav-item" onclick="openMarketView('view-apk')">
+                            <div class="nav-icon"><i class="fab fa-spotify"></i></div>
+                            <span>PREMIUM</span>
+                        </div>
+                        <div class="m-nav-item" onclick="openMarketView('view-sosmed')">
+                            <div class="nav-icon"><i class="fas fa-thumbs-up"></i></div>
+                            <span>SOSMED</span>
+                        </div>
+                        <div class="m-nav-item" onclick="openMarketView('view-pulsa')">
+                            <div class="nav-icon"><i class="fas fa-mobile-alt"></i></div>
+                            <span>PULSA</span>
+                        </div>
+                        <div class="m-nav-item" onclick="openMarketView('view-data')">
+                            <div class="nav-icon"><i class="fas fa-globe"></i></div>
+                            <span>DATA</span>
+                        </div>
+                        <div class="m-nav-item" onclick="openMarketView('view-marketplace')">
+                            <div class="nav-icon"><i class="fas fa-store-alt"></i></div>
+                            <span>JUAL AKUN</span>
+                        </div>
+                    </div>
+                </div>
+
+                                <div id="view-game" class="market-view" style="display:none;">
+                    
+                    <div id="game-selector">
+                        <button onclick="closeMarketView()" class="cyber-btn-outline full-width">⬅ KEMBALI KE MENU</button>
+                        <h4 class="sub-header">/// PILIH GAME</h4>
+                        <div class="product-grid">
+                            <div class="prod-card-v2" onclick="openGameProduct('list-ml')">
+                                <img src="assets/ml.png" onerror="this.src='https://via.placeholder.com/50'">
+                                <h4>Mobile Legends</h4><button class="cek-harga-btn">BUKA</button>
+                            </div>
+                            <div class="prod-card-v2" onclick="openGameProduct('list-ff')">
+                                <img src="assets/ff.png" onerror="this.src='https://via.placeholder.com/50'">
+                                <h4>Free Fire</h4><button class="cek-harga-btn">BUKA</button>
+                            </div>
+                            <div class="prod-card-v2" onclick="openGameProduct('list-hok')">
+                                <img src="assets/hok.png" onerror="this.src='https://via.placeholder.com/50'">
+                                <h4>Honor of Kings</h4><button class="cek-harga-btn">BUKA</button>
+                            </div>
+                            <div class="prod-card-v2" onclick="openGameProduct('list-roblox')">
+                                <img src="assets/roblox.png" onerror="this.src='https://via.placeholder.com/50'">
+                                <h4>Roblox / Akun</h4><button class="cek-harga-btn">BUKA</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="list-ml" class="game-product-list" style="display:none;">
+                        <button onclick="backToGameSelector()" class="cyber-btn-outline full-width">⬅ KEMBALI PILIH GAME</button>
+                        <h4 class="sub-header">/// MOBILE LEGENDS</h4>
+                        <div class="product-grid">
+                            <div class="prod-card-v2"><h4 class="mini-title">3 Diamonds</h4><button onclick="buyItem('MLBB 3 DM', 2000)" class="cek-harga-btn">RP 2.000</button></div>
+                            <div class="prod-card-v2"><h4 class="mini-title">12 Diamonds</h4><button onclick="buyItem('MLBB 12 DM', 4000)" class="cek-harga-btn">RP 4.000</button></div>
+                            <div class="prod-card-v2"><h4 class="mini-title">19 Diamonds</h4><button onclick="buyItem('MLBB 19 DM', 7000)" class="cek-harga-btn">RP 7.000</button></div>
+                            <div class="prod-card-v2"><h4 class="mini-title">36 Diamonds</h4><button onclick="buyItem('MLBB 36 DM', 11000)" class="cek-harga-btn">RP 11.000</button></div>
+                            <div class="prod-card-v2"><h4 class="mini-title">56 Diamonds</h4><button onclick="buyItem('MLBB 56 DM', 16000)" class="cek-harga-btn">RP 16.000</button></div>
+                            <div class="prod-card-v2"><h4 class="mini-title">86 Diamonds</h4><button onclick="buyItem('MLBB 86 DM', 24500)" class="cek-harga-btn">RP 24.500</button></div>
+                            <div class="prod-card-v2"><h4 class="mini-title">100 Diamonds</h4><button onclick="buyItem('MLBB 100 DM', 27500)" class="cek-harga-btn">RP 27.500</button></div>
+                            <div class="prod-card-v2"><h4 class="mini-title">144 Diamonds</h4><button onclick="buyItem('MLBB 144 DM', 40000)" class="cek-harga-btn">RP 40.000</button></div>
+                            <div class="prod-card-v2"><h4 class="mini-title">185 Diamonds</h4><button onclick="buyItem('MLBB 185 DM', 51500)" class="cek-harga-btn">RP 51.500</button></div>
+                            <div class="prod-card-v2"><h4 class="mini-title">Weekly Pass</h4><button onclick="buyItem('MLBB Weekly Pass', 29000)" class="cek-harga-btn">RP 29.000</button></div>
+                        </div>
+                    </div>
+
+                    <div id="list-ff" class="game-product-list" style="display:none;">
+                        <button onclick="backToGameSelector()" class="cyber-btn-outline full-width">⬅ KEMBALI PILIH GAME</button>
+                        <h4 class="sub-header">/// FREE FIRE</h4>
+                        <div class="product-grid">
+                            <div class="prod-card-v2"><h4 class="mini-title">70 Diamonds</h4><button onclick="buyItem('FF 70 DM', 10000)" class="cek-harga-btn">RP 10.000</button></div>
+                            <div class="prod-card-v2"><h4 class="mini-title">100 Diamonds</h4><button onclick="buyItem('FF 100 DM', 15000)" class="cek-harga-btn">RP 15.000</button></div>
+                            <div class="prod-card-v2"><h4 class="mini-title">140 Diamonds</h4><button onclick="buyItem('FF 140 DM', 20000)" class="cek-harga-btn">RP 20.000</button></div>
+                            <div class="prod-card-v2"><h4 class="mini-title">210 Diamonds</h4><button onclick="buyItem('FF 210 DM', 29000)" class="cek-harga-btn">RP 29.000</button></div>
+                            <div class="prod-card-v2"><h4 class="mini-title">250 Diamonds</h4><button onclick="buyItem('FF 250 DM', 36000)" class="cek-harga-btn">RP 36.000</button></div>
+                            <div class="prod-card-v2"><h4 class="mini-title">300 Diamonds</h4><button onclick="buyItem('FF 300 DM', 45000)" class="cek-harga-btn">RP 45.000</button></div>
+                            <div class="prod-card-v2"><h4 class="mini-title">355 Diamonds</h4><button onclick="buyItem('FF 355 DM', 50000)" class="cek-harga-btn">RP 50.000</button></div>
+                            <div class="prod-card-v2"><h4 class="mini-title">500 Diamonds</h4><button onclick="buyItem('FF 500 DM', 70000)" class="cek-harga-btn">RP 70.000</button></div>
+                            <div class="prod-card-v2"><h4 class="mini-title">720 Diamonds</h4><button onclick="buyItem('FF 720 DM', 95000)" class="cek-harga-btn">RP 95.000</button></div>
+                            
+                            <div class="prod-card-v2"><h4 class="mini-title">Member Mingguan</h4><button onclick="buyItem('FF Member Mingguan', 30000)" class="cek-harga-btn">RP 30.000</button></div>
+                            <div class="prod-card-v2"><h4 class="mini-title">Member Bulanan</h4><button onclick="buyItem('FF Member Bulanan', 93000)" class="cek-harga-btn">RP 93.000</button></div>
+                            <div class="prod-card-v2"><h4 class="mini-title">Level Up Pass</h4><button onclick="buyItem('FF Level Up Pass', 16000)" class="cek-harga-btn">RP 16.000</button></div>
+                        </div>
+                    </div>
+
+                    <div id="list-hok" class="game-product-list" style="display:none;">
+                        <button onclick="backToGameSelector()" class="cyber-btn-outline full-width">⬅ KEMBALI PILIH GAME</button>
+                        <h4 class="sub-header">/// HONOR OF KINGS</h4>
+                        <div class="product-grid"><div class="prod-card-v2"><h4 class="mini-title">Cek Pricelist</h4><button onclick="buyItem('HOK Manual', 0)" class="cek-harga-btn">CHAT ADMIN</button></div></div>
+                    </div>
+
+                    <div id="list-roblox" class="game-product-list" style="display:none;">
+                        <button onclick="backToGameSelector()" class="cyber-btn-outline full-width">⬅ KEMBALI PILIH GAME</button>
+                        <h4 class="sub-header">/// ROBLOX</h4>
+                        <div class="product-grid"><div class="prod-card-v2"><h4 class="mini-title">80 Robux</h4><button onclick="buyItem('Roblox 80 R$', 15000)" class="cek-harga-btn">RP 15.000</button></div></div>
+                    </div>
+                </div>
+
+
+                <div id="view-convert" class="market-view" style="display:none;">
+                    <button onclick="closeMarketView()" class="cyber-btn-outline full-width">⬅ KEMBALI KE MENU</button>
+                    <div class="convert-container">
+                        <h4 class="sub-header">/// CONVERT PULSA</h4>
+                        <div class="convert-card">
+                            <div class="warning-banner"><i class="fas fa-clock"></i> Open: 09.00 - 23.00 WIB</div>
+                            <label style="color:#aaa; font-size:0.8rem;">OPERATOR</label>
+                            <select id="cv-provider" class="cyber-input" onchange="calcConvert()">
+                                <option value="" disabled selected>-- Pilih --</option>
+                                <option value="axis" data-rate="0.79">Axis / XL [Rate 79%]</option>
+                                <option value="telkomsel" data-rate="0.76">Telkomsel [Rate 76%]</option>
+                                <option value="indosat" data-rate="0.75">Indosat [Rate 75%]</option>
+                                <option value="tri" data-rate="0.80">Tri [Rate 80%]</option>
+                            </select>
+                            <label style="color:#aaa; font-size:0.8rem;">NOMINAL PULSA</label>
+                            <input type="number" id="cv-amount" class="cyber-input" placeholder="Min. 30.000" oninput="calcConvert()">
+                            <label style="color:#aaa; font-size:0.8rem;">PENCAIRAN KE</label>
+                            <select id="cv-target" class="cyber-input">
+                                <option value="DANA">DANA</option>
+                                <option value="BCA">BCA</option>
+                            </select>
+                            <label style="color:#aaa; font-size:0.8rem;">NOMOR / REKENING</label>
+                            <input type="number" id="cv-number" class="cyber-input" placeholder="08xxx / No Rek">
+                            <div class="result-box"><span>DITERIMA BERSIH:</span><h2 id="cv-result">Rp 0</h2></div>
+                            <button onclick="processConvert()" class="cyber-btn-glitch full-width">CONVERT SEKARANG</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-apk" class="market-view" style="display:none;">
+                    <button onclick="closeMarketView()" class="cyber-btn-outline full-width">⬅ KEMBALI KE MENU</button>
+                    <h4 class="sub-header">/// APLIKASI PREMIUM</h4>
+                    <div id="apk-grid-container" class="product-grid"></div>
+                </div>
+
+                <div id="view-sosmed" class="market-view" style="display:none;">
+                    <div id="sosmed-platform-list">
+                        <button onclick="closeMarketView()" class="cyber-btn-outline full-width">⬅ KEMBALI KE MENU</button>
+                        <h4 class="sub-header">/// PILIH SOSIAL MEDIA</h4>
+                        <div class="product-grid">
+                            <div class="prod-card-v2" onclick="openSosmedServices('ig')"><img src="assets/ig.png" onerror="this.src='https://via.placeholder.com/50'"><h4>Instagram</h4><button class="cek-harga-btn">BUKA</button></div>
+                            <div class="prod-card-v2" onclick="openSosmedServices('tt')"><img src="assets/tiktok.png" onerror="this.src='https://via.placeholder.com/50'"><h4>TikTok</h4><button class="cek-harga-btn">BUKA</button></div>
+                            <div class="prod-card-v2" onclick="openSosmedServices('tw')"><img src="assets/twitter.png" onerror="this.src='https://via.placeholder.com/50'"><h4>Twitter</h4><button class="cek-harga-btn">BUKA</button></div>
+                            <div class="prod-card-v2" onclick="openSosmedServices('fb')"><img src="assets/facebook.png" onerror="this.src='https://via.placeholder.com/50'"><h4>Facebook</h4><button class="cek-harga-btn">BUKA</button></div>
+                        </div>
+                    </div>
+                    <div id="sosmed-service-container" style="display:none;">
+                        <button onclick="backToSosmedMenu()" class="cyber-btn-outline full-width">⬅ KEMBALI PILIH PLATFORM</button>
+                        <h4 class="sub-header">/// DAFTAR LAYANAN</h4>
+                        <div id="sosmed-grid" class="product-grid"></div>
+                    </div>
+                </div>
+
+                <div id="view-pulsa" class="market-view" style="display:none;">
+                    <button onclick="closeMarketView()" class="cyber-btn-outline full-width">⬅ KEMBALI KE MENU</button>
+                    <h4 class="sub-header">/// ISI PULSA REGULER</h4>
+                    <div class="cyber-card">
+                        <p style="font-size:0.9rem; color:#ccc; margin-bottom:15px;">Tersedia untuk Telkomsel, Indosat, XL, Axis, Tri, dan Smartfren.</p>
+                        <button onclick="buyItem('Cek Pricelist Pulsa', 0)" class="cyber-btn-glitch full-width">LIHAT DAFTAR HARGA</button>
+                    </div>
+                </div>
+
+                <div id="view-data" class="market-view" style="display:none;">
+                    <button onclick="closeMarketView()" class="cyber-btn-outline full-width">⬅ KEMBALI KE MENU</button>
+                    <h4 class="sub-header">/// PAKET DATA INTERNET</h4>
+                    <div class="cyber-card">
+                        <p style="font-size:0.9rem; color:#ccc; margin-bottom:15px;">Inject kuota langsung masuk ke nomor tujuan.</p>
+                        <button onclick="buyItem('Cek Pricelist Kuota', 0)" class="cyber-btn-glitch full-width">LIHAT DAFTAR HARGA</button>
+                    </div>
+                </div>
+
+                <div id="view-marketplace" class="market-view" style="display:none;">
+                    <button onclick="closeMarketView()" class="cyber-btn-outline full-width">⬅ KEMBALI KE MENU</button>
+                    
+                    <div style="text-align:center; margin: 20px 0;">
+                        <h4 class="sub-header">/// MARKETPLACE AKUN</h4>
+                        <div style="background: rgba(255,255,0,0.1); color: yellow; padding: 10px; border-radius: 6px; border: 1px dashed yellow; font-size: 0.8rem;">
+                            <i class="fas fa-tools"></i> <b>COMING SOON</b><br>
+                            Fitur Jual Beli Akun Aman & Terpercaya sedang disiapkan.
+                        </div>
+                    </div>
+
+                    <div class="ecommerce-grid">
+                        <div class="ecommerce-card" onclick="buyItem('Akun Sultan ML - Skin Legend', 0)">
+                            <div class="ec-img-box"><img src="assets/acc-game.png" onerror="this.src='https://via.placeholder.com/150'"><span class="ec-tag">READY</span></div>
+                            <div class="ec-info">
+                                <h4 class="ec-title">Akun MLBB Sultan Skin Legend Gusion</h4>
+                                <p class="ec-desc">Winrate 70%, Emblem Max, Login Moonton.</p>
+                                <div class="ec-footer"><span class="ec-price">Rp 500.000</span><i class="fas fa-shopping-cart cart-icon"></i></div>
+                            </div>
+                        </div>
+                        <div class="ecommerce-card sold-out">
+                            <div class="ec-img-box"><img src="assets/ff.png" onerror="this.src='https://via.placeholder.com/150'"><span class="ec-tag red">TERJUAL</span></div>
+                            <div class="ec-info">
+                                <h4 class="ec-title">Akun FF Old Season 1 - SG OPM</h4>
+                                <p class="ec-desc">Full Set S1, SG 2 OPM, Login FB.</p>
+                                <div class="ec-footer"><span class="ec-price">Rp 250.000</span><i class="fas fa-shopping-cart cart-icon"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+            
+            
+                        <section id="deposit" class="page">
+                <h2 class="sect-title">PAYMENT <span class="red-neon">CENTER</span></h2>
+                
+                <div class="payment-container">
+                    
+                    <div id="invoice-area" class="invoice-ticket" style="display:none;">
+                        <div class="ticket-header">TAGIHAN PEMBAYARAN</div>
+                        <div class="ticket-body">
+                            <div class="t-row">
+                                <span>Item:</span>
+                                <strong id="inv-item">Mobile Legends</strong>
+                            </div>
+                            <div class="t-row">
+                                <span>Data/ID:</span>
+                                <strong id="inv-data" style="font-size:0.8rem; color:#aaa;">-</strong>
+                            </div>
+                            <div class="dashed-line"></div>
+                            <div class="t-row total">
+                                <span>TOTAL BAYAR:</span>
+                                <strong id="inv-price" class="red-neon">Rp 0</strong>
+                            </div>
+                        </div>
+                        <button onclick="cancelOrder()" class="cancel-btn">BATALKAN PESANAN</button>
+                    </div>
+
+                    <div id="deposit-form-area" class="cyber-card">
+                        <label>NOMINAL DEPOSIT</label>
+                        <input type="number" id="depo-amount" class="cyber-input" placeholder="Min. 10.000">
+                        <small style="color:#666; font-size:0.7rem;">*Isi ini hanya jika ingin menabung saldo.</small>
+                    </div>
+
+                    <div class="divider-text">METODE PEMBAYARAN</div>
+
+                    <div class="qris-box">
+                        <div class="scan-line-anim"></div>
+                        <img src="assets/qris.png" alt="QRIS" class="qris-img" id="qris-image" onerror="this.src='https://via.placeholder.com/300?text=QRIS+NEXUS'">
+                        <p class="qris-note">SCAN UNTUK SEMUA E-WALLET & BANK</p>
+                        <button onclick="downloadQris()" class="download-btn"><i class="fas fa-download"></i> SIMPAN QRIS</button>
+                    </div>
+
+                    <div class="bank-list">
+                        <div class="bank-card">
+                            <div class="bank-info">
+                                <img src="assets/dana.png" class="bank-logo" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg'">
+                                <div>
+                                    <span class="bank-name">DANA (MANUAL)</span>
+                                    <h3 class="bank-num">083898023362</h3>
+                                </div>
+                            </div>
+                            <button onclick="copyText('083898023362')" class="copy-btn">SALIN</button>
+                        </div>
+                        <div class="bank-card">
+                            <div class="bank-info">
+                                <img src="assets/seabank.png" class="bank-logo" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/SeaBank_logo.svg/1200px-SeaBank_logo.svg.png'">
+                                <div>
+                                    <span class="bank-name">SEABANK</span>
+                                    <h3 class="bank-num">901500126233</h3>
+                                </div>
+                            </div>
+                            <button onclick="copyText('00000')" class="copy-btn">SALIN</button>
+                        </div>
+                    </div>
+
+                    <div class="confirm-box">
+                        <label>SUDAH TRANSFER?</label>
+                        <p style="color:#888; font-size:0.8rem;">Klik tombol di bawah ini untuk mengirim struk order ke WhatsApp Admin.</p>
+                        <button onclick="confirmPaymentWA()" class="cyber-btn-glitch full-width">KONFIRMASI BAYAR (WA)</button>
+                    </div>
+
+                </div>
+            </section>
+                        <section id="freelance" class="page">
+                <h2 class="sect-title">MISI <span class="red-neon">CUAN</span></h2>
+
+                <div class="cyber-card" style="margin-bottom: 25px; border-color: #0f0;">
+                    <h4 style="color:#0f0; margin-top:0;">/// KLAIM GAJI / TOKEN</h4>
+                    <p style="font-size:0.8rem; color:#ccc;">Masukkan kode token dari Admin setelah kirim bukti.</p>
+                    <div style="display:flex; gap:10px; margin-top:10px;">
+                        <input type="text" id="token-input" class="cyber-input" placeholder="NEXUS-XXXX-..." style="margin-bottom:0;">
+                        <button onclick="redeemToken()" class="cyber-btn-glitch" style="width:100px; background:#0f0; color:#000;">KLAIM</button>
+                    </div>
+                </div>
+
+                <h4 class="sub-header">/// DAFTAR PEKERJAAN TERSEDIA</h4>
+                <div id="mission-grid" class="mission-list-container">
+                    </div>
+
+                <div style="margin-top: 30px; border-top: 1px dashed #333; padding-top: 20px;">
+                    <h4 class="sub-header">/// PENARIKAN DANA</h4>
+                    <div class="balance-box" style="margin-bottom:15px; background:#111; padding:10px; border-radius:8px;">
+                        <small style="color:#888;">SALDO ANDA SAAT INI</small>
+                        <h1 id="wd-balance-display" style="color:#fff; margin:5px 0;">Rp 0</h1>
+                    </div>
+                    <button onclick="withdrawBalance()" class="cyber-btn-glitch full-width">AJUKAN TARIK SALDO</button>
+                </div>
+            </section>
+
+<div id="mission-modal" class="processing-overlay" style="display:none; z-index: 10005;">
+    <div class="auth-box" style="max-width: 400px; max-height: 85vh; overflow-y: auto; text-align:left;">
+        <div style="text-align:center; border-bottom:1px solid #333; padding-bottom:15px; margin-bottom:15px;">
+            <img id="m-modal-img" src="" style="width:60px; height:60px; object-fit:contain; border-radius:10px; margin-bottom:10px;">
+            <h3 id="m-modal-title" style="color:var(--red-core); margin:0;">JUDUL MISI</h3>
+            <span id="m-modal-reward" style="background:#fff; color:#000; padding:2px 8px; border-radius:4px; font-size:0.8rem; font-weight:bold;">Rp 0</span>
+        </div>
+
+        <div id="m-modal-content" style="font-size:0.85rem; color:#ccc; line-height:1.6;">
+            </div>
+
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button onclick="closeMissionModal()" class="cyber-btn-outline" style="flex:1;">TUTUP</button>
+            <button id="m-modal-btn" class="cyber-btn-glitch" style="flex:1;">AMBIL TUGAS</button>
+        </div>
+    </div>
+</div>
+
+
+
+            
+
+            <section id="history" class="page">
+                <h2 class="sect-title">RIWAYAT <span class="red-neon">TRANSAKSI</span></h2>
+                <div class="log-box">
+                    <ul id="history-list">
+                        <li style="text-align:center; color:#666;">Belum ada transaksi.</li>
+                    </ul>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <div id="topup-modal" class="processing-overlay" style="display:none; z-index: 10001;">
+    <div class="auth-box" style="max-width: 350px;">
+        <h3 id="modal-game-title" style="color:var(--red-core); margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:10px;">TOPUP GAME</h3>
+        
+        <div id="dynamic-inputs"></div>
+
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button onclick="closeTopupModal()" class="cyber-btn-outline" style="flex:1;">BATAL</button>
+            <button onclick="confirmTopupData()" class="cyber-btn-glitch" style="flex:1;">LANJUT BAYAR</button>
+        </div>
+    </div>
+</div>
+    <div id="variant-modal" class="processing-overlay" style="display:none; z-index: 10002;">
+        <div class="auth-box" style="max-width: 350px; max-height: 80vh; overflow-y: auto;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:10px; margin-bottom:15px;">
+                <h3 id="modal-apk-title" style="color:#fff; margin:0;">NAMA APLIKASI</h3>
+                <button onclick="closeVariantModal()" style="background:none; border:none; color:#f00; font-size:1.2rem;">&times;</button>
+            </div>
+            
+            <div id="variant-list-container" style="display:flex; flex-direction:column; gap:10px;">
+                </div>
+        </div>
+    </div>
+<div id="variant-modal" class="processing-overlay" style="display:none; z-index: 10002;">
+    <div class="auth-box" style="max-width: 350px; max-height: 80vh; overflow-y: auto;">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:10px; margin-bottom:15px;">
+            <h3 id="modal-apk-title" style="color:#fff; margin:0; font-size:1rem;">PILIH PAKET</h3>
+            <button onclick="closeVariantModal()" style="background:none; border:none; color:#f00; font-size:1.5rem; cursor:pointer;">&times;</button>
+        </div>
+        <div id="variant-list-container" style="display:flex; flex-direction:column; gap:10px;">
+            </div>
+    </div>
+</div>
+
+
+    <script src="script.js"></script>
+</body>
+</html>
