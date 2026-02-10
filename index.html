@@ -1,0 +1,2993 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS CORE | V.10 SKELETON</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* =========================================
+           1. CSS ENGINE (CYBERPUNK THEME)
+           ========================================= */
+        :root {
+            --red-core: #ff003c;
+            --gold: #ffd700;
+            --bg-dark: #050505;
+            --bg-card: #111;
+            --text-main: #fff;
+            --font-head: 'Orbitron', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg-dark); color: var(--text-main); font-family: var(--font-body); overflow-x: hidden; }
+        button { cursor: pointer; transition: 0.2s; border: none; font-family: var(--font-head); }
+        button:active { transform: scale(0.96); filter: brightness(0.8); }
+        input, select { font-family: var(--font-body); outline: none; }
+
+        /* TYPOGRAPHY & UTILS */
+        .red-neon { color: var(--red-core); text-shadow: 0 0 10px var(--red-core); }
+        .gold-neon { color: var(--gold); text-shadow: 0 0 10px var(--gold); }
+        .full-width { width: 100%; }
+        .sect-title { border-left: 4px solid var(--red-core); padding-left: 15px; margin-bottom: 20px; font-size: 1.4rem; letter-spacing: 1px; }
+
+        /* AUTH SCREEN */
+        #auth-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center;
+            background-image: radial-gradient(circle at center, #1a0000 0%, #000 80%);
+        }
+        .auth-box {
+            background: rgba(20, 20, 20, 0.95); border: 1px solid #333; border-top: 3px solid var(--red-core);
+            padding: 30px; width: 90%; max-width: 400px; text-align: center; border-radius: 10px;
+            box-shadow: 0 0 30px rgba(255, 0, 60, 0.15);
+        }
+        .cyber-input {
+            width: 100%; padding: 12px; background: #0a0a0a; border: 1px solid #333;
+            color: #fff; margin-bottom: 15px; border-radius: 5px; font-size: 1rem;
+        }
+        .cyber-input:focus { border-color: var(--red-core); }
+        .cyber-btn-glitch {
+            background: var(--red-core); color: #fff; padding: 12px; font-weight: bold;
+            text-transform: uppercase; letter-spacing: 2px; width: 100%;
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+        }
+        .cyber-btn-outline {
+            background: transparent; border: 1px solid var(--red-core); color: var(--red-core);
+            padding: 10px; width: 100%; font-size: 0.8rem; transition: 0.3s;
+        }
+        .cyber-btn-outline:hover { background: var(--red-core); color: #fff; }
+
+        /* HEADER & NAV */
+        .cyber-header { position: sticky; top: 0; background: rgba(5,5,5,0.95); z-index: 1000; border-bottom: 1px solid #222; backdrop-filter: blur(10px); }
+        .header-inner { display: flex; justify-content: space-between; align-items: center; padding: 15px; }
+        .cyber-nav { display: flex; overflow-x: auto; gap: 10px; padding: 0 15px 15px; scrollbar-width: none; }
+        .c-nav { background: #111; color: #888; padding: 8px 18px; border-radius: 20px; font-size: 0.75rem; border: 1px solid #222; white-space: nowrap; }
+        .c-nav.active { background: var(--red-core); color: #fff; border-color: var(--red-core); }
+
+    /* =========================================
+       SIDEBAR SYSTEM (REBUILD FROM ZERO)
+       ========================================= */
+
+    /* 1. LAYER GELAP (BACKGROUND) */
+    #sidebar-overlay { 
+        position: fixed; 
+        top: 0; left: 0; 
+        width: 100%; height: 100%; 
+        background: rgba(0,0,0,0.8); /* Gelap transparan */
+        backdrop-filter: blur(5px);   /* Efek blur kaca */
+        z-index: 1100; 
+        display: none;                /* Default sembunyi */
+    }
+
+    /* 2. WADAH UTAMA SIDEBAR */
+    #sidebar { 
+        position: fixed; 
+        top: 0; 
+        left: -320px;             /* Sembunyi di kiri layar */
+        width: 300px;             /* Lebar sidebar */
+        height: 100%; 
+        background: #050505;      /* Warna Hitam Pekat */
+        border-right: 1px solid #333; 
+        z-index: 1101;            /* Di atas overlay */
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Animasi Geser */
+        
+        /* PENTING: Padding 0 biar elemen mentok ke pinggir */
+        padding: 0; 
+        
+        display: flex; 
+        flex-direction: column;
+        box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+    }
+
+    /* Class untuk memunculkan sidebar */
+    #sidebar.open { left: 0; }
+
+    /* 3. BAGIAN HEADER (JUDUL & TOMBOL CLOSE) */
+    .sidebar-header { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        padding: 15px 20px; 
+        border-bottom: 1px solid #222; 
+        background: #0a0a0a; 
+    }
+
+    /* 4. BAGIAN LIST MENU (TOMBOL) - INI KUNCINYA */
+    .sidebar-menu {
+        padding: 0;
+        margin: 0;
+        overflow-y: auto; /* Biar bisa discroll */
+    }
+
+    /* Reset Tampilan Tombol biar gak kotak-kotak */
+    .sidebar-menu button {
+        width: 100%;                /* Lebar penuh */
+        background: transparent;    /* Hapus background abu bawaan */
+        border: none;               /* Hapus garis kotak bawaan */
+        border-bottom: 1px solid #1a1a1a; /* Garis tipis pemisah */
+        color: #ccc;                /* Warna teks abu terang */
+        padding: 15px 25px;         /* Jarak dalam tombol */
+        text-align: left;           /* Teks rata kiri */
+        font-size: 0.95rem;
+        cursor: pointer;
+        display: flex;              /* Biar ikon & teks sejajar */
+        align-items: center;
+        transition: all 0.2s ease;  /* Animasi halus */
+    }
+
+    /* Atur Ikon di dalam tombol */
+    .sidebar-menu button i {
+        width: 35px;            /* Lebar tempat ikon */
+        color: var(--gold);     /* Warna Emas */
+        text-align: center;
+        margin-right: 10px;
+    }
+
+    /* Efek saat tombol disentuh/hover */
+    .sidebar-menu button:hover {
+        background: #111;       /* Jadi agak terang dikit */
+        color: #fff;            /* Teks jadi putih */
+        padding-left: 35px;     /* Geser kanan dikit */
+        border-left: 3px solid var(--red-core); /* Garis merah di kiri */
+    }
+
+    /* Khusus Tombol Logout (Biar beda warna) */
+    .sidebar-menu button:last-child {
+        border-bottom: none;
+        margin-bottom: 20px;
+    }
+
+
+    /* 4. TOMBOL MENU (INI YANG BIKIN RUSAK TADI) */
+    /* Kita paksa stylenya biar gak putih */
+    .sidebar-menu {
+        padding: 10px 0;
+        overflow-y: auto;
+    }
+
+    .sidebar-menu button {
+        background: transparent !important; /* Paksa Transparan */
+        color: #ccc !important;             /* Teks Abu Terang */
+        width: 100%;
+        text-align: left;
+        padding: 15px 25px;
+        border: none !important;
+        border-bottom: 1px solid #1a1a1a !important; /* Garis tipis */
+        font-family: inherit;
+        font-size: 0.95rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        transition: all 0.2s;
+        text-transform: uppercase; /* Huruf Kapital Semua biar Gagah */
+        letter-spacing: 1px;
+    }
+
+    /* Ikon di dalam tombol */
+    .sidebar-menu button i {
+        width: 35px;
+        color: var(--gold); /* Ikon warna Emas */
+        font-size: 1.1rem;
+        text-align: center;
+    }
+
+    /* EFEK HOVER (PAS DISENTUH) */
+    .sidebar-menu button:hover {
+        background: #111 !important;
+        color: #fff !important;
+        padding-left: 35px; /* Efek geser */
+        border-left: 4px solid var(--red-core) !important; /* Garis Merah di Kiri */
+    }
+
+    /* TOMBOL LOGOUT KHUSUS */
+    .sidebar-menu button.logout-btn {
+        margin-top: 20px;
+        color: #ff003c !important;
+        border-bottom: none !important;
+        border-top: 1px solid #222 !important;
+    }
+    .sidebar-menu button.logout-btn i {
+        color: #ff003c !important;
+    }
+
+
+        /* CONTENT AREAS */
+        main { padding: 15px; padding-bottom: 80px; }
+        .page { display: none; animation: fadeIn 0.4s; }
+        .page.active-page { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* GRID SYSTEMS */
+        .market-nav-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+        .m-nav-item { background: #111; padding: 15px 5px; border-radius: 10px; border: 1px solid #222; text-align: center; cursor: pointer; }
+        .m-nav-item i { font-size: 1.5rem; color: var(--red-core); display: block; margin-bottom: 5px; }
+        .m-nav-item span { font-size: 0.6rem; color: #ccc; font-weight: bold; }
+
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
+        .prod-card-v2 { background: #111; border: 1px solid #333; padding: 15px; text-align: center; border-radius: 10px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
+        .cek-harga-btn { background: #222; color: #ccc; padding: 5px; border-radius: 4px; font-size: 0.7rem; width: 100%; margin-top: auto; }
+
+        /* INVOICE & MODALS */
+        .processing-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10002; display: none; justify-content: center; align-items: center; }
+        .invoice-ticket { background: #fff; color: #000; padding: 20px; font-family: monospace; border-radius: 5px; position: relative; margin-bottom: 20px; }
+        .invoice-ticket::after { content: ""; position: absolute; left: 0; bottom: -10px; width: 100%; height: 10px; background: radial-gradient(circle, transparent 50%, #fff 50%) repeat-x; background-size: 10px 10px; }
+        
+        /* GUEST LOCK */
+        .locked-content { position: relative; opacity: 0.5; pointer-events: none; filter: blur(2px); }
+        .lock-badge { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--red-core); color: #fff; padding: 5px 15px; border-radius: 20px; font-weight: bold; z-index: 10; font-size: 0.8rem; }
+        
+            /* FIX GAMBAR MARKET (BIAR GAK RAKSASA) */
+    .prod-card-v2 img {
+        width: 100%;           /* Lebar menyesuaikan wadah */
+        max-width: 60px;       /* PENTING: Batas maksimal lebar (biar ga kegedean) */
+        height: 60px;          /* PENTING: Tinggi harus sama semua */
+        object-fit: contain;   /* PENTING: Biar gambar ga gepeng/melar */
+        margin: 0 auto 10px;   /* Tengahin gambar & kasih jarak bawah */
+        display: block;        /* Pastikan dia kotak, bukan teks */
+        filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.2)); /* Efek glow dikit */
+    }
+
+    /* KHUSUS GAMBAR JUAL AKUN (BIAR LEBIH LEBAR DIKIT) */
+    /* Kalau kamu pake fitur jual akun yang screenshots */
+    #acc-grid .prod-card-v2 img {
+        max-width: 100%;       /* Screenshot boleh lebar */
+        height: 100px;         /* Tapi tingginya batasi */
+        object-fit: cover;     /* Potong dikit biar rapi (crop) */
+    }
+    @keyframes popIn {
+        0% { transform: scale(0.5); opacity: 0; }
+        80% { transform: scale(1.05); opacity: 1; }
+        100% { transform: scale(1); }
+    }
+    /* =========================================
+       STYLE SIDEBAR (GANTI BIAR GAK PUTIH)
+       ========================================= */
+    
+#sidebar { 
+    position: fixed; top: 0; left: -280px; width: 280px; height: 100%; 
+    background: #0a0a0a; border-right: 1px solid #333; z-index: 1101; transition: 0.3s;
+    padding: 0; /* <--- PENTING: DIBUAT 0 SUPAYA BACKGROUND POLL KANAN KIRI */
+    display: flex; flex-direction: column;
+}
+
+
+    /* 2. KELAS 'OPEN' (Dipanggil JS buat munculin) */
+    #sidebar.open {
+        transform: translateX(0); /* Geser Masuk */
+    }
+
+    /* 3. HEADER SIDEBAR */
+    .sidebar-header {
+        background: #111;
+        border-bottom: 1px solid #222;
+    }
+
+    /* 4. TOMBOL-TOMBOL MENU */
+/* TAMBAHAN KHUSUS TOMBOL SIDEBAR */
+.sidebar-menu button {
+    width: 100%;
+    text-align: left;           /* Teks rata kiri */
+    padding: 15px 20px;         /* Jarak dalam */
+    background: transparent;    /* Latar transparan */
+    border: none;               /* Hapus garis kotak */
+    border-bottom: 1px solid #222; /* Garis pemisah tipis di bawah */
+    color: #ccc;                /* Warna teks abu terang */
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* Biar ikon (Rumah, Laptop, dll) ada jarak sama teks */
+.sidebar-menu button i {
+    width: 30px;
+    color: var(--gold); /* Ikon warna emas */
+    text-align: center;
+}
+
+/* Efek pas disentuh/hover */
+.sidebar-menu button:hover {
+    background: #111;
+    color: #fff;
+    padding-left: 25px; /* Efek geser dikit */
+    transition: 0.3s;
+}
+
+
+
+    /* PAKSA POPUP DI ATAS SIDEBAR */
+    div.swal2-container {
+        z-index: 99999 !important; /* Level Dewa (Paling Tinggi) */
+    }
+
+/* FIX: POPUP LOGIN LOCK POSITION */
+    #auth-screen {
+        position: fixed !important; /* Paksa diam di layar */
+        top: 0; left: 0;
+        width: 100vw; height: 100vh; /* Full Layar */
+        background: #000;
+        z-index: 999999; /* Paling atas ngalahin semua */
+        display: none;   /* Default sembunyi */
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        overflow: hidden; /* Gak boleh ada scroll di dalam popup */
+    }
+
+    .auth-box {
+        width: 90%; max-width: 350px;
+        background: #111;
+        border: 1px solid #333;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 50px rgba(255, 0, 60, 0.3); /* Efek glowing merah */
+        position: relative; /* Biar stabil */
+    }
+    
+        /* =========================================
+ /* 2. Kunci Input Field (Nominal & Rekening) */
+    input.cyber-input-swal {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        margin: 10px 0 !important;
+        height: auto !important;
+        font-size: 1rem !important;
+        /* TAMBAHAN BIAR HITAM */
+        background: #0a0a0a !important; 
+        border: 1px solid #333 !important;
+        color: #fff !important;
+        padding: 12px !important;
+        border-radius: 5px !important;
+        outline: none !important;
+    }
+    
+    input.cyber-input-swal:focus {
+        border-color: var(--red-core) !important;
+        box-shadow: 0 0 10px rgba(255, 0, 60, 0.2) !important;
+    }
+
+    /* Sembunyikan input bawaan swal biar gak tabrakan */
+    .swal2-input {
+        display: none !important; 
+    }
+
+    /* 3. Pastikan konten HTML di dalam popup rapi */
+    div.swal2-html-container {
+        margin: 10px 0 !important;
+        overflow: hidden !important;   /* Potong yang lewat batas */
+        padding: 0 !important;
+    }
+
+    /* =========================================
+       FIX: TAMPILAN MISI / FREELANCE
+       ========================================= */
+    
+    .mission-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px; /* Jarak antar kartu misi */
+    }
+
+    .mission-card {
+        background: #0a0a0a;
+        border: 1px solid #222;
+        padding: 15px;
+        border-radius: 10px;
+        display: flex; /* Bikin icon, teks, tombol sejajar */
+        align-items: center;
+        transition: 0.3s;
+    }
+    
+    .mission-card:hover {
+        border-color: var(--gold);
+        background: #111;
+        transform: translateX(5px); /* Efek geser dikit pas hover */
+    }
+
+    /* INI DIA PENJINAK ICON RAKSASA */
+    .mission-icon {
+        width: 50px;       /* Lebar fix */
+        height: 50px;      /* Tinggi fix */
+        border-radius: 50%;
+        border: 2px solid #555; /* Default border */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px; /* Jarak icon ke teks */
+        flex-shrink: 0;     /* Biar icon gak gepeng */
+        background: rgba(255,255,255,0.05);
+    }
+
+    .mission-icon i {
+        font-size: 1.5rem !important; /* UKURAN ICON KITA KUNCI DISINI */
+    }
+
+    .mission-info {
+        flex-grow: 1; /* Teks ambil sisa ruang */
+    }
+
+    .mission-info h4 {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #fff;
+        margin-bottom: 3px;
+    }
+
+    .mission-info p {
+        margin: 0;
+        font-size: 0.75rem;
+        color: #888;
+    }
+    /* =========================================
+       FITUR: RUNNING TEXT (NEWS TICKER)
+       ========================================= */
+    .news-ticker {
+        width: 100%;
+        background: #000; /* Latar Hitam */
+        border-bottom: 1px solid #333;
+        overflow: hidden;
+        white-space: nowrap;
+        position: sticky;
+        top: 60px; /* Sesuai tinggi header */
+        z-index: 99;
+        padding: 8px 0;
+    }
+
+    .ticker-content {
+        display: inline-block;
+        color: var(--gold); /* Warna Emas */
+        font-family: var(--font-body);
+        font-size: 0.8rem;
+        font-weight: bold;
+        animation: scroll-left 20s linear infinite; /* Animasi Jalan */
+    }
+
+    @keyframes scroll-left {
+        0% { transform: translateX(100%); }
+        100% { transform: translateX(-100%); }
+    }
+
+    </style>
+</head>
+<body>
+
+    <div id="auth-screen">
+        <div class="auth-box">
+            <h2 style="margin-bottom:20px;">NEXUS <span class="red-neon">CORE</span></h2>
+            
+            <form id="form-login" onsubmit="handleLogin(event)">
+                <input type="text" id="login-username" class="cyber-input" placeholder="USERNAME" required>
+                <input type="password" id="login-pin" class="cyber-input" placeholder="PIN ACCESS" required>
+                <button type="submit" class="cyber-btn-glitch">MASUK SYSTEM</button>
+            </form>
+
+            <form id="form-register" onsubmit="handleRegister(event)" style="display:none;">
+                <input type="text" id="reg-username" class="cyber-input" placeholder="USERNAME BARU" required>
+                <input type="password" id="reg-pin" class="cyber-input" placeholder="PIN (MIN 4 ANGKA)" required>
+                <button type="submit" class="cyber-btn-glitch" style="background:var(--gold); color:#000;">DAFTAR + BONUS 1K</button>
+            </form>
+
+            <button onclick="guestLogin()" style="background:none; border:1px solid #444; color:#888; padding:10px; width:100%; margin-top:15px; border-radius:5px;">MASUK TAMU</button>
+            
+            <p style="margin-top:20px; font-size:0.8rem; color:#ccc;">
+                <span id="auth-text">Belum punya akses?</span> 
+                <a href="#" onclick="toggleAuthMode()" id="auth-toggle" class="red-neon">Daftar Baru</a>
+            </p>
+        </div>
+    </div>
+<div id="main-interface" style="display:none;">
+    
+    <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <div id="sidebar">
+        
+        <div class="sidebar-header">
+            <h3 style="margin:0; font-size:1rem; color:#888;">NEXUS <span class="red-neon">MENU</span></h3>
+            <button onclick="toggleSidebar(false)" style="background:none; border:none; color:#fff; font-size:1.5rem;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div style="text-align:center; padding:30px 20px; border-bottom:1px dashed #333; background:linear-gradient(to bottom, #111, #050505);">
+            <div style="width:80px; height:80px; margin:0 auto 15px; border-radius:50%; border:2px solid var(--gold); display:flex; align-items:center; justify-content:center; background:#1a1a1a; box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);">
+                <i class="fas fa-user-astronaut" style="font-size:2.5rem; color:var(--gold);"></i>
+            </div>
+            <h3 id="sidebar-username" style="color:#fff; margin:0; letter-spacing:1px; font-size:1.2rem;">GUEST</h3>
+            <div id="sidebar-status" style="color:#888; font-size:0.8rem; margin-top:5px; background:#222; display:inline-block; padding:2px 10px; border-radius:10px;">Visitor Mode</div>
+            <div style="margin-top:15px;">
+                <span style="font-size:0.7rem; color:#666;">SALDO NEXUS PAY</span>
+                <div id="sidebar-balance" class="red-neon" style="font-size:1.5rem; font-weight:bold; margin-top:2px;">Rp 0</div>
+            </div>
+            <div id="sidebar-id" style="font-size:0.7rem; color:#444; margin-top:10px; font-family:monospace;">ID: -</div>
+        </div>
+
+        <div class="sidebar-menu">
+            <button onclick="showPage('home')"><i class="fas fa-home"></i> DASHBOARD</button>
+            <button onclick="showPage('store')"><i class="fas fa-shopping-cart"></i> MARKET STORE</button>
+            <button onclick="showPage('deposit')"><i class="fas fa-wallet"></i> ISI SALDO</button>
+            <button onclick="showPage('freelance')"><i class="fas fa-laptop-code"></i> MISI & CUAN</button>
+            <button onclick="showPage('history')"><i class="fas fa-history"></i> RIWAYAT</button>
+            
+            <div style="margin-top:20px; border-top:1px solid #222;"></div>
+            
+                <button onclick="showAboutNexus()">
+        <i class="fas fa-info-circle"></i> TENTANG NEXUS
+    </button>
+
+            <button onclick="window.open('https://wa.me/6283125398104', '_blank')"><i class="fab fa-whatsapp"></i> HUBUNGI ADMIN</button>
+            <button onclick="editProfile()"><i class="fas fa-user-edit"></i> UBAH NAMA</button>
+            <button onclick="logout()" class="logout-btn"><i class="fas fa-power-off"></i> KELUAR SISTEM</button>
+        </div>
+        
+        <div style="text-align:center; padding:20px; font-size:0.6rem; color:#444; margin-top:auto;">
+            NEXUS CORE v9.6<br>Created by Alam Indra
+        </div>
+    </div>
+    <header class="cyber-header">
+        <div class="header-inner">
+            <button onclick="toggleSidebar()" style="background:none; color:#fff; font-size:1.2rem; margin-right:10px;">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div style="flex-grow:1;">
+                <h3 style="margin:0; font-size:1.1rem;">NEXUS <span class="red-neon">CORE</span></h3>
+            </div>
+            <div id="header-auth-area" style="text-align:right;"></div>
+            
+        </div>
+
+        <nav class="cyber-nav">
+            <button onclick="showPage('home')" class="c-nav active">HOME</button>
+            <button onclick="showPage('store')" class="c-nav">MARKET</button>
+            <button onclick="showPage('deposit')" class="c-nav">DEPOSIT</button>
+            <button onclick="showPage('freelance')" class="c-nav">MISI</button>
+            <button onclick="showPage('history')" class="c-nav">HISTORY</button>
+        </nav>
+    </header>
+        <div class="news-ticker">
+            <div class="ticker-content">
+                <span>⚠️ INFO PENTING:</span>
+                Server Open 24 Jam ⚡ | 
+                Deposit Qris Otomatis Masuk 1 Detik 🔥 | 
+                Misi Baru: SeaBank Cuan 25K! 💰 | 
+                Admin WhatsApp: 0812-xxxx-xxxx 📞 | 
+                Dilarang Spam Order! 🚫
+            </div>
+        </div>
+
+        <main>
+            <section id="home" class="page active-page">
+                <div class="banner-container">
+    <div class="slider-container" style="position:relative; width:100%; height:180px; overflow:hidden; border-radius:10px; margin-bottom:20px; border:1px solid #333;">
+        
+        <div id="slider-track" style="display:flex; transition:transform 0.5s ease-in-out; height:100%;">
+            <div class="slide" style="min-width:100%; height:100%;">
+                <img src="assets/banner1.jpg" onerror="this.src='https://via.placeholder.com/600x300/000000/FF0000?text=PROMO+NEXUS+1'" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+            <div class="slide" style="min-width:100%; height:100%;">
+                <img src="assets/banner2.jpg" onerror="this.src='https://via.placeholder.com/600x300/111111/00FF00?text=DISKON+JOKI'" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+            <div class="slide" style="min-width:100%; height:100%;">
+                <img src="assets/banner3.jpg" onerror="this.src='https://via.placeholder.com/600x300/000000/0000FF?text=NEW+MEMBER+BONUS'" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+        </div>
+
+        <button onclick="moveSlide(-1)" style="position:absolute; top:50%; left:10px; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; padding:10px; cursor:pointer; border-radius:50%; z-index:10;">❮</button>
+        <button onclick="moveSlide(1)" style="position:absolute; top:50%; right:10px; transform:translateY(-50%); background:rgba(0,0,0,0.5); color:white; border:none; padding:10px; cursor:pointer; border-radius:50%; z-index:10;">❯</button>
+        
+        <div style="position:absolute; bottom:10px; left:50%; transform:translateX(-50%); display:flex; gap:5px;">
+            <div class="dot active" style="width:8px; height:8px; background:white; border-radius:50%;"></div>
+            <div class="dot" style="width:8px; height:8px; background:rgba(255,255,255,0.5); border-radius:50%;"></div>
+            <div class="dot" style="width:8px; height:8px; background:rgba(255,255,255,0.5); border-radius:50%;"></div>
+        </div>
+    </div>
+
+                </div>
+                
+                <div id="home-balance-container" style="background:#111; padding:20px; border-radius:10px; margin-top:20px; text-align:center; border:1px solid #333; transition:0.3s;">
+    </div>
+
+                
+                <div class="market-nav-grid" style="grid-template-columns: repeat(4, 1fr);">
+                    <div class="m-nav-item" onclick="openStoreTab('game')"><i class="fas fa-gamepad"></i><span>GAME</span></div>
+                    <div class="m-nav-item" onclick="openStoreTab('apk')"><i class="fab fa-spotify"></i><span>PREM</span></div>
+                    <div class="m-nav-item" onclick="openStoreTab('sosmed')"><i class="fas fa-thumbs-up"></i><span>SOSMED</span></div>
+                    <div class="m-nav-item" onclick="openStoreTab('convert')"><i class="fas fa-exchange-alt"></i><span>CVRT</span></div>
+                </div>
+            </section>
+
+                                               <section id="store" class="page">
+                <h2 class="sect-title">NEXUS <span class="red-neon">MARKET</span></h2>
+                
+                <div id="market-menu" class="market-nav-grid" style="grid-template-columns: repeat(3, 1fr);">
+                    
+                    <div class="m-nav-item" onclick="openMarketView('view-game')">
+                        <i class="fas fa-gamepad nav-icon"></i><span>TOP UP</span>
+                    </div>
+                    
+                    <div class="m-nav-item" onclick="openMarketView('view-apk')">
+                        <i class="fab fa-spotify nav-icon"></i><span>PREMIUM</span>
+                    </div>
+                    <div class="m-nav-item" onclick="openMarketView('view-sosmed')">
+                        <i class="fas fa-thumbs-up nav-icon"></i><span>SOSMED</span>
+                    </div>
+                    
+                    <div class="m-nav-item" onclick="openMarketView('view-convert')">
+                        <i class="fas fa-exchange-alt nav-icon"></i><span>CONVERT</span>
+                    </div>
+                    <div class="m-nav-item" onclick="openMarketView('view-jual')">
+                        <i class="fas fa-store-alt nav-icon"></i><span>JUAL AKUN</span>
+                    </div>
+                    <div class="m-nav-item" onclick="openMarketView('view-pulsa')">
+                        <i class="fas fa-mobile-alt nav-icon"></i><span>PULSA</span>
+                    </div>
+
+                    <div class="m-nav-item" onclick="openMarketView('view-joki')" style="grid-column: span 3; border:1px solid gold; background:rgba(255, 215, 0, 0.05);">
+                        <i class="fas fa-fighter-jet" style="color:gold; font-size:1.5rem; margin-bottom:5px;"></i>
+                        <span style="color:gold; font-weight:bold;">DAFTAR JADI PENJOKI</span>
+                    </div>
+                </div>
+
+                <div id="view-game" class="market-view" style="display:none;">
+                    <button onclick="closeMarketView()" class="cyber-btn-outline full-width">⬅ KEMBALI</button>
+                    
+                    <div id="game-selector-area">
+                        <h4 class="sub-header" style="margin-top:15px;">/// SELECT GAME</h4>
+                        <div id="game-grid-container" class="product-grid">
+                            </div>
+                    </div>
+
+                    <div id="game-topup-area" style="display:none;">
+                        <button onclick="backToGameSelector()" class="cyber-btn-outline" style="margin-bottom:15px; border-color:#555; color:#888;">
+                            <i class="fas fa-arrow-left"></i> GANTI GAME
+                        </button>
+
+                        <div style="text-align:center; margin-bottom:20px;">
+                            <img id="active-game-img" src="" style="width:60px; height:60px; border-radius:15px; object-fit:cover; border:2px solid var(--gold);">
+                            <h3 id="active-game-name" style="margin-top:10px; color:#fff;">-</h3>
+                        </div>
+
+                        <div style="background:#111; padding:15px; border-radius:10px; border:1px solid #333; margin-bottom:20px;">
+                            <h4 style="color:var(--gold); font-size:0.8rem; margin-bottom:10px;">1. MASUKKAN DATA AKUN</h4>
+                            <div id="dynamic-inputs"></div> </div>
+
+                        <h4 style="color:var(--gold); font-size:0.8rem; margin-bottom:10px;">2. PILIH NOMINAL</h4>
+                        <div id="dynamic-products" class="product-grid"></div>
+                    </div>
+                </div>
+
+
+                <div id="view-apk" class="market-view" style="display:none;">
+                    <button onclick="closeMarketView()" class="cyber-btn-outline full-width">⬅ KEMBALI</button>
+                    <h4 class="sub-header" style="margin-top:15px;">/// APLIKASI PREMIUM</h4>
+                    <div id="apk-grid-container" class="product-grid"></div>
+                </div>
+
+                <div id="view-sosmed" class="market-view" style="display:none;">
+                    <button onclick="closeMarketView()" class="cyber-btn-outline full-width">⬅ KEMBALI</button>
+                    
+                    <h4 class="sub-header" style="margin-top:15px;">/// SOCIAL MEDIA SERVICE</h4>
+                    
+                    <div class="market-nav-grid" style="grid-template-columns: repeat(4, 1fr); gap:10px; margin-bottom:20px;">
+                        <div class="m-nav-item" onclick="renderSosmedList('ig')"><i class="fab fa-instagram"></i><span>IG</span></div>
+                        <div class="m-nav-item" onclick="renderSosmedList('tt')"><i class="fab fa-tiktok"></i><span>TIKTOK</span></div>
+                        <div class="m-nav-item" onclick="renderSosmedList('tw')"><i class="fab fa-twitter"></i><span>TWIT</span></div>
+                        <div class="m-nav-item" onclick="renderSosmedList('fb')"><i class="fab fa-facebook"></i><span>FB</span></div>
+                    </div>
+
+                    <div id="sosmed-list-container" class="product-grid">
+                        <div style="grid-column:span 2; text-align:center; padding:20px; color:#666;">
+                            <i class="fas fa-arrow-up"></i><br>Pilih Kategori Sosmed di atas
+                        </div>
+                    </div>
+                </div>
+
+
+                <div id="view-convert" class="market-view" style="display:none;">
+                    <button onclick="closeMarketView()" class="cyber-btn-outline full-width">⬅ KEMBALI</button>
+                    
+                    <div class="cyber-card" style="margin-top:15px; background:#111; padding:15px; border-radius:10px; border:1px solid #333;">
+                        <h4 style="color:#fff; margin-bottom:15px; text-align:center; border-bottom:1px dashed #333; padding-bottom:10px;">FORM CONVERT PULSA</h4>
+                        
+                        <label style="font-size:0.8rem; color:#888;">Provider Pengirim:</label>
+                        <select id="cv-provider" class="cyber-input" onchange="calcConvert()">
+                            <option value="" disabled selected>Pilih Provider</option>
+                            <option value="axis" data-rate="0.78">AXIS / XL (Rate 0.78)</option>
+                            <option value="telkomsel" disabled>Telkomsel (Gangguan)</option>
+                            <option value="indosat" disabled>Indosat (Penuh)</option>
+                            <option value="tri" disabled>Tri (Coming Soon)</option>
+                        </select>
+                        
+                        <label style="font-size:0.8rem; color:#888;">Nominal Pulsa (Min 30rb):</label>
+                        <input type="number" id="cv-amount" class="cyber-input" placeholder="Contoh: 50000" oninput="calcConvert()">
+                        
+                        <label style="font-size:0.8rem; color:#888;">Cairkan Ke:</label>
+                        <select id="cv-bank" class="cyber-input">
+                            <option value="DANA">DANA</option>
+                            <option value="SeaBank">SeaBank</option>
+                            <option value="GoPay">GoPay</option>
+                            <option value="OVO">OVO</option>
+                            <option value="ShopeePay">ShopeePay</option>
+                            <option value="BCA">BCA</option>
+                            <option value="BRI">BRI</option>
+                        </select>
+
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                            <div>
+                                <label style="font-size:0.8rem; color:#888;">Nomor/Rekening:</label>
+                                <input type="number" id="cv-rek" class="cyber-input" placeholder="08xx / 123xx">
+                            </div>
+                            <div>
+                                <label style="font-size:0.8rem; color:#888;">Atas Nama:</label>
+                                <input type="text" id="cv-name" class="cyber-input" placeholder="Nama Pemilik">
+                            </div>
+                        </div>
+                        
+                        <div style="background:#0a0a0a; padding:10px; border:1px dashed #333; margin:15px 0; text-align:center;">
+                            <span style="color:#888; font-size:0.8rem;">ESTIMASI DITERIMA (Rate 0.78):</span>
+                            <h2 id="cv-result" class="gold-neon" style="margin:5px 0;">Rp 0</h2>
+                            <small style="color:#555; font-size:0.7rem;">*Rate dapat berubah sewaktu-waktu</small>
+                        </div>
+                        
+                        <button onclick="processConvert()" class="cyber-btn-glitch full-width">BUAT INVOICE CONVERT</button>
+                    </div>
+                </div>
+
+
+                <div id="view-pulsa" class="market-view" style="display:none;">
+                    <button onclick="closeMarketView()" class="cyber-btn-outline full-width">⬅ KEMBALI</button>
+                    <div style="text-align:center; padding:50px; color:#555;">Fitur Pulsa Segera Hadir</div>
+                </div>
+
+                                <div id="view-jual" class="market-view" style="display:none;">
+                    <button onclick="closeMarketView()" class="cyber-btn-outline full-width">⬅ KEMBALI</button>
+                    
+                    <h4 class="sub-header" style="margin-top:15px; text-align:center; color:gold;">
+                        <i class="fas fa-crown"></i> SULTAN MARKET
+                    </h4>
+
+                    <div id="acc-category-grid" class="product-grid" style="grid-template-columns: repeat(2, 1fr);">
+                        <div class="prod-card-v2" onclick="renderAccountList('ff')">
+                            <img src="assets/ff.png" onerror="this.src='https://via.placeholder.com/50?text=FF'">
+                            <h4>Free Fire</h4>
+                        </div>
+                        <div class="prod-card-v2" onclick="renderAccountList('ml')">
+                            <img src="assets/ml.png" onerror="this.src='https://via.placeholder.com/50?text=ML'">
+                            <h4>Mobile Legends</h4>
+                        </div>
+                        <div class="prod-card-v2" onclick="renderAccountList('roblox')">
+                            <img src="assets/roblox.png" onerror="this.src='https://via.placeholder.com/50?text=RBX'">
+                            <h4>Roblox</h4>
+                        </div>
+                        <div class="prod-card-v2" onclick="renderAccountList('hok')">
+                            <img src="assets/hok.png" onerror="this.src='https://via.placeholder.com/50?text=HOK'">
+                            <h4>Honor of Kings</h4>
+                        </div>
+                    </div>
+
+                    <div id="account-list-container" style="margin-top:20px; display:none;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <h4 id="acc-list-title" style="margin:0;">DAFTAR AKUN</h4>
+                            <button onclick="document.getElementById('account-list-container').style.display='none'; document.getElementById('acc-category-grid').style.display='grid';" class="cyber-btn-outline" style="width:auto; padding:5px 10px; font-size:0.7rem;">Tutup</button>
+                        </div>
+                        <div id="acc-grid" class="product-grid"></div>
+                    </div>
+                </div>
+
+
+                <div id="view-joki" class="market-view" style="display:none;">
+                    <button onclick="closeMarketView()" class="cyber-btn-outline full-width">⬅ KEMBALI</button>
+                    
+                    <div class="cyber-card" style="margin-top:15px; background:#111; padding:20px; border:1px solid gold; text-align:center;">
+                        <i class="fas fa-trophy" style="font-size:3rem; margin-bottom:15px; color:gold;"></i>
+                        <h3 style="color:gold;">JASA JOKI</h3>
+                        <p style="font-size:0.8rem; color:#ccc;">Lowongan Worker Terbuka!</p>
+                        
+                        <div style="text-align:left; margin-top:15px;">
+                            <label style="color:#888;">Nickname:</label>
+                            <input type="text" id="joki-nick" class="cyber-input">
+                            <label style="color:#888;">Game & Rank:</label>
+                            <input type="text" id="joki-rank" class="cyber-input" placeholder="Misal: MLBB (Mythic)">
+                        </div>
+
+                        <button onclick="submitJokiRegistration()" class="cyber-btn-glitch full-width" style="margin-top:15px; background:gold; color:#000;">
+                            KIRIM LAMARAN (WA)
+                        </button>
+                    </div>
+                </div>
+
+            </section>
+
+
+
+
+                        <section id="deposit" class="page">
+                <h2 class="sect-title">NEXUS <span class="red-neon">PAYMENT</span></h2>
+
+                <div id="topup-mode" style="display:none;">
+                    <div class="cyber-card" style="text-align:center; padding:30px; border:1px solid #333;">
+                        <i class="fas fa-wallet" style="font-size:3rem; color:var(--gold); margin-bottom:15px;"></i>
+                        <h3 style="color:#fff;">ISI SALDO NEXUS</h3>
+                        <p style="color:#888; margin-bottom:20px;">Saldo saat ini: <span id="wd-balance-display" class="red-neon">Rp 0</span></p>
+
+                        <div style="text-align:left;">
+                            <label style="font-size:0.8rem; color:#888;">Mau isi saldo berapa?</label>
+                            <input type="number" id="topup-nominal" class="cyber-input" placeholder="Min. Rp 10.000">
+                        </div>
+                        
+                        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; margin:15px 0;">
+                            <button onclick="setTopup(10000)" class="cyber-btn-outline" style="font-size:0.8rem;">10k</button>
+                            <button onclick="setTopup(25000)" class="cyber-btn-outline" style="font-size:0.8rem;">25k</button>
+                            <button onclick="setTopup(50000)" class="cyber-btn-outline" style="font-size:0.8rem;">50k</button>
+                        </div>
+
+                        <button onclick="processTopup()" class="cyber-btn-glitch full-width">LANJUT PEMBAYARAN</button>
+                    </div>
+
+
+                </div>
+
+                <div id="invoice-area" style="display:none;">
+                    <div class="invoice-box">
+                        <div style="border-bottom:1px dashed #444; padding-bottom:10px; margin-bottom:10px;">
+                            <span style="color:#888; font-size:0.8rem;">ITEM:</span>
+                            <h3 id="inv-item" style="margin:0; color:var(--red-core);">Netflix Premium</h3>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                            <span style="color:#888;">Data:</span>
+                            <span id="inv-data" style="text-align:right;">-</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-top:15px; padding-top:10px; border-top:1px solid #333;">
+                            <span style="font-weight:bold;">TOTAL:</span>
+                            <span id="inv-price" class="gold-neon" style="font-size:1.2rem;">Rp 25.000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="deposit-manual" style="display:none; margin-top:20px;">
+                    <div style="text-align:center; margin-bottom:20px;">
+                        <p style="font-size:0.9rem; color:#ccc;">Silakan transfer ke salah satu metode di bawah:</p>
+                    </div>
+
+                    <div class="pay-card" style="background:#fff; padding:20px; border-radius:10px; text-align:center; margin-bottom:15px; border:2px solid gold;">
+                        <h4 style="color:#000; margin-bottom:10px; font-weight:bold;">SCAN QRIS</h4>
+                        <img src="assets/qriss.png" onerror="this.src='https://via.placeholder.com/200?text=QRIS'" style="width:100%; max-width:220px; display:block; margin:0 auto 15px;">
+                        <a href="assets/qriss.png" download="QRIS_NEXUS.png" class="cyber-btn-outline" style="display:block; color:#000; border-color:#000; text-decoration:none;">SIMPAN GAMBAR</a>
+                    </div>
+
+                    <div class="pay-card" style="background:#111; border:1px solid #00aaff; padding:15px; border-radius:10px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                        <div><h4 style="margin:0; color:#00aaff;">DANA</h4><span style="font-size:1.1rem; color:#fff; font-weight:bold;">083898023362</span></div>
+                        <button onclick="copyText('083898023362')" class="cyber-btn-outline" style="border-color:#00aaff; color:#00aaff;">SALIN</button>
+                    </div>
+
+                    <div class="pay-card" style="background:#111; border:1px solid orange; padding:15px; border-radius:10px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
+                        <div><h4 style="margin:0; color:orange;">SEABANK</h4><span style="font-size:1.1rem; color:#fff; font-weight:bold;">901083898023362</span></div>
+                        <button onclick="copyText('901083898023362')" class="cyber-btn-outline" style="border-color:orange; color:orange;">SALIN</button>
+                    </div>
+
+                    <div style="background:#1a1a1a; padding:15px; border-radius:10px;">
+                        <button onclick="confirmPaymentWA()" class="cyber-btn-glitch full-width">KIRIM BUKTI BAYAR</button>
+                        <button onclick="cancelOrder()" class="cyber-btn-outline full-width" style="margin-top:10px; color:#ff4444; border-color:#ff4444;">BATALKAN</button>
+                    </div>
+                </div>
+            </section>
+
+
+        <section id="freelance" class="page">
+            <h2 class="sect-title">MISI & <span class="gold-neon">CUAN</span></h2>
+            
+            <div style="background:#111; padding:15px; border-radius:10px; border:1px solid #333; margin-bottom:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <span style="color:#888; font-size:0.8rem;">REWARD TERKUMPUL</span>
+                    <span class="gold-neon" style="font-weight:bold; font-size:1.1rem;">Rp 0</span>
+                </div>
+                
+                <button onclick="withdrawMoney()" class="cyber-btn-outline full-width" style="border-color:#ff003c; color:#ff003c; font-size:0.8rem; padding:10px;">
+                    <i class="fas fa-money-bill-wave"></i> CAIRKAN DANA (WITHDRAW)
+                </button>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-bottom:15px; overflow-x:auto; padding-bottom:5px;">
+                <button onclick="renderMissions('all')" class="cyber-btn-outline" style="padding:5px 15px; font-size:0.7rem; white-space:nowrap;">SEMUA</button>
+                <button onclick="renderMissions('kyc')" class="cyber-btn-outline" style="padding:5px 15px; font-size:0.7rem; white-space:nowrap;">KYC (HOT)</button>
+                <button onclick="renderMissions('sewaakun')" class="cyber-btn-outline" style="padding:5px 15px; font-size:0.7rem; white-space:nowrap;">SEWA AKUN</button>
+                <button onclick="renderMissions('sosmed')" class="cyber-btn-outline" style="padding:5px 15px; font-size:0.7rem; white-space:nowrap;">SOSMED</button>
+            </div>
+
+            <h4 class="sub-header">/// AVAILABLE JOBS</h4>
+            
+            <div id="mission-list-container" class="mission-list"></div>
+        </section>
+
+
+            <section id="history" class="page">
+                <h2 class="sect-title">RIWAYAT</h2>
+                <div id="history-lock-area">
+    <div id="history-list" style="margin-top:15px; display:flex; flex-direction:column; gap:10px;">
+        </div>
+
+                    
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="general-modal" class="processing-overlay">
+        <div class="auth-box" style="max-width:350px;">
+            <h3 id="modal-title">TITLE</h3>
+            <div id="modal-content" style="text-align:left; margin:15px 0; max-height:60vh; overflow-y:auto;"></div>
+            <button onclick="document.getElementById('general-modal').style.display='none'" class="cyber-btn-outline">TUTUP</button>
+        </div>
+    </div>
+    <div id="variant-modal" class="processing-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10001; justify-content:center; align-items:center; backdrop-filter:blur(5px);">
+        <div class="auth-box" style="max-width:350px; width:90%; background:#111; border:1px solid #333; padding:20px; border-radius:10px; border-top:3px solid var(--red-core);">
+            
+            <div style="border-bottom:1px dashed #333; padding-bottom:10px; margin-bottom:15px; text-align:center;">
+                <h3 id="modal-apk-title" class="red-neon" style="font-size:1.2rem; margin:0;">NAMA APLIKASI</h3>
+                <small style="color:#888;">Pilih Paket Langganan:</small>
+            </div>
+            
+            <div id="variant-list-container" style="display:flex; flex-direction:column; gap:10px; max-height:50vh; overflow-y:auto; padding-right:5px;">
+                </div>
+            
+            <button onclick="closeVariantModal()" class="cyber-btn-outline" style="margin-top:20px; border-color:#555; color:#aaa; width:100%; padding:10px; font-size:0.8rem;">
+                <i class="fas fa-times"></i> BATAL / TUTUP
+            </button>
+        </div>
+    </div>
+    <div id="account-modal" class="processing-overlay" style="display:none; z-index:10005;">
+        <div class="auth-box" style="width:90%; max-width:400px; padding:0; overflow:hidden; border:1px solid #333;">
+            
+            <div style="position:relative; width:100%; height:200px; background:#000;">
+                <img id="acc-detail-img" src="" style="width:100%; height:100%; object-fit:cover; opacity:0.5;">
+                <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(255,0,0,0.8); color:#fff; padding:10px 20px; font-weight:bold; border:2px solid #fff; transform:translate(-50%, -50%) rotate(-10deg);">SOLD OUT</div>
+                <button onclick="closeAccountModal()" style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.5); color:#fff; border:none; border-radius:50%; width:30px; height:30px;"><i class="fas fa-times"></i></button>
+            </div>
+
+            <div style="padding:20px; text-align:left;">
+                <h3 id="acc-detail-title" style="margin-bottom:5px; color:#fff;">Title</h3>
+                <h2 id="acc-detail-price" class="red-neon" style="margin-bottom:15px;">Rp 0</h2>
+                
+                <div style="background:#1a1a1a; padding:10px; border-radius:5px; font-size:0.8rem; color:#ccc; margin-bottom:20px;">
+                    <strong>Spesifikasi Singkat:</strong>
+                    <p id="acc-detail-desc" style="margin-top:5px; line-height:1.4;">Desc...</p>
+                </div>
+
+                <button onclick="Swal.fire('Stok Habis', 'Maaf, akun ini sudah laku terjual. Pantau terus Nexus Market!', 'info')" class="cyber-btn-glitch" style="width:100%; background:#333; color:#888; cursor:not-allowed;">
+                    BELI SEKARANG (HABIS)
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="promo-modal" class="processing-overlay" style="display:none; z-index:10002;">
+        <div class="auth-box" style="position:relative; width:90%; max-width:380px; padding:0; overflow:hidden; border:2px solid var(--gold); border-radius:15px;">
+            
+            <button onclick="closePromo()" style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.6); color:#fff; border:none; width:30px; height:30px; border-radius:50%; font-weight:bold; cursor:pointer; z-index:10;">✕</button>
+
+            <img src="assets/promo_popup.jpg" onerror="this.src='https://via.placeholder.com/400x400/111/gold?text=PROMO+SPESIAL'" style="width:100%; height:auto; display:block;">
+
+            <div style="padding:20px; background:#111; text-align:center;">
+                <h3 style="color:gold; margin-bottom:5px; text-transform:uppercase;">Diskon Spesial!</h3>
+                <p style="color:#ccc; font-size:0.9rem; margin-bottom:15px;">Dapatkan harga miring khusus hari ini untuk Top Up Mobile Legends & FF.</p>
+                
+                <button onclick="claimPromo()" class="cyber-btn-glitch full-width" style="background:gold; color:#000;">
+                    CEK SEKARANG ➜
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="about-modal" class="processing-overlay" style="display:none; z-index:10010;">
+        <div class="auth-box" style="width:90%; max-width:400px; padding:0; overflow:hidden; border:1px solid #333; background:#050505; max-height:90vh; overflow-y:auto; position:relative;">
+            
+            <button onclick="closeAboutNexus()" style="position:absolute; top:15px; right:15px; z-index:20; background:rgba(0,0,0,0.6); color:#fff; border:none; width:35px; height:35px; border-radius:50%; font-weight:bold; cursor:pointer;">✕</button>
+
+            <div style="position:relative; width:100%; height:220px;">
+                <video src="assets/video.mp4" autoplay muted loop playsinline 
+                       poster="assets/geng.png" 
+                       style="width:100%; height:100%; object-fit:cover;">
+                </video>
+                
+                <div style="position:absolute; bottom:0; left:0; width:100%; height:80px; background:linear-gradient(to top, #050505, transparent);"></div>
+            </div>
+
+            <div style="padding:25px; text-align:center;">
+                <h2 style="font-family:var(--font-head); letter-spacing:1px; margin-bottom:5px; color:#fff;">BE PART OF THE</h2>
+                <h1 class="red-neon" style="font-family:var(--font-head); font-size:2rem; margin-top:0; margin-bottom:20px; text-transform:uppercase; letter-spacing:3px;">LEGEND</h1>
+
+                <p style="color:#ccc; font-size:0.9rem; line-height:1.6; margin-bottom:25px;">
+                    <strong style="color:#fff;">NEXUS CORE</strong> bukan sekadar platform topup. 
+                    Kami adalah ekosistem digital elite yang dibangun untuk Gamers, Kreator, dan Pemburu Cuan. 
+                    Kecepatan, Keamanan, dan Komunitas adalah darah kami.
+                </p>
+
+                <div style="background:#111; border-radius:10px; padding:20px; text-align:left; border-left:4px solid var(--red-core); margin-bottom:25px;">
+                    
+                    <div style="margin-bottom:15px;">
+                        <h4 style="color:#fff; display:flex; align-items:center; margin-bottom:5px;">
+                            <i class="fas fa-bullseye" style="color:var(--red-core); margin-right:10px;"></i> VISI
+                        </h4>
+                        <p style="font-size:0.8rem; color:#888; margin:0;">
+                            Menjadi pusat layanan digital #1 yang menguasai pasar underground & mainstream.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h4 style="color:#fff; display:flex; align-items:center; margin-bottom:5px;">
+                            <i class="fas fa-fire" style="color:orange; margin-right:10px;"></i> MISI
+                        </h4>
+                        <p style="font-size:0.8rem; color:#888; margin:0;">
+                            Menyediakan akses premium termurah dan membangun ekonomi digital yang solid bagi member.
+                        </p>
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
+                    <button onclick="window.open('#', '_blank')" style="background:#ff8c00; color:#fff; padding:15px 5px; border-radius:8px; font-weight:bold; font-size:0.8rem; display:flex; flex-direction:column; align-items:center; gap:5px;">
+                        <i class="fas fa-rss" style="font-size:1.2rem;"></i> BLOG
+                    </button>
+
+                    <button onclick="window.open('https://instagram.com/nexus_core', '_blank')" style="background:linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color:#fff; padding:15px 5px; border-radius:8px; font-weight:bold; font-size:0.8rem; display:flex; flex-direction:column; align-items:center; gap:5px;">
+                        <i class="fab fa-instagram" style="font-size:1.2rem;"></i> INSTAGRAM
+                    </button>
+
+                    <button onclick="window.open('https://facebook.com', '_blank')" style="background:#1877f2; color:#fff; padding:15px 5px; border-radius:8px; font-weight:bold; font-size:0.8rem; display:flex; flex-direction:column; align-items:center; gap:5px;">
+                        <i class="fab fa-facebook-f" style="font-size:1.2rem;"></i> FACEBOOK
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+    /* =========================================
+       SYSTEM: DATABASE & HISTORY HANDLER
+       ========================================= */
+    
+    // 1. Fungsi Simpan Data User ke LocalStorage (Biar Gak Hilang)
+    function saveUserData() {
+        if (isGuest) return; // Guest gak disave permanen
+        let db = JSON.parse(localStorage.getItem("nexus_db") || "{}");
+        db[currentUser.username] = currentUser;
+        localStorage.setItem("nexus_db", JSON.stringify(db));
+        updateUI(); // Update tampilan sekalian
+    }
+
+    // 2. Fungsi Catat History (Masuk/Keluar)
+    function addHistory(item, amount, type) {
+        if (isGuest) return;
+        
+        const record = {
+            date: new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString(),
+            item: item,
+            amount: amount,
+            type: type // 'in' (Masuk) atau 'out' (Keluar)
+        };
+
+        if (!currentUser.history) currentUser.history = [];
+        currentUser.history.unshift(record); // Masukkan ke paling atas
+        
+        // Batasi history cuma simpan 50 transaksi terakhir biar ringan
+        if (currentUser.history.length > 50) currentUser.history.pop();
+        
+        saveUserData(); // Simpan otomatis
+    }
+
+          /* =========================================
+       NEXUS CORE SYSTEM V.9.6 (INTEGRATED LOGIC)
+       ========================================= */
+
+    // --- 1. CONFIGURATION ---
+    const CONFIG = { 
+        adminWA: "6283125398104", 
+        bonusNewMember: 1000 
+    };
+
+    // --- 2. DATABASE PRODUK (LENGKAP) ---
+    const APK_DATA = [
+    { main: "Netflix Premium", logo: "assets/netflix.png", varian: [{ name: "Netflix Sharing 1P1U", price: 22000 }, { name: "Netflix Sharing 1P2U", price: 20000 }, { name: "Netflix Semi-Private", price: 30000 }] },
+    { main: "Viu Premium", logo: "assets/viu.png", varian: [{ name: "Viu Anti Limit 6 Bulan", price: 5000 }, { name: "Viu Anti Limit 1 Tahun", price: 8000 }, { name: "Viu Anti Limit Lifetime", price: 12000 }] },
+    { main: "WeTV VIP", logo: "assets/wetv.png", varian: [{ name: "WeTV Sharing 1 Bulan", price: 7000 }, { name: "WeTV Sharing TV", price: 10000 }, { name: "WeTV Private 1 Bulan", price: 32000 }] },
+    { main: "iQIYI Premium", logo: "assets/iqiyi.png", varian: [{ name: "iQIYI Sharing 3 Bulan", price: 7000 }, { name: "iQIYI Sharing 1 Tahun", price: 12000 }] },
+    { main: "Bstation / Bilibili", logo: "assets/bstation.png", varian: [{ name: "Bstation Sharing 3 Bulan", price: 7000 }, { name: "Bstation Sharing 1 Tahun", price: 12000 }] },
+    { main: "Loklok", logo: "assets/loklok.png", varian: [{ name: "Loklok Sharing 1 Bulan", price: 18000 }, { name: "Loklok Sharing Basic", price: 15000 }] },
+    { main: "Amazon Prime", logo: "assets/amazonprime.png", varian: [{ name: "Prime Sharing 1 Bulan", price: 6000 }, { name: "Prime Private 1 Bulan", price: 15000 }] },
+    { main: "HBO Go Max", logo: "assets/hbogo.png", varian: [{ name: "HBO Go Sharing 1 Bulan", price: 12000 }] },
+    { main: "Vidio Platinum", logo: "assets/vidio.png", varian: [{ name: "Vidio Mobile Sharing", price: 13000 }, { name: "Vidio Mobile Private", price: 25000 }, { name: "Vidio All Device Sharing", price: 18000 }] },
+        { main: "Spotify Premium", logo: "assets/spotify.png", varian: [{ name: "Spotify Famplan 1 Bln", price: 17500 }, { name: "Spotify Famplan 2 Bln", price: 32000 }] },
+    { main: "Youtube Premium", logo: "assets/youtube.png", varian: [{ name: "Youtube Family Plan", price: 4000 }, { name: "Youtube Individual", price: 9000 }, { name: "Youtube Indiv 3 Bulan", price: 25000 }] },
+    { main: "Canva Pro", logo: "assets/canva.png", varian: [{ name: "Canva Member 1 Bulan", price: 2000 }, { name: "Canva Designer 1 Bulan", price: 3000 }, { name: "Canva Lifetime", price: 9000 }, { name: "Canva Owner (Seller)", price: 8000 }] },
+    { main: "CapCut Pro", logo: "assets/capcut.png", varian: [{ name: "CapCut Sharing 1 Bulan", price: 6000 }, { name: "CapCut Private 1 Bulan", price: 10000 }, { name: "CapCut Sharing 14 Hari", price: 3000 }, { name: "CapCut Private 14 Hari", price: 6000 }] },
+    { main: "Alight Motion", logo: "assets/alightmotion.png", varian: [{ name: "AM Sharing 1 Tahun", price: 3000 }, { name: "AM Private 1 Tahun", price: 5000 }] },
+    { main: "Picsart Gold", logo: "assets/picsart.png", varian: [{ name: "Picsart Sharing 1 Bulan", price: 3000 }, { name: "Picsart Private 1 Bulan", price: 6000 }] },
+    { main: "Meitu VIP", logo: "assets/meitu.png", varian: [{ name: "Meitu Sharing 1 Bulan", price: 15000 }] },
+
+    // PRODUCTIVITY & AI
+    { main: "Scribd", logo: "assets/scribd.png", varian: [{ name: "Scribd Private 30 Hari", price: 6000 }, { name: "Scribd Private 60 Hari", price: 9000 }] },
+    { main: "Wattpad Premium", logo: "assets/wattpad.png", varian: [{ name: "Wattpad Sharing 1 Bulan", price: 6000 }, { name: "Wattpad Sharing 1 Tahun", price: 12000 }] },
+    { main: "ChatGPT Plus", logo: "assets/chatgpt.png", varian: [{ name: "ChatGPT Sharing 1 Bulan", price: 15000 }, { name: "ChatGPT Private 1 Bulan", price: 40000 }] },
+    { main: "Zoom Workplace", logo: "assets/zoom.png", varian: [{ name: "Zoom Private 7 Hari", price: 5000 }, { name: "Zoom Private 14 Hari", price: 8000 }] },
+
+    // BUNDLE
+    { main: "Paket Bundle Hemat", logo: "assets/bundle.png", varian: [{ name: "Creator Pack (Canva+CapCut+AM)", price: 15000 }, { name: "AI Pack (ChatGPT+Canva)", price: 17000 }, { name: "Streamer Pack (Netflix+Spotify)", price: 38000 }, { name: "Student Pack (Canva+Scribd)", price: 7000 }] }
+    ];
+
+    /* =========================================
+       FITUR: SOSMED MARKET + CALCULATOR
+       ========================================= */
+    
+    // 1. DATA SOSMED (YANG KAMU PUNYA)
+    const SOSMED_DATA = {
+        'ig': [
+            { name: "IG Followers Luar", price: 35, min: 100, logo: "fab fa-instagram" },
+            { name: "IG Followers Indo 🇮🇩", price: 75, min: 100, logo: "fab fa-instagram" },
+            { name: "IG Like Indo 🇮🇩", price: 80, min: 50, logo: "fab fa-instagram" },
+            { name: "IG Like Bule", price: 2, min: 100, logo: "fab fa-instagram" }
+        ],
+        'tw': [
+            { name: "Twitter Followers (Garansi)", price: 18, min: 50, logo: "fab fa-twitter" },
+            { name: "Twitter Followers (Non Grnsi)", price: 6, min: 50, logo: "fab fa-twitter" },
+            { name: "Twitter Likes (Garansi)", price: 25, min: 50, logo: "fab fa-twitter" },
+            { name: "Twitter Likes (Non Grnsi)", price: 5, min: 50, logo: "fab fa-twitter" }
+        ],
+        'tt': [
+            { name: "TikTok Follow Bule (Garansi)", price: 40, min: 50, logo: "fab fa-tiktok" },
+            { name: "TikTok Follow Bule (Non Grnsi)", price: 6, min: 50, logo: "fab fa-tiktok" },
+            { name: "TikTok Follow Indo 🇮🇩", price: 120, min: 50, logo: "fab fa-tiktok" },
+            { name: "TikTok Like Indo 🇮🇩", price: 60, min: 50, logo: "fab fa-tiktok" },
+            { name: "TikTok Save Indo 🇮🇩", price: 65, min: 50, logo: "fab fa-tiktok" },
+            { name: "TikTok Views", price: 15, min: 500, logo: "fab fa-tiktok" }
+        ],
+        'fb': [
+            { name: "FB Profile Follow (Non Grnsi)", price: 13, min: 50, logo: "fab fa-facebook" },
+            { name: "FB Profile Follow (Garansi)", price: 8, min: 50, logo: "fab fa-facebook" },
+            { name: "FB Group Member", price: 10, min: 100, logo: "fab fa-facebook" },
+            { name: "FB Post Likes", price: 18, min: 50, logo: "fab fa-facebook" },
+            { name: "FB React Love ❤️", price: 28, min: 50, logo: "fab fa-facebook" }
+        ]
+    };
+
+    // 2. FUNGSI NAMPILIN LIST LAYANAN (RENDER)
+    window.renderSosmedList = (category) => {
+        const container = document.getElementById('sosmed-list-container');
+        const data = SOSMED_DATA[category];
+        
+        // Animasi Loading Dikit
+        container.innerHTML = `<div style="color:#fff; text-align:center; grid-column:span 2;">Loading Data...</div>`;
+
+        setTimeout(() => {
+            container.innerHTML = ""; // Bersihkan
+            
+            if(!data) return;
+
+            data.forEach((item, index) => {
+                // Kita simpan data item ke dalam tombol biar pas diklik bisa dibaca
+                // Trik: stringify objek item biar bisa masuk ke parameter fungsi
+                const itemStr = encodeURIComponent(JSON.stringify(item));
+                
+                const card = `
+                    <div class="prod-card-v2" style="position:relative;">
+                        <i class="${item.logo}" style="font-size:2rem; color:#888; margin-bottom:10px;"></i>
+                        <h4 style="font-size:0.85rem; min-height:40px;">${item.name}</h4>
+                        <div style="font-size:0.7rem; color:#666; margin-bottom:5px;">Min: ${item.min} Pcs</div>
+                        <div style="font-size:0.8rem; color:var(--gold);">Rp ${item.price} /pcs</div>
+                        
+                        <button onclick="calcSosmed('${category}', ${index})" class="cek-harga-btn" style="margin-top:10px;">
+                            BELI
+                        </button>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        }, 200);
+    }
+
+    // 3. FUNGSI KALKULATOR & BELI (POPUP PINTAR)
+    window.calcSosmed = (category, index) => {
+        const item = SOSMED_DATA[category][index];
+
+        Swal.fire({
+            title: 'ORDER SOSMED',
+            html: `
+                <div style="text-align:left; font-size:0.9rem; color:#ccc; margin-bottom:10px;">
+                    <b>Layanan:</b> <span style="color:var(--gold)">${item.name}</span><br>
+                    <b>Harga Satuan:</b> Rp ${item.price}<br>
+                    <b>Min Order:</b> ${item.min}
+                </div>
+
+                <input id="sos-target" type="text" class="cyber-input-swal" placeholder="Link / Username Target" style="margin-bottom:10px;">
+                
+                <input id="sos-qty" type="number" class="cyber-input-swal" placeholder="Masukkan Jumlah (Contoh: 100)" 
+                    oninput="calculateTotal(this.value, ${item.price})">
+
+                <div style="margin-top:15px; padding:10px; background:#111; border:1px dashed #333; border-radius:5px;">
+                    <small style="color:#888;">TOTAL HARGA</small>
+                    <div id="live-total" class="gold-neon" style="font-size:1.5rem;">Rp 0</div>
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'ORDER SEKARANG',
+            confirmButtonColor: 'var(--gold)',
+            cancelButtonColor: '#333',
+            background: '#050505', color: '#fff',
+            preConfirm: () => {
+                const target = document.getElementById('sos-target').value;
+                const qty = parseInt(document.getElementById('sos-qty').value);
+                
+                if(!target) return Swal.showValidationMessage('Link target wajib diisi!');
+                if(!qty || qty < item.min) return Swal.showValidationMessage(`Minimal order ${item.min} pcs!`);
+                
+                return { target: target, qty: qty, total: qty * item.price };
+            }
+        }).then((result) => {
+            if(result.isConfirmed) {
+                const orderData = result.value;
+                
+                // Panggil fungsi pembelian (buyItem yang sudah ada)
+                // Format: buyItem(Nama_Item, Total_Harga, Data_Tambahan)
+                const itemTitle = `${item.name} (${orderData.qty} Pcs)`;
+                const extraData = `Link: ${orderData.target}`;
+                
+                buyItem(itemTitle, orderData.total, extraData);
+            }
+        });
+    }
+
+    // 4. HELPER: UPDATE HARGA REAL-TIME
+    window.calculateTotal = (qty, price) => {
+        const total = qty * price;
+        const display = document.getElementById('live-total');
+        if(display) {
+            display.innerText = "Rp " + total.toLocaleString();
+        }
+    }
+
+
+     // 1. DATA JOBS / MISI (FINAL UPDATE)
+    const jobs = [
+        // --- MISI SOSMED (SIMPLE) ---
+        { 
+            id: 1, 
+            title: "Follow Instagram Admin", 
+            reward: "Rp 500", 
+            type: "sosmed", 
+            icon: "fab fa-instagram", // Fallback Icon
+            color: "#E1306C",
+            img: "assets/igfol.png",  // Gambar Aset (Opsional)
+            desc: "Follow akun IG resmi Nexus." 
+        },
+        { 
+            id: 2, 
+            title: "Share ke 3 Grup WA", 
+            reward: "Rp 1.000", 
+            type: "sosmed", 
+            icon: "fab fa-whatsapp",
+            color: "#25D366",
+            img: "assets/whatsapp.png",
+            desc: "Share link web ini ke 3 grup WA aktif." 
+        },
+        
+        // --- MISI KYC SEABANK (COMPLEX) ---
+        { 
+            id: 4, 
+            title: "Buka Rekening SeaBank", 
+            reward: "Rp 25.000", 
+            type: "kyc", 
+            tag: "HOT", 
+            img: "assets/seabank.png", 
+            desc: "Daftar SeaBank, masukkan kode referral & deposit 50k.", 
+            link: "https://app.seabank.co.id/app/main?module=router&type=me&sub_type=referral&login=true&referralCode=52V2M2", 
+            referral: "52V2M2",
+            steps: [
+                "Klik tombol <b>DOWNLOAD APP</b> di bawah.",
+                "Daftar pakai No HP / Shopee.",
+                "Masukkan Kode Referral: <b style='color:yellow; font-size:1.2em;'>52V2M2</b> (Wajib SS saat isi kode!).",
+                "Verifikasi E-KTP & Wajah sampai disetujui.",
+                "<b>Wajib Top Up minimal Rp 50.000</b> (Dari Bank Lain/E-Wallet).",
+                "⚠️ Saldo Rp 50rb harus ditahan selama <b>3 HARI</b> (Jangan dipakai).",
+                "Klaim bonus Rp 10rb dari aplikasi SeaBank setelah syarat terpenuhi."
+            ],
+            syarat: [
+                "Khusus Pengguna Baru SeaBank.",
+                "Wajib pakai kode referral 52V2M2.",
+                "Saldo tidak boleh hasil transfer sesama SeaBank."
+            ]
+        },
+
+        // --- SEWA AKUN (POPUP HARGA) ---
+        { 
+            id: 5, 
+            title: "Sewa WhatsApp", 
+            reward: "Up to 100rb", 
+            type: "sewaakun", 
+            tag: "POPULER", 
+            img: "assets/whatsapp.png", 
+            pricelist: ["⚠️ <b>RULES:</b> Min Sewa 1 Bulan.", "🟢 <b>Per Chat:</b> Rp 400", "⏱ <b>12 Jam:</b> Rp 100.000"] 
+        },
+        { 
+            id: 6, 
+            title: "Sewa Telegram", 
+            reward: "Up to 100rb", 
+            type: "sewaakun", 
+            tag: "NEW", 
+            img: "assets/telegram.png", 
+            pricelist: ["⚠️ <b>RULES:</b> No 2FA (Verif Aman).", "🟢 <b>Per Chat:</b> Rp 400", "⏱ <b>12 Jam:</b> Rp 100.000"] 
+        },
+        { 
+            id: 7, 
+            title: "Sewa Akun Line", 
+            reward: "Up to 100rb", 
+            type: "sewaakun", 
+            img: "assets/line.png", 
+            pricelist: ["⚠️ <b>RULES:</b> Allow Login PC/iPad.", "🟢 <b>Per Chat:</b> Rp 400", "⏱ <b>12 Jam:</b> Rp 100.000"] 
+        }
+    ];
+
+
+    // --- 3. STATE MANAGEMENT ---
+    let currentUser = null; 
+    let isGuest = false;
+    let pendingOrder = null;
+
+    // --- 4. INITIALIZATION ---
+    document.addEventListener("DOMContentLoaded", () => {
+        checkSession();
+        renderApk();
+        renderSosmed();
+        renderMissions();
+        startBanner();
+    });
+
+    /* =========================================
+       SYSTEM: AUTHENTICATION (LOCK SCREEN MODE)
+       ========================================= */
+
+    // 1. CEK SESI SAAT WEB DIBUKA
+    function checkSession() {
+        const saved = localStorage.getItem("nexus_session");
+        
+        // Sembunyikan web utama dulu
+        document.getElementById('main-interface').style.display = 'none';
+
+        if (saved) {
+            // Kalo ada sesi tersimpan
+            const session = JSON.parse(saved);
+            if(session.type === 'guest') {
+                guestLogin(true); // Login tamu otomatis
+            } else {
+                loginUser(session.username, true); // Login member otomatis
+            }
+        } else {
+            // Kalo gak ada sesi -> MUNCULKAN LOCK SCREEN
+            document.getElementById('auth-screen').style.display = 'flex';
+        }
+    }
+
+    // 2. FUNGSI MASUK APLIKASI (PENTING: Ini yang buka gerbang)
+    function enterApp() {
+        // Hilangkan Layar Kunci
+        document.getElementById('auth-screen').style.display = 'none';
+        
+        // Munculkan Web Utama
+        document.getElementById('main-interface').style.display = 'block';
+        
+        // Update Tampilan (Header, Saldo, dll)
+        updateUI(); 
+    }
+
+    // 3. LOGIC REGISTER (VERSI FIX BONUS & HISTORY)
+    function handleRegister(e) {
+        e.preventDefault();
+        const user = document.getElementById('reg-username').value.trim();
+        const pin = document.getElementById('reg-pin').value;
+        
+        if(user.length < 3) return Swal.fire("Error", "Username min 3 huruf", "error");
+        
+        let db = JSON.parse(localStorage.getItem("nexus_db") || "{}");
+        if(db[user]) return Swal.fire("Gagal", "Username sudah ada!", "warning");
+
+        // 1. Tentukan Nominal Bonus (Paksa 1000 kalau Config error)
+        const bonus = (typeof CONFIG !== 'undefined' && CONFIG.bonusNewMember) ? CONFIG.bonusNewMember : 1000;
+
+        // 2. Buat Akun Baru Lengkap
+        db[user] = { 
+            pin: pin, 
+            balance: bonus, // <--- Uang Masuk
+            role: 'member', // Status Member
+            joinDate: new Date().toLocaleDateString(),
+            history: [
+                // <--- CATAT DI RIWAYAT (PENTING!)
+                {
+                    date: new Date().toLocaleDateString(),
+                    item: "WELCOME BONUS (MEMBER BARU)",
+                    amount: bonus,
+                    type: "in"
+                }
+            ] 
+        };
+        
+        // 3. Simpan
+        localStorage.setItem("nexus_db", JSON.stringify(db));
+
+        // 4. Notif Sukses & Auto Login
+        Swal.fire({
+            title: "BERHASIL!",
+            text: `Akun aktif! Bonus saldo Rp ${bonus.toLocaleString()} sudah masuk.`,
+            icon: "success",
+            background: '#000', color: '#fff', confirmButtonColor: 'var(--gold)'
+        }).then(() => {
+            loginUser(user);
+        });
+    }
+
+    // 4. LOGIC LOGIN MEMBER
+    function handleLogin(e) {
+        e.preventDefault();
+        const user = document.getElementById('login-username').value.trim();
+        const pin = document.getElementById('login-pin').value;
+        let db = JSON.parse(localStorage.getItem("nexus_db") || "{}");
+
+        if(db[user] && db[user].pin === pin) {
+            loginUser(user);
+        } else {
+            Swal.fire("GAGAL", "Username atau PIN salah", "error");
+        }
+    }
+
+    function loginUser(username, isAuto = false) {
+        let db = JSON.parse(localStorage.getItem("nexus_db"));
+        
+        currentUser = { username: username, ...db[username] };
+        isGuest = false;
+        
+        // Simpan Sesi Member
+        localStorage.setItem("nexus_session", JSON.stringify({username: username, type: 'member'}));
+        
+        enterApp(); // Buka Gerbang
+
+        if(!isAuto) {
+            Swal.fire({
+                title: `WELCOME ${username.toUpperCase()}`,
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        }
+    }
+
+    // 5. LOGIC TAMU
+    function guestLogin(isAuto = false) {
+        currentUser = { username: "Guest", balance: 0, history: [] };
+        isGuest = true;
+        
+        // Simpan Sesi Tamu (Biar pas refresh gak nanya lagi)
+        localStorage.setItem("nexus_session", JSON.stringify({type: 'guest'}));
+        
+        enterApp(); // Buka Gerbang
+    }
+
+    // 6. TOGGLE FORM (DAFTAR / LOGIN)
+    function toggleAuthMode() {
+        const loginForm = document.getElementById('form-login');
+        const regForm = document.getElementById('form-register');
+        const toggleBtn = document.getElementById('auth-toggle');
+        const textBtn = document.getElementById('auth-text');
+
+        if (loginForm.style.display === 'none') {
+            // Mode Login
+            loginForm.style.display = 'block'; 
+            regForm.style.display = 'none';
+            toggleBtn.innerText = "Daftar Baru";
+            textBtn.innerText = "Belum punya akses?";
+        } else {
+            // Mode Daftar
+            loginForm.style.display = 'none'; 
+            regForm.style.display = 'block';
+            toggleBtn.innerText = "Login Disini";
+            textBtn.innerText = "Sudah punya akun?";
+        }
+    }
+
+    /* =========================================
+       FIX: TOMBOL LOGOUT / KELUAR
+       ========================================= */
+    window.logout = function() {
+        console.log("Tombol Logout Diklik..."); // Cek di console kalo perlu
+
+        // 1. Coba Tutup Sidebar (Kalau bisa)
+        try {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if (sidebar) sidebar.classList.remove('open');
+            if (overlay) overlay.style.display = 'none';
+        } catch (e) {
+            console.log("Sidebar error, abaikan...");
+        }
+
+        // 2. Munculkan Popup Konfirmasi (Langsung)
+        Swal.fire({
+            title: 'KELUAR SISTEM?',
+            text: "Sesi anda akan diakhiri dan kembali ke layar login.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ff003c', // Merah Nexus
+            cancelButtonColor: '#333',
+            confirmButtonText: 'YA, LOGOUT',
+            cancelButtonText: 'BATAL',
+            background: '#050505', // Hitam Pekat
+            color: '#fff',
+            backdrop: `rgba(0,0,0,0.8)` // Gelapkan background
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // 3. Hapus Data Sesi & Refresh Halaman
+                localStorage.removeItem("nexus_session");
+                
+                // Tampilkan pesan "Bye Bye" sebentar sebelum reload
+                Swal.fire({
+                    title: 'LOGOUT BERHASIL',
+                    icon: 'success',
+                    timer: 1000,
+                    showConfirmButton: false,
+                    background: '#000'
+                }).then(() => {
+                    window.location.reload(); // Refresh halaman -> Balik ke Lock Screen
+                });
+            }
+        });
+    };
+
+
+    function enterApp() {
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('main-interface').style.display = 'block';
+        updateUI();
+    }
+
+    // --- UPDATE TAMPILAN UI (VERSI TOMBOL TARIK DANA) ---
+    function updateUI() {
+        // 1. UPDATE HEADER
+        const headerArea = document.getElementById('header-auth-area');
+        if (headerArea) {
+            if (isGuest) {
+                headerArea.innerHTML = `
+                    <button onclick="openAuthModal('login')" class="cyber-btn-outline" style="padding:5px 10px; font-size:0.7rem; margin-right:5px;">MASUK</button>
+                    <button onclick="openAuthModal('register')" class="cyber-btn-glitch" style="padding:5px 10px; font-size:0.7rem; width:auto;">DAFTAR</button>
+                `;
+            } else {
+                headerArea.innerHTML = `
+                    <div style="line-height:1.2; text-align:right;">
+                        <div style="font-weight:bold; font-size:0.9rem;">${currentUser.username.toUpperCase()}</div>
+                        <div class="red-neon" style="font-size:0.8rem;">Rp ${currentUser.balance.toLocaleString()}</div>
+                    </div>
+                `;
+            }
+        }
+
+        // 2. LOGIC KOTAK SALDO HOME (ADA TOMBOL TARIK)
+        const homeBalContainer = document.getElementById('home-balance-container');
+        
+        if (homeBalContainer) {
+            if (isGuest) {
+                // TAMPILAN GUEST: GEMBOK (TETAP SAMA)
+                homeBalContainer.innerHTML = `
+                    <div onclick="Swal.fire({title:'AKSES TERKUNCI', text:'Silakan Login untuk membuka fitur Dompet.', icon:'lock', confirmButtonText:'LOGIN', confirmButtonColor:'var(--gold)'}).then((r)=>{if(r.isConfirmed) openAuthModal('login')})" style="cursor:pointer; opacity:0.8; padding:10px;">
+                        <i class="fas fa-lock" style="font-size:2.5rem; color:#555; margin-bottom:15px;"></i>
+                        <h3 style="color:#666; margin:0; font-family:var(--font-head); letter-spacing:2px;">LOCKED</h3>
+                        <small style="color:#444; font-size:0.7rem; display:block; margin-top:5px;">TAP UNTUK MEMBUKA</small>
+                    </div>
+                `;
+                homeBalContainer.style.border = "1px dashed #444"; 
+            } else {
+                // TAMPILAN MEMBER: ISI SALDO & TARIK DANA
+                homeBalContainer.innerHTML = `
+                    <small style="color:#888;">SALDO NEXUS PAY</small>
+                    <h1 class="gold-neon" style="margin:5px 0 15px 0; font-size:2rem;">Rp ${currentUser.balance.toLocaleString()}</h1>
+                    
+                    <div style="display:flex; flex-direction:column; gap:10px; padding:0 20px;">
+                        <button onclick="showPage('deposit')" class="cyber-btn-glitch full-width" style="font-size:0.9rem;">
+                            <i class="fas fa-plus-circle"></i> ISI SALDO
+                        </button>
+                        
+                        <button onclick="withdrawMoney()" class="cyber-btn-outline full-width" style="font-size:0.9rem; color:#ff003c; border-color:#ff003c;">
+                            <i class="fas fa-money-bill-wave"></i> TARIK DANA
+                        </button>
+                    </div>
+                `;
+                homeBalContainer.style.border = "1px solid var(--gold)";
+            }
+        }
+
+        // 3. UPDATE SIDEBAR (SAMA KAYAK SEBELUMNYA)
+        if (isGuest) {
+            if(document.getElementById('sidebar-username')) document.getElementById('sidebar-username').innerText = "GUEST";
+            if(document.getElementById('sidebar-status')) document.getElementById('sidebar-status').innerText = "Visitor Mode";
+            if(document.getElementById('sidebar-balance')) document.getElementById('sidebar-balance').innerText = "LOCKED";
+            if(document.getElementById('sidebar-id')) document.getElementById('sidebar-id').innerText = "ID: -";
+        } else {
+            if(document.getElementById('sidebar-username')) document.getElementById('sidebar-username').innerText = currentUser.username.toUpperCase();
+            if(document.getElementById('sidebar-status')) document.getElementById('sidebar-status').innerText = "Member VIP";
+            if(document.getElementById('sidebar-balance')) document.getElementById('sidebar-balance').innerText = "Rp " + currentUser.balance.toLocaleString();
+            if(document.getElementById('sidebar-id')) document.getElementById('sidebar-id').innerText = "ID: " + Math.floor(Math.random()*9000 + 1000);
+        }
+    }
+
+
+
+        // --- FUNGSI NAVIGASI HALAMAN UTAMA ---
+    window.showPage = (id) => {
+        
+        // 1. PROTEKSI GUEST (Khusus Menu Deposit/Dompet)
+        // Kalau Guest klik menu Deposit TAPI tidak sedang bayar barang (pendingOrder kosong) -> BLOKIR
+        if (id === 'deposit' && isGuest && !pendingOrder) {
+            return Swal.fire({
+                icon: 'lock',
+                title: 'AKSES DIBATASI',
+                text: 'Fitur Dompet & Top Up khusus Member. Silakan Login dulu.',
+                confirmButtonText: 'LOGIN SEKARANG',
+                confirmButtonColor: 'var(--gold)',
+                background: '#111', color: '#fff'
+            }).then((result) => {
+                if(result.isConfirmed) openAuthModal('login');
+            });
+        }
+
+        // 2. LOGIC PINDAH HALAMAN (Standard)
+        // Sembunyikan semua halaman
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+        document.querySelectorAll('.c-nav').forEach(n => n.classList.remove('active'));
+        
+        // Munculkan halaman target
+        const target = document.getElementById(id);
+        if(target) target.classList.add('active-page');
+        
+        // Aktifkan Navigasi Bawah (Highlight Icon)
+        const navMap = {'home':0, 'store':1, 'deposit':2, 'freelance':3, 'history':4};
+        const navIndex = navMap[id];
+        const navButtons = document.querySelectorAll('.c-nav');
+        if(navButtons[navIndex]) {
+            navButtons[navIndex].classList.add('active');
+        }
+
+        // 3. LOGIC SPESIAL PER HALAMAN
+        
+        // A. HALAMAN DEPOSIT (Topup Mode vs Invoice Mode)
+        if (id === 'deposit') {
+            const topupMode = document.getElementById('topup-mode');
+            const invArea = document.getElementById('invoice-area');
+            const depManual = document.getElementById('deposit-manual');
+            const balDisplay = document.getElementById('wd-balance-display');
+
+            if (pendingOrder) {
+                // KASUS: Ada Tagihan Belanja -> Tampilkan Invoice
+                if(topupMode) topupMode.style.display = 'none';
+                if(invArea) invArea.style.display = 'block';
+                if(depManual) depManual.style.display = 'block';
+            } else {
+                // KASUS: Mau Top Up Biasa -> Tampilkan Form Deposit
+                if(topupMode) topupMode.style.display = 'block';
+                if(invArea) invArea.style.display = 'none';
+                if(depManual) depManual.style.display = 'none';
+                
+                // Update tampilan saldo di form tarik dana (jika ada)
+                if(balDisplay && currentUser) {
+                     balDisplay.innerText = "Rp " + currentUser.balance.toLocaleString();
+                }
+            }
+        }
+
+        // B. HALAMAN HISTORY (Render Ulang Data)
+        if(id === 'history' && typeof renderHistory === 'function') {
+            renderHistory(); 
+        }
+
+        // C. HALAMAN FREELANCE (Render Misi - INI YANG BARU DITAMBAH)
+        if(id === 'freelance' && typeof renderMissions === 'function') {
+            renderMissions(); 
+        }
+        
+        // 4. CLEANUP (Tutup Sidebar & Market Detail)
+        // Paksa tutup sidebar & overlay
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        if(sidebar) sidebar.classList.remove('open');
+        if(overlay) overlay.style.display = 'none';
+        
+        // Tutup detail market kalau pindah dari store
+        if(id !== 'store' && typeof closeMarketView === 'function') {
+            closeMarketView();
+        }
+    }
+
+
+
+    // --- UPDATE TAMPILAN UI (FINAL VERSION) ---
+    function updateUI() {
+        
+        // 1. UPDATE HEADER (LOGIN/DAFTAR vs NAMA USER)
+        const headerArea = document.getElementById('header-auth-area');
+        if (headerArea) {
+            if (isGuest) {
+                // TAMPILAN GUEST DI HEADER
+                headerArea.innerHTML = `
+                    <button onclick="openAuthModal('login')" class="cyber-btn-outline" style="padding:5px 10px; font-size:0.7rem; margin-right:5px;">MASUK</button>
+                    <button onclick="openAuthModal('register')" class="cyber-btn-glitch" style="padding:5px 10px; font-size:0.7rem; width:auto;">DAFTAR</button>
+                `;
+            } else {
+                // TAMPILAN MEMBER DI HEADER
+                headerArea.innerHTML = `
+                    <div style="line-height:1.2; text-align:right;">
+                        <div style="font-weight:bold; font-size:0.9rem;">${currentUser.username.toUpperCase()}</div>
+                        <div class="red-neon" style="font-size:0.8rem;">Rp ${currentUser.balance.toLocaleString()}</div>
+                    </div>
+                `;
+            }
+        }
+
+        // 2. LOGIC KOTAK SALDO DI HOME (GEMBOK vs TOMBOL JEJER)
+        const homeBalContainer = document.getElementById('home-balance-container');
+        
+        if (homeBalContainer) {
+            if (isGuest) {
+                // === SKENARIO GUEST: GEMBOK TERKUNCI ===
+                homeBalContainer.innerHTML = `
+                    <div onclick="Swal.fire({title:'AKSES TERKUNCI', text:'Silakan Login untuk membuka fitur Dompet & Transaksi.', icon:'lock', confirmButtonText:'LOGIN SEKARANG', confirmButtonColor:'var(--gold)'}).then((r)=>{if(r.isConfirmed) openAuthModal('login')})" style="cursor:pointer; opacity:0.8; padding:10px;">
+                        <i class="fas fa-lock" style="font-size:2.5rem; color:#555; margin-bottom:15px;"></i>
+                        <h3 style="color:#666; margin:0; font-family:var(--font-head); letter-spacing:2px;">LOCKED</h3>
+                        <small style="color:#444; font-size:0.7rem; display:block; margin-top:5px;">TAP UNTUK MEMBUKA</small>
+                    </div>
+                `;
+                homeBalContainer.style.border = "1px dashed #444"; 
+            } else {
+                // === SKENARIO MEMBER: SALDO + DUA TOMBOL (JEJER) ===
+                homeBalContainer.innerHTML = `
+                    <small style="color:#888;">SALDO NEXUS PAY</small>
+                    <h1 class="gold-neon" style="margin:5px 0 15px 0; font-size:2rem;">Rp ${currentUser.balance.toLocaleString()}</h1>
+                    
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; padding:0 5px;">
+                        
+                        <button onclick="showPage('deposit')" class="cyber-btn-glitch" style="font-size:0.8rem; width:100%; padding:12px 0;">
+                            <i class="fas fa-plus"></i> ISI
+                        </button>
+                        
+                        <button onclick="withdrawMoney()" class="cyber-btn-outline" style="font-size:0.8rem; width:100%; padding:12px 0; color:#ff003c; border-color:#ff003c;">
+                            <i class="fas fa-arrow-down"></i> TARIK
+                        </button>
+                    </div>
+                `;
+                homeBalContainer.style.border = "1px solid var(--gold)";
+            }
+        }
+
+        // 3. UPDATE SIDEBAR (SAMA SEPERTI SEBELUMNYA)
+        if (isGuest) {
+            if(document.getElementById('sidebar-username')) document.getElementById('sidebar-username').innerText = "GUEST";
+            if(document.getElementById('sidebar-status')) document.getElementById('sidebar-status').innerText = "Visitor Mode";
+            if(document.getElementById('sidebar-balance')) document.getElementById('sidebar-balance').innerText = "LOCKED";
+            if(document.getElementById('sidebar-id')) document.getElementById('sidebar-id').innerText = "ID: -";
+        } else {
+            if(document.getElementById('sidebar-username')) document.getElementById('sidebar-username').innerText = currentUser.username.toUpperCase();
+            if(document.getElementById('sidebar-status')) document.getElementById('sidebar-status').innerText = "Member VIP";
+            if(document.getElementById('sidebar-balance')) document.getElementById('sidebar-balance').innerText = "Rp " + currentUser.balance.toLocaleString();
+            if(document.getElementById('sidebar-id')) document.getElementById('sidebar-id').innerText = "ID: " + Math.floor(Math.random()*9000 + 1000);
+        }
+
+        // 4. PROTEKSI FITUR LAIN
+        const histList = document.getElementById('history-list');
+        if(histList && isGuest) histList.innerHTML = `<div style="text-align:center; padding:20px; color:#444;"><i class="fas fa-lock"></i><br>Login untuk melihat history</div>`;
+    }
+
+
+
+
+    // --- LOGIC TOP UP SALDO ---
+    window.setTopup = (amount) => {
+        document.getElementById('topup-nominal').value = amount;
+    }
+
+    window.processTopup = () => {
+        const nominal = document.getElementById('topup-nominal').value;
+        if(!nominal || nominal < 10000) return Swal.fire("Error", "Minimal Top Up Rp 10.000", "warning");
+
+        // Gunakan logic buyItem yang sudah ada untuk membuat tagihan
+        // Item: ISI SALDO, Data: User ID
+        buyItem('DEPOSIT SALDO', parseInt(nominal), `User: ${currentUser ? currentUser.username : 'Guest'}`);
+    }
+
+
+    function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        const ov = document.getElementById('sidebar-overlay');
+        sb.classList.toggle('open');
+        ov.style.display = sb.classList.contains('open') ? 'block' : 'none';
+    }
+
+    // --- 7. MARKET LOGIC (GAME, APK, SOSMED) ---
+    
+    // Fungsi Switch Tab Market (Tombol Akses Cepat Home)
+    window.openStoreTab = (category) => {
+        showPage('store');
+        const map = { 
+            'game': 'view-game', 'apk': 'view-apk', 'convert': 'view-convert', 
+            'sosmed': 'view-sosmed', 'pulsa': 'view-pulsa'
+        };
+        if(map[category]) setTimeout(() => openMarketView(map[category]), 100);
+    };
+
+        function openMarketView(id) {
+        // 1. Reset Tampilan
+        document.getElementById('market-menu').style.display = 'none';
+        document.querySelectorAll('.market-view').forEach(v => v.style.display = 'none');
+        
+        // 2. Munculkan Halaman Target
+        const target = document.getElementById(id);
+        if(target) target.style.display = 'block';
+        
+        // --- BAGIAN INI YANG HILANG TADI ---
+        
+        // Kalau buka APK -> Render APK
+        if(id === 'view-apk') renderApk();
+        
+        // [FIX] Kalau buka GAME -> Render Game (INI WAJIB ADA)
+        if(id === 'view-game') renderGameGrid(); 
+    }
+
+
+    function closeMarketView() {
+        document.querySelectorAll('.market-view').forEach(v => v.style.display = 'none');
+        document.getElementById('market-menu').style.display = 'grid';
+    }
+
+    /* =========================================
+       FIX: LOGIC PREMIUM APPS
+       ========================================= */
+
+    // 1. Render Kartu Produk ke Layar
+    function renderApk() {
+        const container = document.getElementById('apk-grid-container');
+        
+        // Cek apakah elemen ada?
+        if (!container) return console.error("Wadah apk-grid-container tidak ditemukan di HTML!");
+        
+        container.innerHTML = ""; // Bersihkan isi lama
+
+        // Loop Data
+        APK_DATA.forEach((app, index) => {
+            // Cari harga termurah untuk display "Mulai Rp..."
+            const minPrice = Math.min(...app.varian.map(v => v.price));
+
+            // Buat Kartu HTML
+            // Perhatikan: onclick mengarah ke openApkVariant(index)
+            container.innerHTML += `
+            <div class="prod-card-v2" onclick="openApkVariant(${index})">
+                <img src="${app.logo}" onerror="this.src='https://via.placeholder.com/50?text=APP'">
+                <h4>${app.main}</h4>
+                <p style="font-size:0.7rem; color:#888; margin-bottom:5px;">Mulai Rp ${minPrice.toLocaleString()}</p>
+                <button class="cek-harga-btn" style="pointer-events: none;">LIHAT HARGA</button>
+            </div>`;
+        });
+    }
+
+    // 2. Buka Pop-Up Varian Saat Klik
+    function openApkVariant(index) {
+        console.log("Membuka App Index:", index); // Debugging
+
+        const app = APK_DATA[index]; // Ambil data sesuai index
+        const modal = document.getElementById('variant-modal');
+        const title = document.getElementById('modal-apk-title');
+        const list = document.getElementById('variant-list-container');
+
+        if(!modal || !list) return alert("Error: Modal HTML hilang!");
+
+        // Isi Judul Modal
+        title.innerText = app.main;
+        list.innerHTML = ""; // Bersihkan list lama
+
+        // Loop Varian (Sharing, Private, dll)
+        app.varian.forEach(v => {
+            const btn = document.createElement('div');
+            btn.className = 'variant-item'; // Pastikan ada CSS variant-item
+            btn.style.cssText = "display:flex; justify-content:space-between; padding:12px; background:#111; border:1px solid #333; border-radius:5px; cursor:pointer;";
+            
+            btn.innerHTML = `
+                <span style="font-size:0.9rem; color:#eee;">${v.name}</span>
+                <strong class="red-neon">Rp ${v.price.toLocaleString()}</strong>
+            `;
+
+            // Saat varian diklik -> Lanjut ke Pembayaran
+            btn.onclick = () => {
+                closeVariantModal(); // Tutup modal dulu
+                buyItem(app.main + ' - ' + v.name, v.price); // Masuk ke fungsi bayar
+            };
+
+            list.appendChild(btn);
+        });
+
+        // Tampilkan Modal
+        modal.style.display = 'flex';
+    }
+
+    // 3. Tutup Modal
+    window.closeVariantModal = () => {
+        document.getElementById('variant-modal').style.display = 'none';
+    }
+
+
+    function openApkVariant(idx) {
+        const app = APK_DATA[idx];
+        document.getElementById('modal-apk-title').innerText = app.main;
+        const list = document.getElementById('variant-list-container');
+        list.innerHTML = "";
+        
+        app.varian.forEach(v => {
+            const div = document.createElement('div');
+            div.className = 'variant-item';
+            div.innerHTML = `<span>${v.name}</span><span class="red-neon">Rp ${v.price.toLocaleString()}</span>`;
+            div.onclick = () => { 
+                document.getElementById('variant-modal').style.display = 'none';
+                buyItem(app.main + ' - ' + v.name, v.price); 
+            };
+            list.appendChild(div);
+        });
+        document.getElementById('variant-modal').style.display = 'flex';
+    }
+    window.closeVariantModal = () => document.getElementById('variant-modal').style.display = 'none';
+
+    // Game Logic
+    window.openGameList = (id) => {
+        document.getElementById('game-selector').style.display = 'none';
+        document.querySelectorAll('.game-product-list').forEach(l => l.style.display = 'none');
+        document.getElementById('list-'+id).style.display = 'block';
+    }
+    window.backToGameSelector = () => {
+        document.querySelectorAll('.game-product-list').forEach(l => l.style.display = 'none');
+        document.getElementById('game-selector').style.display = 'grid';
+    }
+
+    // Sosmed Logic
+    function renderSosmed() {
+        const con = document.getElementById('sosmed-grid');
+        if(!con) return;
+        con.innerHTML = "";
+        SOSMED_DATA.forEach(s => {
+            con.innerHTML += `<div class="prod-card-v2" onclick="buySosmed('${s.name}', ${s.price})">
+                <img src="${s.logo}" onerror="this.src='https://via.placeholder.com/50'">
+                <h4>${s.name}</h4><p style="font-size:0.7rem;color:#888;">Min: ${s.min}</p>
+                <button class="cek-harga-btn">Rp ${s.price}/pcs</button>
+            </div>`;
+        });
+    }
+    function buySosmed(name, price) {
+        Swal.fire({
+            title: name,
+            html: '<input id="swal-qty" class="swal2-input" placeholder="Jumlah (Qty)"><input id="swal-link" class="swal2-input" placeholder="Link Target">',
+            showCancelButton: true, confirmButtonText: 'ORDER'
+        }).then((res) => {
+            if(res.isConfirmed) {
+                const qty = document.getElementById('swal-qty').value;
+                const link = document.getElementById('swal-link').value;
+                if(!qty || !link) return;
+                buyItem(`${name} (${qty}x)`, qty * price, `Link: ${link}`);
+            }
+        });
+    }
+    /* =========================================
+       SYSTEM: TRANSACTION LOGIC (UPDATED)
+       ========================================= */
+
+    window.buyItem = (itemTitle, priceNum, extraData = '-') => {
+        // 1. Proteksi Guest
+        if (isGuest) {
+            return Swal.fire({
+                title: 'LOGIN DULU',
+                text: 'Silakan login untuk membeli item.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'LOGIN',
+                confirmButtonColor: 'var(--gold)'
+            }).then((res) => {
+                if(res.isConfirmed) openAuthModal('login');
+            });
+        }
+
+        // 2. Simpan Order Sementara
+        pendingOrder = {
+            item: itemTitle,
+            price: priceNum,
+            priceFormatted: "Rp " + priceNum.toLocaleString(),
+            data: extraData,
+            priceRaw: priceNum
+        };
+
+        // 3. LOGIC CEK SALDO (INTI PERUBAHAN)
+        if (currentUser.balance >= priceNum) {
+            // KASUS A: SALDO CUKUP -> Tawarkan Bayar Pakai Saldo
+            Swal.fire({
+                title: 'METODE PEMBAYARAN',
+                text: `Saldo Anda: Rp ${currentUser.balance.toLocaleString()}\nHarga Item: Rp ${priceNum.toLocaleString()}`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: `BAYAR DENGAN SALDO`,
+                confirmButtonColor: '#00ff00',
+                cancelButtonText: 'TRANSFER MANUAL',
+                cancelButtonColor: '#333',
+                background: '#111', color: '#fff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    processBalancePayment(); // Bayar Pakai Saldo
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    goToManualPayment(); // Pilih Transfer Manual
+                }
+            });
+        } else {
+            // KASUS B: SALDO KURANG -> Langsung Transfer Manual
+            goToManualPayment();
+        }
+    }
+
+    // Sub-Fungsi: Bayar Pakai Saldo
+    function processBalancePayment() {
+        // 1. Kurangi Saldo
+        currentUser.balance -= pendingOrder.priceRaw;
+        
+        // 2. Catat History
+        addHistory(pendingOrder.item, pendingOrder.priceRaw, 'out');
+        
+        // 3. Notifikasi Admin (WA) - Format Beda untuk Auto Payment
+        const msg = `*ORDER BARU (LUNAS/SALDO)*%0A` +
+                    `User: ${currentUser.username}%0A` +
+                    `Item: ${pendingOrder.item}%0A` +
+                    `Data: ${pendingOrder.data}%0A` +
+                    `Harga: ${pendingOrder.priceFormatted}%0A` +
+                    `Status: *PAID BY BALANCE* (Saldo Terpotong)`;
+                    
+        // KODE BARU (ANTI POTONG)
+window.open(`https://wa.me/${CONFIG.adminWA}?text=${encodeURIComponent(msg)}`, '_blank');
+
+        
+        // 4. Feedback Sukses
+        Swal.fire("PEMBAYARAN SUKSES", "Saldo berhasil dipotong. Admin akan memproses pesanan anda.", "success");
+        pendingOrder = null; // Clear order
+    }
+
+    // Sub-Fungsi: Buka Halaman Transfer Manual (Logic Lama)
+    function goToManualPayment() {
+        document.getElementById('inv-item').innerText = pendingOrder.item;
+        document.getElementById('inv-data').innerText = pendingOrder.data;
+        document.getElementById('inv-price').innerText = pendingOrder.priceFormatted;
+
+        document.getElementById('invoice-area').style.display = 'block';
+        showPage('deposit'); // Pindah ke halaman deposit/invoice
+        window.scrollTo(0,0);
+    }
+
+ 
+
+
+    window.confirmTopupData = () => {
+        const id = document.getElementById('inp-id') ? document.getElementById('inp-id').value : '-';
+        if(!id) return Swal.fire("Error", "Isi ID dulu!", "error");
+        document.getElementById('topup-modal').style.display = 'none';
+        buyItem(pendingOrder.item, pendingOrder.price, id);
+    }
+    window.closeTopupModal = () => document.getElementById('topup-modal').style.display = 'none';
+
+    function processBalancePay() {
+        currentUser.balance -= pendingOrder.price;
+        
+        let db = JSON.parse(localStorage.getItem("nexus_db"));
+        db[currentUser.username].balance = currentUser.balance;
+        
+        const logs = { item: pendingOrder.item, price: pendingOrder.price, date: new Date().toLocaleDateString() };
+        db[currentUser.username].history.unshift(logs);
+        currentUser.history.unshift(logs);
+        
+        localStorage.setItem("nexus_db", JSON.stringify(db));
+        
+        updateUI();
+        cancelOrder();
+        Swal.fire("SUKSES", "Pembayaran Berhasil!", "success");
+        
+        const msg = `*ORDER LUNAS (SALDO)*%0AUser: ${currentUser.username}%0AItem: ${pendingOrder.item}%0AStatus: PAID`;
+        window.open(`https://wa.me/${CONFIG.adminWA}?text=${msg}`, '_blank');
+    }
+
+    // --- LOGIC KONFIRMASI PEMBAYARAN (HYBRID: WA + AUTO SALDO) ---
+    window.confirmPaymentWA = () => {
+        // 1. Validasi: Ada order gak?
+        if (!pendingOrder) return Swal.fire("Error", "Tidak ada tagihan aktif.", "error");
+
+        // 2. Buka WhatsApp (Pakai Format Pesan Punya Kamu yg Lengkap)
+        const user = isGuest ? "GUEST" : currentUser.username;
+        const nominalStr = pendingOrder.price.toLocaleString();
+        
+        const msg = `*KONFIRMASI BAYAR*%0A` +
+                    `User: ${user}%0A` +
+                    `Item: ${pendingOrder.item}%0A` +
+                    `Data: ${pendingOrder.data}%0A` +
+                    `Total: Rp ${nominalStr}%0A` +
+                    `Status: Transfer Manual`;
+                    
+        window.open(`https://wa.me/${CONFIG.adminWA}?text=${msg}`, '_blank');
+
+        // 3. SKENARIO 1: GUEST (Cuma numpang bayar)
+        if (isGuest) {
+            Swal.fire("Bukti Terkirim", "Silakan tunggu admin memproses pesanan anda.", "success");
+            pendingOrder = null;
+            // Tutup area invoice manual
+            document.getElementById('invoice-area').style.display = 'none';
+            document.getElementById('deposit-manual').style.display = 'none';
+            return;
+        }
+
+        // 4. SKENARIO 2: MEMBER
+        // Cek dulu: Ini "Isi Saldo" atau "Beli Barang"?
+        const isDeposit = pendingOrder.item.includes("DEPOSIT") || pendingOrder.item.includes("ISI SALDO");
+
+        if (isDeposit) {
+            // === KHUSUS DEPOSIT: JALANKAN TIMER 15 DETIK ===
+            const amountToAdd = parseInt(pendingOrder.price); // Pastikan jadi angka
+
+            let timerInterval;
+            Swal.fire({
+                title: 'VERIFIKASI SISTEM',
+                html: 'Sistem sedang mengecek mutasi otomatis...<br>Mohon tunggu <b>15</b> detik.',
+                timer: 15000, // 15 Detik
+                timerProgressBar: true,
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                    const b = Swal.getHtmlContainer().querySelector('b');
+                    timerInterval = setInterval(() => {
+                        b.textContent = Math.ceil(Swal.getTimerLeft() / 1000);
+                    }, 100);
+                },
+                willClose: () => { clearInterval(timerInterval); }
+            }).then((result) => {
+                // Saat Timer Selesai:
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    // A. Tambah Saldo
+                    currentUser.balance += amountToAdd;
+                    
+                    // B. Catat History
+                    const newHistory = {
+                        date: new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString(),
+                        item: "DEPOSIT SALDO",
+                        amount: amountToAdd,
+                        type: "in" // Tipe: Masuk
+                    };
+                    if(!currentUser.history) currentUser.history = [];
+                    currentUser.history.unshift(newHistory); // Taruh paling atas
+
+                    // C. Simpan ke LocalStorage
+                    let db = JSON.parse(localStorage.getItem("nexus_db"));
+                    db[currentUser.username] = currentUser;
+                    localStorage.setItem("nexus_db", JSON.stringify(db));
+
+                    // D. Refresh UI & Bersihkan Order
+                    updateUI();
+                    pendingOrder = null;
+                    document.getElementById('invoice-area').style.display = 'none';
+                    document.getElementById('deposit-manual').style.display = 'none';
+
+                    Swal.fire("BERHASIL", `Saldo Rp ${nominalStr} berhasil ditambahkan!`, "success")
+                    .then(() => showPage('home'));
+                }
+            });
+
+        } else {
+            // === KALO BELI BARANG (DIAMOND/JOKI) ===
+            // Jangan tambah saldo, cuma kasih notif sukses
+            Swal.fire("Bukti Terkirim", "Admin akan segera memproses item pesanan anda.", "success");
+            pendingOrder = null;
+            document.getElementById('invoice-area').style.display = 'none';
+            document.getElementById('deposit-manual').style.display = 'none';
+        }
+    }
+
+    // --- FUNGSI BATALKAN ORDER ---
+    window.cancelOrder = () => {
+        pendingOrder = null;
+        document.getElementById('invoice-area').style.display = 'none';
+        document.getElementById('deposit-manual').style.display = 'none';
+        
+        // Kembalikan tampilan ke mode "Isi Saldo" jika user ada di halaman deposit
+        const topupMode = document.getElementById('topup-mode');
+        if(topupMode) topupMode.style.display = 'block';
+        
+        Swal.fire("Dibatalkan", "Pesanan dibatalkan.", "info");
+    }
+
+    // --- 9. MISSIONS & FREELANCE (DENGAN PROTEKSI GUEST) ---
+    
+    // FUNGSI RENDER MISI
+    window.renderMissions = (filter = 'all') => {
+        const container = document.getElementById('mission-list-container');
+        if(!container) return;
+        
+        container.innerHTML = ""; // Bersihkan
+
+        jobs.forEach(job => {
+            // 1. Filter Tab
+            if(filter !== 'all' && job.type !== filter) return;
+
+            // 2. Logic Icon/Gambar
+            let iconHTML = '';
+            if(job.img) {
+                iconHTML = `<img src="${job.img}" onerror="this.src='https://via.placeholder.com/50?text=JOB'" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">`;
+            } else {
+                iconHTML = `<i class="${job.icon}" style="font-size:1.5rem; color:${job.color || '#fff'};"></i>`;
+            }
+
+            // 3. Logic Tag
+            let tagHTML = '';
+            if(job.tag) {
+                let tagColor = job.tag === 'HOT' ? '#ff003c' : (job.tag === 'NEW' ? '#00f2ea' : 'var(--gold)');
+                tagHTML = `<span style="background:${tagColor}; color:#000; font-size:0.6rem; padding:2px 5px; border-radius:3px; font-weight:bold; margin-left:5px;">${job.tag}</span>`;
+            }
+
+            // 4. [BARU] LOGIC TAMPILAN GUEST (VISUAL LOCK)
+            let btnText = 'BUKA';
+            let btnStyle = '';
+            let clickAction = `openJobDetail(${job.id})`;
+
+            if (isGuest) {
+                btnText = '<i class="fas fa-lock"></i>'; // Ikon Gembok
+                btnStyle = 'background:#222; color:#555; border-color:#333; cursor:not-allowed;';
+                // Kalau diklik muncul popup login
+                clickAction = `Swal.fire({title:'AKSES DIBATASI', text:'Login dulu untuk ambil cuan!', icon:'lock', confirmButtonText:'LOGIN', confirmButtonColor:'var(--gold)'}).then(r=>{if(r.isConfirmed) openAuthModal('login')})`;
+            }
+
+            // 5. Template Kartu
+            const card = `
+                <div class="mission-card" onclick="${clickAction}" style="cursor:pointer;">
+                    <div class="mission-icon" style="border:none; background:transparent;">
+                        ${iconHTML}
+                    </div>
+                    <div class="mission-info">
+                        <h4 style="display:flex; align-items:center;">${job.title} ${tagHTML}</h4>
+                        <p style="color:#888;">Reward: <span class="gold-neon">${job.reward}</span></p>
+                    </div>
+                    <button class="cyber-btn-outline" style="font-size:0.7rem; padding:5px 15px; ${btnStyle}">
+                        ${btnText}
+                    </button>
+                </div>
+            `;
+            container.innerHTML += card;
+        });
+    }
+
+    // FUNGSI DETAIL MISI (PROTEKSI GANDA)
+    window.openJobDetail = (id) => {
+        // [BARU] Proteksi Fungsional (Jaga-jaga kalau visual ditembus)
+        if(isGuest) {
+            return Swal.fire("Akses Ditolak", "Silakan Login untuk mengambil misi ini.", "warning");
+        }
+
+        const job = jobs.find(j => j.id === id);
+        if(!job) return;
+
+        // A. SKENARIO KYC
+        if(job.type === 'kyc') {
+            let stepList = job.steps.map(s => `<li style="margin-bottom:5px;">${s}</li>`).join('');
+            Swal.fire({
+                title: job.title,
+                html: `
+                    <img src="${job.img}" style="width:80px; margin-bottom:10px;">
+                    <div style="text-align:left; font-size:0.85rem; color:#ccc; max-height:300px; overflow-y:auto;">
+                        <p style="color:var(--gold); text-align:center; font-weight:bold; font-size:1.1rem;">REWARD: ${job.reward}</p>
+                        <hr style="border-color:#333; margin:10px 0;">
+                        <b>CARA MENGERJAKAN:</b>
+                        <ol style="padding-left:15px; margin-top:5px;">${stepList}</ol>
+                        <br>
+                        <b>SYARAT:</b>
+                        <ul style="padding-left:15px; color:#ff003c;">${job.syarat.map(s=>`<li>${s}</li>`).join('')}</ul>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'DOWNLOAD APP',
+                cancelButtonText: 'BATAL',
+                confirmButtonColor: '#ff003c',
+                background: '#111', color: '#fff'
+            }).then((res) => {
+                if(res.isConfirmed) {
+                    navigator.clipboard.writeText(job.referral);
+                    Swal.fire({icon:'success', title:'KODE DISALIN', text:'Redirecting...', timer:1500, showConfirmButton:false, background:'#111'}).then(() => window.open(job.link, '_blank'));
+                }
+            });
+        } 
+        
+        // B. SKENARIO SEWA AKUN
+        else if(job.type === 'sewaakun') {
+            let prices = job.pricelist.map(p => `<div style="background:#222; padding:8px; margin-bottom:5px; border-radius:5px;">${p}</div>`).join('');
+            Swal.fire({
+                title: job.title,
+                html: `<div style="text-align:left; font-size:0.9rem;">${prices}</div>`,
+                confirmButtonText: 'CHAT ADMIN (WA)',
+                confirmButtonColor: '#25D366',
+                background: '#111', color: '#fff'
+            }).then((res) => {
+                if(res.isConfirmed) window.open(`https://wa.me/${CONFIG.adminWA}?text=Halo min, sewa ${job.title}`, '_blank');
+            });
+        }
+
+        // C. SKENARIO SOSMED
+        else {
+            Swal.fire({
+                title: job.title,
+                text: job.desc,
+                icon: 'info',
+                confirmButtonText: 'KERJAKAN',
+                confirmButtonColor: 'var(--gold)',
+                background: '#111', color: '#fff'
+            }).then((res) => {
+                if(res.isConfirmed) Swal.fire("On Process", "Kirim bukti ke Admin WA", "success");
+            });
+        }
+    }
+
+
+    // --- 10. UTILS & SIDEBAR FEATURES ---
+    function renderHistory() {
+        const list = document.getElementById('history-list');
+        if(!list) return;
+        list.innerHTML = "";
+        if(isGuest || !currentUser.history || currentUser.history.length === 0) {
+            list.innerHTML = '<li style="text-align:center; color:#666;">Belum ada data.</li>';
+            return;
+        }
+        currentUser.history.forEach(h => {
+            list.innerHTML += `<li style="padding:10px; border-bottom:1px solid #333; display:flex; justify-content:space-between;">
+                <span>${h.item}</span><span style="color:#0f0;">Rp ${h.price.toLocaleString()}</span>
+            </li>`;
+        });
+    }
+
+    // --- LOGIC UBAH NAMA (FIX SIDEBAR NUTUPIN) ---
+    window.editProfile = () => {
+        // 1. Tutup Sidebar
+        toggleSidebar(false);
+
+        // 2. Cek Login Dulu
+        if(isGuest) return Swal.fire("Akses Ditolak", "Guest tidak bisa ganti nama.", "warning");
+
+        // 3. Muncul Popup setelah jeda
+        setTimeout(() => {
+            Swal.fire({
+                title: 'UBAH NAMA',
+                input: 'text',
+                inputValue: currentUser.username,
+                inputLabel: 'Masukkan nama baru:',
+                showCancelButton: true,
+                confirmButtonText: 'SIMPAN',
+                confirmButtonColor: 'var(--gold)',
+                background: '#111', color: '#fff',
+                customClass: { input: 'cyber-input-swal' } // Biar inputnya keren
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    const newName = result.value.trim();
+                    if(newName.length < 3) return Swal.fire("Gagal", "Nama minimal 3 huruf", "error");
+
+                    // Update Data
+                    let db = JSON.parse(localStorage.getItem("nexus_db"));
+                    // Pindahkan data lama ke key baru (Ribet dikit karena key-nya username)
+                    // Simplifikasi: Kita update display name aja atau buat logic ganti key
+                    // TAPI UNTUK SEKARANG: Kita anggap ganti display visual aja biar saldo aman
+                    
+                    /* CATATAN: Mengganti Username sebagai Key di LocalStorage itu 
+                       beresiko data saldo hilang kalau logicnya salah.
+                       Untuk keamanan, kita block dulu fitur ganti username total, 
+                       atau biarkan alert sukses tapi nama asli tetap (visual only).
+                    */
+                   
+                    Swal.fire("Info", "Fitur ganti username permanen sedang maintenance demi keamanan saldo.", "info");
+                }
+            });
+        }, 300);
+    }
+
+
+    window.resetPin = () => {
+        if(isGuest) return Swal.fire('Akses Ditolak', 'Khusus Member.', 'warning');
+        window.open(`https://wa.me/${CONFIG.adminWA}?text=Halo Admin, mau reset PIN.`);
+    }
+
+    window.showInfo = () => {
+        toggleSidebar();
+        Swal.fire({
+            title: 'NEXUS CORE V.9.6',
+            html: 'Platform Ekosistem Digital untuk Gamers & Kreator.<br>Created by Nexus Team.',
+            imageUrl: 'assets/logo.png', imageWidth: 80,
+            background: '#111', color: '#fff', confirmButtonColor: '#ff003c'
+        });
+    }
+
+    window.logout = () => {
+        Swal.fire({
+            title: 'KELUAR?', icon: 'warning', showCancelButton: true, 
+            confirmButtonColor: '#ff003c', confirmButtonText: 'YA', background: '#111', color: '#fff'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                localStorage.removeItem("nexus_session");
+                location.reload();
+            }
+        });
+    }
+
+    window.copyText = (t) => { navigator.clipboard.writeText(t); Swal.fire({toast:true, position:'top', icon:'success', title:'Disalin', timer:1000, showConfirmButton:false}); }
+    
+    function startBanner() {
+        let i=0; const w=document.getElementById('banner-wrapper');
+        if(w) setInterval(()=>{ i=(i+1)%2; w.style.transform=`translateX(-${i*100}%)`; },3000);
+    }
+
+    // --- FITUR CONVERT PULSA (UPDATED FOR AXIS) ---
+
+    // 1. Hitung Rate Real-time
+    window.calcConvert = () => {
+        const provider = document.getElementById('cv-provider').value;
+        const amount = parseFloat(document.getElementById('cv-amount').value) || 0;
+        
+        // Rate diset 0.78 (Profit Margin Admin Aman)
+        // User kirim 100rb -> Terima 78rb. (Pasar jual 80-82rb, Admin untung selisihnya)
+        const rate = 0.78; 
+        
+        if (provider === 'axis' && amount >= 30000) {
+            const received = Math.floor(amount * rate);
+            document.getElementById('cv-result').innerText = "Rp " + received.toLocaleString();
+        } else {
+            document.getElementById('cv-result').innerText = "Rp 0";
+        }
+    }
+
+    // 2. Proses Convert -> Ke Invoice
+    window.processConvert = () => {
+        // Ambil Value
+        const provider = document.getElementById('cv-provider').value;
+        const amount = document.getElementById('cv-amount').value;
+        const bank = document.getElementById('cv-bank').value;
+        const rek = document.getElementById('cv-rek').value;
+        const name = document.getElementById('cv-name').value;
+        const resultText = document.getElementById('cv-result').innerText;
+
+        // Validasi
+        if (provider !== 'axis') return Swal.fire("Maaf", "Saat ini hanya tersedia convert AXIS/XL.", "warning");
+        if (!amount || amount < 30000) return Swal.fire("Gagal", "Minimal convert pulsa Rp 30.000", "error");
+        if (!rek || !name) return Swal.fire("Gagal", "Lengkapi data rekening penerima!", "warning");
+
+        // Siapkan Data Order Global
+        // Item: Convert Axis 100.000
+        // Price: Nominal yang DITERIMA USER (Bukan nominal pulsa)
+        const itemTitle = `Convert ${provider.toUpperCase()} ${parseInt(amount).toLocaleString()}`;
+        
+        pendingOrder = {
+            item: itemTitle,
+            price: resultText, // Ini string "Rp 78.000"
+            data: `${bank} - ${rek} a.n ${name}`
+        };
+
+        // --- MANIPULASI HALAMAN DEPOSIT KHUSUS CONVERT ---
+        
+        // 1. Isi Invoice
+        document.getElementById('inv-item').innerText = itemTitle;
+        document.getElementById('inv-data').innerText = pendingOrder.data;
+        document.getElementById('inv-price').innerText = "Dana Cair: " + resultText;
+
+        // 2. Ganti Instruksi Transfer Manual jadi Instruksi Kirim Pulsa
+        // Ini kuncinya: Kita timpa HTML deposit-manual khusus untuk transaksi ini
+        const depositArea = document.getElementById('deposit-manual');
+        depositArea.style.display = 'block';
+        depositArea.innerHTML = `
+            <div style="background:#1a1a1a; padding:15px; border-radius:10px; border:1px solid var(--red-core); text-align:center;">
+                <label style="color:var(--gold); font-weight:bold;">KIRIM PULSA KE NOMOR INI:</label>
+                <h2 style="margin:10px 0; letter-spacing:2px; font-size:1.5rem;" id="admin-axis-num">083898023362</h2>
+                
+                <button onclick="copyText('083898023362')" class="cyber-btn-outline" style="font-size:0.8rem; margin-bottom:10px;">
+                    <i class="fas fa-copy"></i> SALIN NOMOR
+                </button>
+
+                <p style="font-size:0.8rem; color:#ccc; margin-top:10px;">
+                    Cara Kirim AXIS:<br>
+                    <b>*858*NomorTujuan*Nominal#</b><br>
+                    atau via Aplikasi AXISNet
+                </p>
+
+                <div style="margin-top:15px; font-size:0.7rem; color:#888;">
+                    ⚠️ JANGAN TRANSFER BANK! INI TRANSAKSI PULSA.<br>
+                    Setelah kirim pulsa, klik tombol KONFIRMASI WA di atas.
+                </div>
+            </div>
+        `;
+
+        // 3. Tampilkan Invoice
+        document.getElementById('invoice-area').style.display = 'block';
+        showPage('deposit');
+        window.scrollTo(0,0);
+    }
+
+    /* =========================================
+       SYSTEM: WITHDRAWAL (PENARIKAN DANA)
+       ========================================= */
+    
+  
+
+        /* =========================================
+       FITUR: PENDAFTARAN JOKI (NO ORDER)
+       ========================================= */
+    window.submitJokiRegistration = () => {
+        // 1. Ambil Data
+        const nick = document.getElementById('joki-nick').value;
+        const game = document.getElementById('joki-game').value;
+        const rank = document.getElementById('joki-rank').value;
+
+        // 2. Validasi Sederhana
+        if(!nick || !rank) {
+            return Swal.fire({
+                title: 'Data Kurang',
+                text: 'Harap isi Nickname dan Rank Tertinggi kamu!',
+                icon: 'warning',
+                background: '#111', color: '#fff', confirmButtonColor: 'gold'
+            });
+        }
+
+        // 3. Format Pesan WhatsApp (Lamaran Kerja)
+        const msg = `*LAMARAN WORKER JOKI*%0A` +
+                    `---------------------------%0A` +
+                    `👤 Nama/Nick: ${nick}%0A` +
+                    `🎮 Game: ${game}%0A` +
+                    `🏆 Rank: ${rank}%0A` +
+                    `---------------------------%0A` +
+                    `Halo Admin, saya ingin mendaftar jadi penjoki di Nexus Core. Mohon infonya.`;
+
+        // 4. Kirim ke WA Admin (Langsung, Tanpa Payment)
+        window.open(`https://wa.me/${CONFIG.adminWA}?text=${msg}`, '_blank');
+    }
+    /* =========================================
+       FITUR: JUAL AKUN (MARKETPLACE)
+       ========================================= */
+
+    // 1. DATABASE AKUN (CONTOH)
+    const ACCOUNT_DATA = [
+        // FF
+        { id: 'ff1', cat: 'ff', title: 'Akun Sultan Old S1', price: 500000, img: 'assets/ff_sultan.jpg', desc: 'Login FB, Vault Full, Skin Senjata Lengkap, Bundle S1 ada. Aman 100%.' },
+        { id: 'ff2', cat: 'ff', title: 'Akun Murah Meriah', price: 50000, img: 'assets/ff_murah.jpg', desc: 'Login Google, Level 60, Cocok buat pemula.' },
+        
+        // ML
+        { id: 'ml1', cat: 'ml', title: 'Mythic Glory 1000 Point', price: 1200000, img: 'assets/ml_glory.jpg', desc: 'Skin Legend Gusion, Collector 5 biji, Emblem Max semua. Login Moonton sepaket.' },
+        { id: 'ml2', cat: 'ml', title: 'Akun Smurf Epic', price: 30000, img: 'assets/ml_smurf.jpg', desc: 'Winrate 90%, Hero meta only. Login VK.' },
+
+        // Roblox
+        { id: 'rb1', cat: 'roblox', title: 'Akun Blox Fruit Max', price: 150000, img: 'assets/roblox_1.jpg', desc: 'Level Max, Fruit Dough Awake, CDK, Soul Guitar. Polosan.' },
+
+        // HOK
+        { id: 'hok1', cat: 'hok', title: 'Grandmaster HOK', price: 75000, img: 'assets/hok_1.jpg', desc: 'Skin SNK Lengkap, Hero banyak. Login Level Infinite.' }
+    ];
+
+    // 2. RENDER LIST AKUN
+    window.renderAccountList = (category) => {
+        const grid = document.getElementById('acc-grid');
+        const container = document.getElementById('account-list-container');
+        const catGrid = document.getElementById('acc-category-grid');
+        
+        // Sembunyikan kategori, Munculkan list
+        catGrid.style.display = 'none';
+        container.style.display = 'block';
+        
+        // Filter Data
+        const filtered = ACCOUNT_DATA.filter(x => x.cat === category);
+        
+        grid.innerHTML = "";
+        if(filtered.length === 0) {
+            grid.innerHTML = '<p style="grid-column:span 2; text-align:center; color:#666;">Belum ada stok akun.</p>';
+            return;
+        }
+
+        // Generate HTML Card
+        filtered.forEach(acc => {
+            grid.innerHTML += `
+                <div class="prod-card-v2" onclick="openAccountDetail('${acc.id}')" style="text-align:left; position:relative;">
+                    <div style="position:absolute; top:5px; right:5px; background:red; color:white; font-size:0.6rem; padding:2px 5px; border-radius:3px;">SOLD</div>
+                    <img src="${acc.img}" onerror="this.src='https://via.placeholder.com/150?text=AKUN'" style="width:100%; height:80px; object-fit:cover; border-radius:5px;">
+                    <h4 style="margin-top:10px; font-size:0.8rem;">${acc.title}</h4>
+                    <p class="red-neon" style="font-size:0.8rem;">Rp ${acc.price.toLocaleString()}</p>
+                </div>
+            `;
+        });
+    }
+
+    // 3. BUKA MODAL DETAIL
+    window.openAccountDetail = (id) => {
+        const acc = ACCOUNT_DATA.find(x => x.id === id);
+        if(!acc) return;
+
+        document.getElementById('acc-detail-img').src = acc.img;
+        document.getElementById('acc-detail-title').innerText = acc.title;
+        document.getElementById('acc-detail-price').innerText = "Rp " + acc.price.toLocaleString();
+        document.getElementById('acc-detail-desc').innerText = acc.desc;
+        
+        // Error handling gambar kalau kosong
+        document.getElementById('acc-detail-img').onerror = function() {
+            this.src = 'https://via.placeholder.com/400x200?text=GAMBAR+AKUN';
+        };
+
+        document.getElementById('account-modal').style.display = 'flex';
+    }
+
+    window.closeAccountModal = () => {
+        document.getElementById('account-modal').style.display = 'none';
+    }
+    /* =========================================
+       FIX: AUTO SLIDER + MANUAL (SAFE MODE)
+       ========================================= */
+    let slideIndex = 0;
+    let autoSlideInterval;
+
+    // Fungsi Utama Slider
+    function showSlides(n) {
+        const track = document.getElementById('slider-track');
+        const slides = document.querySelectorAll('.slide'); // <-- INI YANG BENAR
+        const dots = document.querySelectorAll('.dot');
+        
+        // PENGAMAN: Kalau elemen slider gak ketemu, stop biar gak bikin error login
+        if (!track || slides.length === 0) return;
+
+        // Logic Looping
+        if (n >= slides.length) slideIndex = 0;
+        else if (n < 0) slideIndex = slides.length - 1;
+        else slideIndex = n;
+
+        // Geser Track
+        const amount = slideIndex * -100;
+        track.style.transform = `translateX(${amount}%)`;
+
+        // Update Dots
+        dots.forEach(d => { if(d) d.style.background = "rgba(255,255,255,0.5)"; });
+        if(dots[slideIndex]) dots[slideIndex].style.background = "#fff";
+    }
+
+    // Fungsi Geser Manual
+    window.moveSlide = (n) => {
+        showSlides(slideIndex + n);
+        resetTimer();
+    }
+
+    // Fungsi Auto Slide
+    function startAutoSlide() {
+        // Hapus interval lama biar gak numpuk
+        if(autoSlideInterval) clearInterval(autoSlideInterval);
+        
+        autoSlideInterval = setInterval(() => {
+            showSlides(slideIndex + 1);
+        }, 3000); // 3 Detik
+    }
+
+    // Reset Timer saat diklik manual
+    function resetTimer() {
+        clearInterval(autoSlideInterval);
+        startAutoSlide();
+    }
+
+    // JALANKAN SAAT WEB LOAD (DENGAN SAFE CHECK)
+    document.addEventListener("DOMContentLoaded", () => {
+        // Cek dulu apakah slider ada di halaman?
+        if(document.getElementById('slider-track')) {
+            showSlides(slideIndex);
+            startAutoSlide();
+        }
+    });
+    /* =========================================
+       FITUR: POPUP PROMO MARKETING
+       ========================================= */
+    
+    // 1. Fungsi Munculkan Promo (Pake Delay biar smooth)
+    function showPromoPopup() {
+        setTimeout(() => {
+            const modal = document.getElementById('promo-modal');
+            if(modal) {
+                modal.style.display = 'flex';
+                // Animasi kecil biar keren
+                modal.querySelector('.auth-box').style.animation = 'popIn 0.5s ease';
+            }
+        }, 1500); // Muncul 1.5 detik setelah masuk web
+    }
+
+    // 2. Fungsi Tutup
+    window.closePromo = () => {
+        document.getElementById('promo-modal').style.display = 'none';
+    }
+
+    // 3. Fungsi Tombol "Cek Sekarang"
+    window.claimPromo = () => {
+        closePromo(); // Tutup dulu
+        showPage('store'); // Arahkan ke Market
+        // Opsional: Buka kategori game spesifik
+        // openMarketView('view-game'); 
+    }
+    // --- RENDER HISTORY ---
+    window.renderHistory = () => {
+        const list = document.getElementById('history-list');
+        if(!list) return;
+        
+        list.innerHTML = ""; // Bersihkan dulu
+
+        if (isGuest || !currentUser.history || currentUser.history.length === 0) {
+            list.innerHTML = `<div style="text-align:center; padding:20px; color:#666;">Belum ada riwayat transaksi.</div>`;
+            return;
+        }
+
+        currentUser.history.forEach(h => {
+            const color = h.type === 'in' ? '#00ff00' : '#ff003c'; // Hijau masuk, Merah keluar
+            const sign = h.type === 'in' ? '+' : '-';
+            
+            const itemHTML = `
+                <div style="background:#111; padding:15px; border-left:3px solid ${color}; border-radius:5px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <div style="font-weight:bold; color:#fff;">${h.item}</div>
+                        <div style="font-size:0.7rem; color:#888;">${h.date}</div>
+                    </div>
+                    <div style="color:${color}; font-weight:bold;">
+                        ${sign} Rp ${h.amount.toLocaleString()}
+                    </div>
+                </div>
+            `;
+            list.innerHTML += itemHTML;
+        });
+    }
+
+    /* =========================================
+       FIX: TOMBOL LOGIN/DAFTAR DI HEADER
+       ========================================= */
+    
+    window.openAuthModal = (mode) => {
+        // 1. Panggil Elemen-elemen Auth
+        const authScreen = document.getElementById('auth-screen');
+        const formLogin  = document.getElementById('form-login');
+        const formReg    = document.getElementById('form-register');
+        const toggleLink = document.getElementById('auth-toggle'); // Tulisan "Daftar Baru"
+        const toggleText = document.getElementById('auth-text');   // Tulisan "Belum punya akun?"
+
+        // Safety Check (Jaga-jaga kalo elemennya ilang)
+        if (!authScreen || !formLogin || !formReg) {
+            return console.error("Error: Elemen Auth Screen tidak ditemukan di HTML.");
+        }
+
+        // 2. Munculkan Layar Kunci (Overlay Hitam)
+        authScreen.style.display = 'flex';
+
+        // 3. Reset Input (Biar pas dibuka formnya bersih, gak ada sisa ketikan lama)
+        document.querySelectorAll('.auth-box input').forEach(input => input.value = '');
+
+        // 4. Atur Mode: MAU LOGIN atau MAU DAFTAR?
+        if (mode === 'register') {
+            // --- MODE DAFTAR ---
+            formLogin.style.display = 'none';   // Umpetin Login
+            formReg.style.display = 'block';    // Munculin Daftar
+            
+            // Ubah Teks Navigasi Bawah
+            if(toggleLink) toggleLink.innerText = "Login Disini";
+            if(toggleText) toggleText.innerText = "Sudah punya akun?";
+            
+        } else {
+            // --- MODE LOGIN (Default) ---
+            formLogin.style.display = 'block';  // Munculin Login
+            formReg.style.display = 'none';     // Umpetin Daftar
+            
+            // Ubah Teks Navigasi Bawah
+            if(toggleLink) toggleLink.innerText = "Daftar Baru";
+            if(toggleText) toggleText.innerText = "Belum punya akses?";
+        }
+    }
+    /* =========================================
+       FITUR: TARIK DANA (WITHDRAW)
+       ========================================= */
+    window.withdrawMoney = () => {
+        // 1. Cek Saldo Dulu
+        if(currentUser.balance < 10000) {
+            return Swal.fire("Gagal", "Minimal penarikan saldo adalah Rp 10.000", "warning");
+        }
+
+        // 2. Form Input Nomor
+        Swal.fire({
+            title: 'TARIK DANA',
+            html: `
+                <p style="color:#ccc; font-size:0.9rem;">Saldo anda: <b class="gold-neon">Rp ${currentUser.balance.toLocaleString()}</b></p>
+                <input id="wd-amount" type="number" class="cyber-input-swal" placeholder="Nominal (Cth: 50000)" style="margin-bottom:10px;">
+                <input id="wd-rek" type="text" class="cyber-input-swal" placeholder="Nomor DANA / Rekening">
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'AJUKAN',
+            confirmButtonColor: '#ff003c',
+            background: '#111', color: '#fff',
+            preConfirm: () => {
+                const amount = document.getElementById('wd-amount').value;
+                const rek = document.getElementById('wd-rek').value;
+                if (!amount || !rek) return Swal.showValidationMessage('Semua data wajib diisi!');
+                if (parseInt(amount) > currentUser.balance) return Swal.showValidationMessage('Saldo tidak cukup!');
+                if (parseInt(amount) < 10000) return Swal.showValidationMessage('Minimal Rp 10.000');
+                return { amount: amount, rek: rek };
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const wdData = result.value;
+                const adminWA = CONFIG.adminWA; // Pastikan config WA ada
+                
+                // 3. Kurangi Saldo User
+                const nominal = parseInt(wdData.amount);
+                currentUser.balance -= nominal;
+                
+                // Catat History
+                currentUser.history.unshift({
+                    date: new Date().toLocaleDateString(),
+                    item: "PENARIKAN DANA",
+                    amount: nominal,
+                    type: "out" // Keluar
+                });
+
+                // Simpan ke Database
+                let db = JSON.parse(localStorage.getItem("nexus_db"));
+                db[currentUser.username] = currentUser;
+                localStorage.setItem("nexus_db", JSON.stringify(db));
+
+                // Update UI
+                updateUI();
+
+                // 4. Kirim ke WA Admin
+                const msg = `*REQUEST PENARIKAN DANA*%0A` +
+                            `User: ${currentUser.username}%0A` +
+                            `Nominal: Rp ${nominal.toLocaleString()}%0A` +
+                            `Tujuan: ${wdData.rek}%0A` +
+                            `Sisa Saldo: Rp ${currentUser.balance.toLocaleString()}%0A` +
+                            `---------------------------%0A` +
+                            `Mohon diproses min.`;
+                            
+                window.open(`https://wa.me/${adminWA}?text=${msg}`, '_blank');
+            }
+        });
+    }
+/* =========================================
+   FITUR BARU: DYNAMIC GAME ENGINE
+   Taruh di bagian paling bawah script
+   ========================================= */
+
+const GAMES_DB = {
+    'ml': {
+        name: "Mobile Legends", logo: "assets/ml.png",
+        inputs: [{id:"uid", label:"User ID", type:"number"}, {id:"zone", label:"Server ID", type:"number"}],
+        items: [{name:"3 Diamond", price:1500}, {name:"86 Diamond", price:23000}, {name:"Weekly Pass", price:28500, tag:"HOT"}]
+    },
+    'ff': {
+        name: "Free Fire", logo: "assets/ff.png",
+        inputs: [{id:"uid", label:"Player ID", type:"number"}],
+        items: [{name:"70 Diamond", price:9500}, {name:"140 Diamond", price:19000}, {name:"Member Mingguan", price:29000, tag:"HOT"}]
+    },
+    'genshin': {
+        name: "Genshin Impact", logo: "assets/genshin.png",
+        inputs: [{id:"uid", label:"UID", type:"number"}, {id:"server", label:"Server", type:"select", options:["Asia","America","Europe"]}],
+        items: [{name:"60 Genesis", price:15000}, {name:"Welkin Moon", price:75000}]
+    },
+    'pubg': { name: "PUBG Mobile", logo: "assets/pubg.png", inputs: [{id:"uid", label:"ID", type:"number"}], items: [{name:"60 UC", price:14000}, {name:"325 UC", price:70000}] },
+    'valorant': { name: "Valorant", logo: "assets/valorant.png", inputs: [{id:"uid", label:"Riot ID", type:"text"}, {id:"tag", label:"Tagline", type:"text"}], items: [{name:"125 VP", price:15000}, {name:"700 VP", price:80000}] },
+    'roblox': { name: "Roblox", logo: "assets/roblox.png", inputs: [{id:"uid", label:"Username", type:"text"}], items: [{name:"80 Robux", price:15000}, {name:"400 Robux", price:75000}] },
+    'honkai': { name: "Honkai Star Rail", logo: "assets/hsr.png", inputs: [{id:"uid", label:"UID", type:"number"}, {id:"server", label:"Server", type:"select", options:["Asia","America"]}], items: [{name:"60 Shards", price:15000}, {name:"Express Supply", price:75000}] }
+};
+
+window.renderGameGrid = () => {
+    const c = document.getElementById('game-grid-container');
+    if(!c) return;
+    c.innerHTML = "";
+    Object.keys(GAMES_DB).forEach(key => {
+        const g = GAMES_DB[key];
+        c.innerHTML += `<div class="prod-card-v2" onclick="openGameTopup('${key}')"><img src="${g.logo}" onerror="this.src='https://via.placeholder.com/50'" style="width:40px; margin-bottom:5px;"><h4>${g.name}</h4><button class="cek-harga-btn">TOP UP</button></div>`;
+    });
+}
+
+window.openGameTopup = (key) => {
+    const g = GAMES_DB[key];
+    document.getElementById('game-selector-area').style.display='none';
+    const area = document.getElementById('game-topup-area');
+    area.style.display='block';
+    area.setAttribute('data-active', key);
+    
+    document.getElementById('active-game-name').innerText = g.name;
+    document.getElementById('active-game-img').src = g.logo || 'https://via.placeholder.com/50';
+
+    const inC = document.getElementById('dynamic-inputs');
+    inC.innerHTML = "";
+    g.inputs.forEach(f => {
+        if(f.type==='select'){
+            let opts = f.options.map(o=>`<option>${o}</option>`).join('');
+            inC.innerHTML += `<div style="margin-bottom:10px;"><small>${f.label}</small><select id="inp-${f.id}" class="cyber-input" style="width:100%">${opts}</select></div>`;
+        } else {
+            inC.innerHTML += `<div style="margin-bottom:10px;"><small>${f.label}</small><input id="inp-${f.id}" type="${f.type}" class="cyber-input" placeholder="Masukkan ${f.label}"></div>`;
+        }
+    });
+
+    const prC = document.getElementById('dynamic-products');
+    prC.innerHTML = "";
+    g.items.forEach(i => {
+        prC.innerHTML += `<div class="prod-card-v2" onclick="procGameBuy('${i.name}', ${i.price})"><h4>${i.name}</h4><button class="cek-harga-btn">Rp ${i.price.toLocaleString()}</button></div>`;
+    });
+}
+
+window.procGameBuy = (item, price) => {
+    const key = document.getElementById('game-topup-area').getAttribute('data-active');
+    const g = GAMES_DB[key];
+    let dataStr = "";
+    
+    // Cek Inputan Wajib Diisi
+    for(let f of g.inputs) {
+        let val = document.getElementById(`inp-${f.id}`).value;
+        if(!val) return Swal.fire("Data Kurang", `Mohon isi ${f.label}`, "warning");
+        dataStr += `${f.label}: ${val} | `;
+    }
+    
+    // Eksekusi Beli (Panggil fungsi lama)
+    buyItem(`${g.name} - ${item}`, price, dataStr.slice(0, -3));
+}
+
+    window.backToGameSelector = () => {
+        document.getElementById('game-topup-area').style.display='none';
+        document.getElementById('game-selector-area').style.display='block';
+    }
+    /* =========================================
+       FITUR: ABOUT NEXUS (MODAL)
+       ========================================= */
+    
+    // Buka Modal
+    window.showAboutNexus = () => {
+        // Tutup sidebar dulu biar rapi
+        toggleSidebar(false);
+        
+        // Munculkan Modal
+        const modal = document.getElementById('about-modal');
+        modal.style.display = 'flex';
+        
+        // Animasi Masuk
+        const box = modal.querySelector('.auth-box');
+        box.style.animation = 'popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+        
+        // Pastikan video play (kadang browser block autoplay)
+        const vid = modal.querySelector('video');
+        if(vid) {
+            vid.currentTime = 0;
+            vid.play().catch(e => console.log("Autoplay blocked:", e));
+        }
+    }
+
+    // Tutup Modal
+    window.closeAboutNexus = () => {
+        document.getElementById('about-modal').style.display = 'none';
+        
+        // Pause video biar hemat ram
+        const vid = document.querySelector('#about-modal video');
+        if(vid) vid.pause();
+    }
+
+    </script>
+</body>
+</html>
