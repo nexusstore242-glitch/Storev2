@@ -10,6 +10,43 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
+        /* STYLE TAMBAHAN CHAT BOT */
+    .chat-tag {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid #444;
+        color: #aaa;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .chat-tag:hover {
+        background: var(--gold);
+        color: #000;
+        border-color: var(--gold);
+    }
+    .user-msg {
+        background: var(--gold);
+        color: #000;
+        padding: 10px;
+        border-radius: 10px 10px 0 10px;
+        margin-bottom: 10px;
+        text-align: right;
+        align-self: flex-end;
+        max-width: 80%;
+        margin-left: auto;
+    }
+    .bot-msg {
+        background: #222;
+        color: #ddd;
+        padding: 10px;
+        border-radius: 10px 10px 10px 0;
+        margin-bottom: 10px;
+        border-left: 3px solid var(--gold);
+        max-width: 85%;
+    }
+
         /* =========================================
            1. CSS ENGINE (CYBERPUNK THEME)
            ========================================= */
@@ -35,12 +72,23 @@
         .full-width { width: 100%; }
         .sect-title { border-left: 4px solid var(--red-core); padding-left: 15px; margin-bottom: 20px; font-size: 1.4rem; letter-spacing: 1px; }
 
-        /* AUTH SCREEN */
+          /* AUTH SCREEN - VERSI RAMAH PENGUNJUNG */
         #auth-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center;
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: #000; 
+            z-index: 9999; 
+            display: none; /* Sembunyi di awal, muncul cuma pas mau login */
+            justify-content: center; 
+            align-items: center;
             background-image: radial-gradient(circle at center, #1a0000 0%, #000 80%);
+            backdrop-filter: blur(10px); /* Efek blur biar estetik pas muncul */
         }
+
+
         .auth-box {
             background: rgba(20, 20, 20, 0.95); border: 1px solid #333; border-top: 3px solid var(--red-core);
             padding: 30px; width: 90%; max-width: 400px; text-align: center; border-radius: 10px;
@@ -477,8 +525,28 @@
 </head>
 <body>
 
-    <div id="auth-screen">
-        <div class="auth-box">
+    <div id="auth-screen" class="auth-overlay" style="display:none;">
+        <div class="auth-box" style="position:relative;">
+            
+                        <button type="button" onclick="closeAuthModal()" style="
+                position: absolute; 
+                top: 10px; 
+                right: 10px; 
+                z-index: 9999; 
+                background: rgba(255, 0, 0, 0.2); 
+                border: 1px solid #ff003c; 
+                color: #fff; 
+                width: 35px; 
+                height: 35px; 
+                border-radius: 50%; 
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;">
+                <i class="fas fa-times"></i>
+            </button>
+
+
             <h2 style="margin-bottom:20px;">NEXUS <span class="red-neon">CORE</span></h2>
             
             <form id="form-login" onsubmit="handleLogin(event)">
@@ -501,6 +569,7 @@
             </p>
         </div>
     </div>
+
 <div id="main-interface" style="display:none;">
     
     <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
@@ -554,9 +623,10 @@
             <button onclick="toggleSidebar()" style="background:none; color:#fff; font-size:1.2rem; margin-right:10px;">
                 <i class="fas fa-bars"></i>
             </button>
-            <div style="flex-grow:1;">
-                <h3 style="margin:0; font-size:1.1rem;">NEXUS <span class="red-neon">CORE</span></h3>
-            </div>
+        <div style="flex:1; padding-left:10px; display:flex; align-items:center;">
+            <img src="assets/logo.png" alt="NEXUS LOGO" style="height:40px; width:auto; object-fit:contain; filter:drop-shadow(0 0 5px rgba(255, 215, 0, 0.3));">
+        </div>
+
             <div id="header-auth-area" style="text-align:right;"></div>
             
         </div>
@@ -624,34 +694,46 @@
                                                <section id="store" class="page">
                 <h2 class="sect-title">NEXUS <span class="red-neon">MARKET</span></h2>
                 
-                <div id="market-menu" class="market-nav-grid" style="grid-template-columns: repeat(3, 1fr);">
-                    
-                    <div class="m-nav-item" onclick="openMarketView('view-game')">
-                        <i class="fas fa-gamepad nav-icon"></i><span>TOP UP</span>
-                    </div>
-                    
-                    <div class="m-nav-item" onclick="openMarketView('view-apk')">
-                        <i class="fab fa-spotify nav-icon"></i><span>PREMIUM</span>
-                    </div>
-                    <div class="m-nav-item" onclick="openMarketView('view-sosmed')">
-                        <i class="fas fa-thumbs-up nav-icon"></i><span>SOSMED</span>
-                    </div>
-                    
-                    <div class="m-nav-item" onclick="openMarketView('view-convert')">
-                        <i class="fas fa-exchange-alt nav-icon"></i><span>CONVERT</span>
-                    </div>
-                    <div class="m-nav-item" onclick="openMarketView('view-jual')">
-                        <i class="fas fa-store-alt nav-icon"></i><span>JUAL AKUN</span>
-                    </div>
-                    <div class="m-nav-item" onclick="openMarketView('view-pulsa')">
-                        <i class="fas fa-mobile-alt nav-icon"></i><span>PULSA</span>
-                    </div>
+                <div id="market-menu" class="market-nav-grid" style="grid-template-columns: repeat(4, 1fr); gap:10px;">
+    
+    <div class="m-nav-item" onclick="openMarketView('view-game')">
+        <i class="fas fa-gamepad nav-icon"></i><span>TOP UP</span>
+    </div>
+    
+    <div class="m-nav-item" onclick="openMarketView('view-apk')">
+        <i class="fab fa-spotify nav-icon"></i><span>PREMIUM</span>
+    </div>
+    
+    <div class="m-nav-item" onclick="openMarketView('view-kuota')">
+        <i class="fas fa-wifi nav-icon" style="color:#00f2ea;"></i><span>KUOTA</span>
+    </div>
 
-                    <div class="m-nav-item" onclick="openMarketView('view-joki')" style="grid-column: span 3; border:1px solid gold; background:rgba(255, 215, 0, 0.05);">
-                        <i class="fas fa-fighter-jet" style="color:gold; font-size:1.5rem; margin-bottom:5px;"></i>
-                        <span style="color:gold; font-weight:bold;">DAFTAR JADI PENJOKI</span>
-                    </div>
-                </div>
+    <div class="m-nav-item" onclick="openMarketView('view-ewallet')">
+        <i class="fas fa-wallet nav-icon" style="color:#00f2ea;"></i><span>E-WALLET</span>
+    </div>
+
+    <div class="m-nav-item" onclick="openMarketView('view-sosmed')">
+        <i class="fas fa-thumbs-up nav-icon"></i><span>SOSMED</span>
+    </div>
+    
+    <div class="m-nav-item" onclick="openMarketView('view-convert')">
+        <i class="fas fa-exchange-alt nav-icon"></i><span>CONVERT</span>
+    </div>
+    
+    <div class="m-nav-item" onclick="openMarketView('view-jual')">
+        <i class="fas fa-store-alt nav-icon"></i><span>JB AKUN</span>
+    </div>
+    
+    <div class="m-nav-item" onclick="openMarketView('view-pulsa')">
+        <i class="fas fa-mobile-alt nav-icon"></i><span>PULSA</span>
+    </div>
+
+<div class="m-nav-item" onclick="handleJokiClick()">
+    <i class="fas fa-fighter-jet nav-icon" style="color:var(--gold);"></i>
+    <span>JOKI</span>
+</div>
+
+</div>
 
                 <div id="view-game" class="market-view" style="display:none;">
                     <button onclick="closeMarketView()" class="cyber-btn-outline full-width">⬅ KEMBALI</button>
@@ -763,6 +845,41 @@
                     <button onclick="closeMarketView()" class="cyber-btn-outline full-width">⬅ KEMBALI</button>
                     <div style="text-align:center; padding:50px; color:#555;">Fitur Pulsa Segera Hadir</div>
                 </div>
+
+<div id="view-kuota" class="market-view" style="display:none;">
+    <button onclick="closeMarketView()" class="cyber-btn-outline full-width">⬅ KEMBALI</button>
+    
+    <h4 class="sub-header" style="margin-top:15px; color:#00f2ea;">/// PAKET DATA INTERNET</h4>
+    
+    <div style="display:flex; gap:10px; overflow-x:auto; margin-bottom:15px; padding-bottom:5px;">
+        <button onclick="renderKuota('tri')" class="cyber-btn-outline" style="min-width:80px;">TRI</button>
+        <button onclick="renderKuota('axis')" class="cyber-btn-outline" style="min-width:80px;">AXIS</button>
+        <button onclick="renderKuota('indosat')" class="cyber-btn-outline" style="min-width:80px;">INDOSAT</button>
+    </div>
+
+    <div id="kuota-container" class="product-grid"></div>
+</div>
+
+<div id="view-ewallet" class="market-view" style="display:none;">
+    <button onclick="closeMarketView()" class="cyber-btn-outline full-width">⬅ KEMBALI</button>
+    
+    <h4 class="sub-header" style="margin-top:15px; color:#00f2ea;">/// TOP UP E-WALLET</h4>
+    
+    <div style="background:#111; padding:15px; border-radius:10px; border:1px solid #333; margin-bottom:20px;">
+        <label style="color:#888; font-size:0.8rem;">Pilih Dompet:</label>
+        <select id="wallet-type" class="cyber-input" onchange="renderEwallet()" style="margin-bottom:10px;">
+            <option value="DANA">DANA</option>
+            <option value="GOPAY">GoPay</option>
+            <option value="OVO">OVO</option>
+            <option value="SHOPEEPAY">ShopeePay</option>
+        </select>
+
+        <label style="color:#888; font-size:0.8rem;">Nomor HP Tujuan:</label>
+        <input type="number" id="wallet-number" class="cyber-input" placeholder="08xx...">
+    </div>
+
+    <div id="ewallet-container" class="product-grid"></div>
+</div>
 
                                 <div id="view-jual" class="market-view" style="display:none;">
                     <button onclick="closeMarketView()" class="cyber-btn-outline full-width">⬅ KEMBALI</button>
@@ -885,10 +1002,17 @@
                         <button onclick="copyText('083898023362')" class="cyber-btn-outline" style="border-color:#00aaff; color:#00aaff;">SALIN</button>
                     </div>
 
-                    <div class="pay-card" style="background:#111; border:1px solid orange; padding:15px; border-radius:10px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
-                        <div><h4 style="margin:0; color:orange;">SEABANK</h4><span style="font-size:1.1rem; color:#fff; font-weight:bold;">901083898023362</span></div>
-                        <button onclick="copyText('901083898023362')" class="cyber-btn-outline" style="border-color:orange; color:orange;">SALIN</button>
-                    </div>
+<div style="background:#222; padding:10px; border-radius:5px; margin-bottom:5px; display:flex; justify-content:space-between; align-items:center;">
+    
+    <div id="wallet-info-area">
+        <small style="color:#0af;">DANA</small><br>
+        <b style="color:#fff;">0838 9802 3362</b>
+    </div>
+    
+    <button id="btn-copy-wallet" onclick="navigator.clipboard.writeText('083898023362')" style="background:none; border:1px solid #444; color:#fff; padding:5px;">SALIN</button>
+
+</div>
+
 
                     <div style="background:#1a1a1a; padding:15px; border-radius:10px;">
                         <button onclick="confirmPaymentWA()" class="cyber-btn-glitch full-width">KIRIM BUKTI BAYAR</button>
@@ -1047,25 +1171,255 @@
                     </div>
                 </div>
 
-                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
-                    <button onclick="window.open('#', '_blank')" style="background:#ff8c00; color:#fff; padding:15px 5px; border-radius:8px; font-weight:bold; font-size:0.8rem; display:flex; flex-direction:column; align-items:center; gap:5px;">
-                        <i class="fas fa-rss" style="font-size:1.2rem;"></i> BLOG
-                    </button>
+<div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;">
+    
+    <button onclick="window.open('https://nexusboost.blogspot.com', '_blank')" style="background:#ff8c00; color:#fff; padding:15px 5px; border-radius:8px; font-weight:bold; font-size:0.8rem; display:flex; flex-direction:column; align-items:center; gap:5px;">
+        <i class="fas fa-rss" style="font-size:1.2rem;"></i> BLOG
+    </button>
 
-                    <button onclick="window.open('https://instagram.com/nexus_core', '_blank')" style="background:linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color:#fff; padding:15px 5px; border-radius:8px; font-weight:bold; font-size:0.8rem; display:flex; flex-direction:column; align-items:center; gap:5px;">
-                        <i class="fab fa-instagram" style="font-size:1.2rem;"></i> INSTAGRAM
-                    </button>
+    <button onclick="window.open('https://www.instagram.com/nexus_boost2025?igsh=MWowaTJwdXZ4dTBqYg==', '_blank')" style="background:linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color:#fff; padding:15px 5px; border-radius:8px; font-weight:bold; font-size:0.8rem; display:flex; flex-direction:column; align-items:center; gap:5px;">
+        <i class="fab fa-instagram" style="font-size:1.2rem;"></i> INSTAGRAM
+    </button>
 
-                    <button onclick="window.open('https://facebook.com', '_blank')" style="background:#1877f2; color:#fff; padding:15px 5px; border-radius:8px; font-weight:bold; font-size:0.8rem; display:flex; flex-direction:column; align-items:center; gap:5px;">
-                        <i class="fab fa-facebook-f" style="font-size:1.2rem;"></i> FACEBOOK
-                    </button>
-                </div>
+    <button onclick="window.open('https://www.facebook.com/profile.php?id=61574087017648', '_blank')" style="background:#1877f2; color:#fff; padding:15px 5px; border-radius:8px; font-weight:bold; font-size:0.8rem; display:flex; flex-direction:column; align-items:center; gap:5px;">
+        <i class="fab fa-facebook-f" style="font-size:1.2rem;"></i> FACEBOOK
+    </button>
+
+</div>
+
 
             </div>
         </div>
     </div>
 
+    <button onclick="toggleChat()" id="chat-trigger" style="position:fixed; bottom:20px; right:20px; width:60px; height:60px; border-radius:50%; background:var(--bg-card); border:2px solid var(--gold); color:var(--gold); font-size:1.5rem; z-index:9990; cursor:pointer; box-shadow:0 0 15px rgba(255, 215, 0, 0.3); display:flex; align-items:center; justify-content:center;">
+        <i class="fas fa-headset"></i>
+    </button>
+
+    <div id="nexus-chat-box" style="display:none; position:fixed; bottom:90px; right:20px; width:350px; max-width:90%; height:500px; background:rgba(10, 10, 10, 0.95); border:1px solid var(--gold); border-radius:15px; z-index:9999; backdrop-filter:blur(10px); flex-direction:column; overflow:hidden; box-shadow: 0 0 20px rgba(0,0,0,0.8);">
+        
+        <div style="background:var(--bg-card); padding:15px; border-bottom:1px solid #333; display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:10px; height:10px; background:#0f0; border-radius:50%; box-shadow:0 0 5px #0f0;"></div>
+                <b style="color:#fff; font-family:var(--font-head);">NEXUS BOT</b>
+            </div>
+            <button onclick="toggleChat()" style="background:none; border:none; color:#ff4444; font-size:1.2rem; cursor:pointer;"><i class="fas fa-times"></i></button>
+        </div>
+
+        <div id="chat-messages" style="flex:1; padding:15px; overflow-y:auto; font-size:0.9rem; color:#ddd; font-family:var(--font-body);">
+            <div class="bot-msg" style="margin-bottom:10px; background:#222; padding:10px; border-radius:10px 10px 10px 0; border-left:3px solid var(--gold);">
+                Halo Agent! 👋<br>Saya AI Support Nexus.<br>Ada yang bisa dibantu?
+                <div style="margin-top:10px; display:flex; flex-wrap:wrap; gap:5px;">
+                    <button onclick="sendQuickQuery('Cara Deposit')" class="chat-tag">💰 Cara Deposit</button>
+                    <button onclick="sendQuickQuery('Cara Topup Game')" class="chat-tag">🎮 Topup Game</button>
+                    <button onclick="sendQuickQuery('Misi Cuan')" class="chat-tag">💸 Misi Freelance</button>
+                    <button onclick="sendQuickQuery('Lupa PIN')" class="chat-tag">🔑 Lupa PIN</button>
+                    <button onclick="showAdminContact()" class="chat-tag" style="border-color:#ff003c; color:#ff003c;">👨‍💻 Chat Manusia</button>
+                </div>
+            </div>
+        </div>
+
+        <div style="padding:10px; background:#111; border-top:1px solid #333; display:flex; gap:5px;">
+            <input type="text" id="chat-input" placeholder="Ketik pertanyaan..." onkeypress="handleChatEnter(event)" style="flex:1; background:#000; border:1px solid #333; color:#fff; padding:10px; border-radius:5px; outline:none;">
+            <button onclick="sendUserMessage()" style="background:var(--gold); border:none; color:#000; padding:0 15px; border-radius:5px; font-weight:bold;"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+<div id="live-notif" style="position:fixed; bottom:20px; left:-300px; background:rgba(0,0,0,0.9); border:1px solid var(--gold); border-left:4px solid var(--gold); padding:10px 15px; border-radius:5px; z-index:9900; display:flex; align-items:center; gap:10px; transition:left 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow:0 0 15px rgba(0,0,0,0.8); max-width:280px;">
+    <div style="background:rgba(255,215,0,0.1); padding:8px; border-radius:50%; color:var(--gold);">
+        <i class="fas fa-shopping-cart"></i>
+    </div>
+    <div>
+        <div id="notif-user" style="font-size:0.8rem; font-weight:bold; color:#fff; font-family:var(--font-head);">User</div>
+        <div id="notif-content" style="font-size:0.75rem; color:#aaa;">Baru saja membeli...</div>
+        <small style="color:#0f0; font-size:0.6rem;">Baru saja</small>
+    </div>
+</div>
+
     <script>
+      
+        /* =========================================
+       DATABASE FAKE NOTIF (NAMA & TRANSAKSI)
+       ========================================= */
+    const fakeUsers = [
+        // Nama Pasaran Indo
+        "Agus Gaming", "Budi Santoso", "Rizky Billar KW", "Siti Nurhaliza", "Kevin Sanjaya", 
+        "Dimas Kanjeng", "Fajar Sadboy", "Ilham Racing", "Bayu Skak", "Asep Knalpot",
+        "Udin Petot", "Mamat Gunshop", "Eko Patrio", "Dedi Corbuzier KW", "Aldi Taher",
+        
+        // Nickname Gamer / Bocil Epep
+        "Lord Zilong", "Pro Player", "Just Limit", "Lemon KW Super", "Dark System", 
+        "Hamba Allah", "Tukang Nyampah", "Beban Tim", "Raja Ngendok", "Savage Hunter",
+        "Top Global Layla", "Jess No Limit", "Xinnn Mode", "Player Ghoib", "Kang AFK",
+        
+        // Nama Random Sosmed
+        "Manusia Gabut", "Anak Emak", "Kang Cilok", "Pejuang Rupiah", "Sad Boy 021",
+        "Cuma Numpang Lewat", "Admin Slot", "Raja Terakhir", "Penyuka Janda", "Tukang Galon"
+    ];
+
+    const fakeActions = [
+        "Membeli 💎 86 Diamond ML",
+        "Membeli 💎 172 Diamond ML",
+        "Membeli 💎 3 Diamonds (Tes)",
+        "Membeli 💎 Weekly Diamond Pass",
+        "Top Up 💎 140 Diamond FF",
+        "Top Up 💎 720 Diamond FF",
+        "Membeli 💎 Member Mingguan FF",
+        "Membeli ⚡ 60 Genesis Crystal",
+        "Membeli 🎟️ Welkin Moon",
+        "Sukses Deposit Rp 10.000",
+        "Sukses Deposit Rp 25.000",
+        "Sukses Deposit Rp 50.000",
+        "Sukses Deposit Rp 100.000",
+        "Menarik Saldo (WD) Rp 50.000",
+        "Membeli Akun Premium Spotify"
+    ];
+
+    /* =========================================
+       LOGIC JALANKAN NOTIFIKASI
+       ========================================= */
+    function showFakeNotif() {
+        const notifBox = document.getElementById('live-notif');
+        const userTxt = document.getElementById('notif-user');
+        const contentTxt = document.getElementById('notif-content');
+
+        // 1. Acak Nama & Transaksi
+        const randomUser = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+        const randomAction = fakeActions[Math.floor(Math.random() * fakeActions.length)];
+
+        // 2. Masukkan Data ke HTML
+        userTxt.innerText = randomUser;
+        contentTxt.innerText = randomAction;
+
+        // 3. Munculkan (Geser dari kiri)
+        // Kalau di HP (lebar < 600), muncul di 10px. Kalau di PC, muncul di 20px.
+        const leftPos = window.innerWidth < 600 ? "10px" : "20px";
+        notifBox.style.left = leftPos;
+
+        // 4. Sembunyikan setelah 4 detik
+        setTimeout(() => {
+            notifBox.style.left = "-350px"; // Umpetin lagi ke kiri layar
+        }, 4000);
+
+        // 5. Ulangi lagi dalam waktu acak (antara 10 sampai 25 detik)
+        const nextTime = Math.floor(Math.random() * 15000) + 10000; 
+        setTimeout(showFakeNotif, nextTime);
+    }
+
+    // Jalankan pertama kali setelah 5 detik web dibuka
+    setTimeout(showFakeNotif, 5000);
+        /* =========================================
+       NEXUS AI SUPPORT SYSTEM
+       ========================================= */
+    
+    // 1. DATABASE JAWABAN (KNOWLEDGE BASE)
+    const botKnowledge = {
+        'deposit': "Untuk deposit saldo: <br>1. Klik Menu <b>Dompet/Saldo</b>.<br>2. Pilih 'Isi Saldo'.<br>3. Transfer sesuai instruksi (QRIS/Dana).<br>Saldo akan masuk setelah admin konfirmasi.",
+        'topup': "Cara Topup Game:<br>1. Pilih Menu Game (ML/FF/PUBG).<br>2. Masukkan ID & Server.<br>3. Pilih Nominal.<br>4. Bayar pakai Saldo/Transfer langsung.",
+        'misi': "Cari cuan di Nexus?<br>Buka menu <b>Freelance/Misi</b>. Kerjakan tugas seperti install aplikasi atau daftar akun untuk dapat saldo gratis.",
+        'pin': "Kalau lupa PIN, silakan hubungi Admin Pusat (Alam) untuk reset manual demi keamanan.",
+        'game': "Kami menyediakan Topup ML, FF, PUBG, dan Genshin Impact dengan harga miring.",
+        'error': "Jika transaksi error atau saldo belum masuk > 5 menit, silakan hubungi Admin.",
+        'daftar': "Pilih tombol DAFTAR di halaman awal. Gratis saldo bonus 1K untuk member baru!",
+        'cs': "Hubungi admin kami jika butuh bantuan manusia."
+    };
+
+    // 2. LOGIC BUKA TUTUP CHAT
+    window.toggleChat = () => {
+        const box = document.getElementById('nexus-chat-box');
+        const btn = document.getElementById('chat-trigger');
+        if (box.style.display === 'none') {
+            box.style.display = 'flex';
+            box.style.animation = 'slideUp 0.3s ease';
+            btn.style.display = 'none'; // Sembunyikan tombol saat chat buka
+        } else {
+            box.style.display = 'none';
+            btn.style.display = 'flex';
+        }
+    }
+
+    // 3. LOGIC KIRIM PESAN
+    window.sendUserMessage = () => {
+        const input = document.getElementById('chat-input');
+        const txt = input.value.trim();
+        if(!txt) return;
+
+        // Tampilkan Pesan User
+        addMsg(txt, 'user');
+        input.value = '';
+
+        // Bot Mikir (Delay dikit biar natural)
+        setTimeout(() => {
+            processBotReply(txt.toLowerCase());
+        }, 800);
+    }
+
+    window.sendQuickQuery = (txt) => {
+        addMsg(txt, 'user');
+        setTimeout(() => {
+            processBotReply(txt.toLowerCase());
+        }, 800);
+    }
+
+    window.handleChatEnter = (e) => {
+        if(e.key === 'Enter') sendUserMessage();
+    }
+
+    // 4. OTAK BOT (PROCESSOR)
+    function processBotReply(txt) {
+        let reply = "";
+        
+        // Cek Kata Kunci
+        if(txt.includes('depo') || txt.includes('isi') || txt.includes('saldo')) reply = botKnowledge['deposit'];
+        else if(txt.includes('game') || txt.includes('ml') || txt.includes('ff')) reply = botKnowledge['topup'];
+        else if(txt.includes('misi') || txt.includes('kerja') || txt.includes('cuan')) reply = botKnowledge['misi'];
+        else if(txt.includes('pin') || txt.includes('lupa') || txt.includes('password')) reply = botKnowledge['pin'];
+        else if(txt.includes('daftar') || txt.includes('buat akun')) reply = botKnowledge['daftar'];
+        else if(txt.includes('admin') || txt.includes('cs') || txt.includes('manusia') || txt.includes('help')) {
+            showAdminContact();
+            return;
+        }
+        else {
+            reply = "Maaf, saya kurang paham. Silakan pilih menu bantuan di bawah atau hubungi Admin.";
+            setTimeout(showAdminContact, 1000); // Tampilkan opsi admin kalau bot bingung
+        }
+
+        addMsg(reply, 'bot');
+    }
+
+    // 5. RENDER PESAN KE LAYAR
+    function addMsg(html, type) {
+        const area = document.getElementById('chat-messages');
+        const div = document.createElement('div');
+        div.className = type === 'user' ? 'user-msg' : 'bot-msg';
+        div.innerHTML = html;
+        area.appendChild(div);
+        area.scrollTop = area.scrollHeight; // Auto scroll ke bawah
+    }
+
+    // 6. TAMPILAN KONTAK ADMIN (SESUAI PEMBAGIAN TUGAS)
+    window.showAdminContact = () => {
+        const html = `
+            Saya alihkan ke Tim Support ya. Pilih kategori masalahmu:
+            <div style="margin-top:10px; display:flex; flex-direction:column; gap:5px;">
+                <a href="https://wa.me/6285602567552?text=Halo%20Admin%20Game,%20butuh%20bantuan." target="_blank" class="cyber-btn-outline" style="text-align:center; text-decoration:none; color:var(--gold);">
+                    <i class="fas fa-gamepad"></i> Masalah GAME (Adit)
+                </a>
+                <a href="https://wa.me/6283125398104?text=Halo%20Admin%20Pusat,%20butuh%20bantuan." target="_blank" class="cyber-btn-outline" style="text-align:center; text-decoration:none; color:#fff;">
+                    <i class="fas fa-user-shield"></i> Masalah AKUN/LAINNYA (Alam)
+                </a>
+            </div>
+        `;
+        addMsg(html, 'bot');
+    }
+
+          
+        // Pakai window. biar kebaca global
+        window.closeAuthModal = function() {
+            console.log("Tombol Close Diklik!"); // Cek di console kalau perlu
+            const modal = document.getElementById('auth-screen');
+            if(modal) modal.style.display = 'none';
+        }
     /* =========================================
        SYSTEM: DATABASE & HISTORY HANDLER
        ========================================= */
@@ -1269,35 +1623,12 @@
     }
 
 
-     // 1. DATA JOBS / MISI (FINAL UPDATE)
+    // 1. DATA JOBS / MISI (UPDATED: SEABANK + PINTARNYA)
     const jobs = [
-        // --- MISI SOSMED (SIMPLE) ---
         { 
             id: 1, 
-            title: "Follow Instagram Admin", 
-            reward: "Rp 500", 
-            type: "sosmed", 
-            icon: "fab fa-instagram", // Fallback Icon
-            color: "#E1306C",
-            img: "assets/igfol.png",  // Gambar Aset (Opsional)
-            desc: "Follow akun IG resmi Nexus." 
-        },
-        { 
-            id: 2, 
-            title: "Share ke 3 Grup WA", 
-            reward: "Rp 1.000", 
-            type: "sosmed", 
-            icon: "fab fa-whatsapp",
-            color: "#25D366",
-            img: "assets/whatsapp.png",
-            desc: "Share link web ini ke 3 grup WA aktif." 
-        },
-        
-        // --- MISI KYC SEABANK (COMPLEX) ---
-        { 
-            id: 4, 
             title: "Buka Rekening SeaBank", 
-            reward: "Rp 25.000", 
+            reward: "Rp 15.000", 
             type: "kyc", 
             tag: "HOT", 
             img: "assets/seabank.png", 
@@ -1306,48 +1637,47 @@
             referral: "52V2M2",
             steps: [
                 "Klik tombol <b>DOWNLOAD APP</b> di bawah.",
-                "Daftar pakai No HP / Shopee.",
-                "Masukkan Kode Referral: <b style='color:yellow; font-size:1.2em;'>52V2M2</b> (Wajib SS saat isi kode!).",
-                "Verifikasi E-KTP & Wajah sampai disetujui.",
-                "<b>Wajib Top Up minimal Rp 50.000</b> (Dari Bank Lain/E-Wallet).",
-                "⚠️ Saldo Rp 50rb harus ditahan selama <b>3 HARI</b> (Jangan dipakai).",
-                "Klaim bonus Rp 10rb dari aplikasi SeaBank setelah syarat terpenuhi."
+                "Daftar akun pakai No HP / Shopee.",
+                "Masukkan Kode Referral: <b style='color:yellow; font-size:1.2em;'>52V2M2</b> (Wajib!).",
+                "Verifikasi E-KTP & Wajah sampai akun disetujui.",
+                "<b>Wajib Top Up minimal Rp 50.000</b> (Harus dari Bank Lain/E-Wallet, gaboleh sesama SeaBank).",
+                "⚠️ Saldo Rp 50rb harus ditahan selama <b>3 HARI</b> (Jangan dipakai/ditarik).",
+                "Setelah 3 hari & bonus cair, lapor Admin untuk klaim Rp 15.000."
             ],
             syarat: [
                 "Khusus Pengguna Baru SeaBank.",
                 "Wajib pakai kode referral 52V2M2.",
+                "Top up 50rb & Tahan 3 hari.",
                 "Saldo tidak boleh hasil transfer sesama SeaBank."
             ]
         },
-
-        // --- SEWA AKUN (POPUP HARGA) ---
         { 
-            id: 5, 
-            title: "Sewa WhatsApp", 
-            reward: "Up to 100rb", 
-            type: "sewaakun", 
-            tag: "POPULER", 
-            img: "assets/whatsapp.png", 
-            pricelist: ["⚠️ <b>RULES:</b> Min Sewa 1 Bulan.", "🟢 <b>Per Chat:</b> Rp 400", "⏱ <b>12 Jam:</b> Rp 100.000"] 
-        },
-        { 
-            id: 6, 
-            title: "Sewa Telegram", 
-            reward: "Up to 100rb", 
-            type: "sewaakun", 
+            id: 2, 
+            title: "Pintarnya: Cari Cuan", 
+            reward: "Rp 3.000", // Margin aman buat lo (Bonus asli up to 9rb)
+            type: "kyc", 
             tag: "NEW", 
-            img: "assets/telegram.png", 
-            pricelist: ["⚠️ <b>RULES:</b> No 2FA (Verif Aman).", "🟢 <b>Per Chat:</b> Rp 400", "⏱ <b>12 Jam:</b> Rp 100.000"] 
-        },
-        { 
-            id: 7, 
-            title: "Sewa Akun Line", 
-            reward: "Up to 100rb", 
-            type: "sewaakun", 
-            img: "assets/line.png", 
-            pricelist: ["⚠️ <b>RULES:</b> Allow Login PC/iPad.", "🟢 <b>Per Chat:</b> Rp 400", "⏱ <b>12 Jam:</b> Rp 100.000"] 
+            img: "assets/pintarnya.png", // JANGAN LUPA UPLOAD LOGO INI
+            desc: "Daftar Pintarnya, masukkan Kode Referral & Cek Fitur.", 
+            link: "https://pintarnya.com/kerja/promo?utm_source=referral_lp&utm_medium=share_link&utm_campaign=referral_program", 
+            referral: "ALABMK",
+            steps: [
+                "Download aplikasi <b>Pintarnya</b> lewat link di bawah.",
+                "Daftar Akun Baru & Masukkan Kode Referral: <b style='color:yellow; font-size:1.2em;'>ALABMK</b>.",
+                "Buka menu <b>'Cari Promo'</b> atau <b>'Pintarnya Pro'</b>.",
+                "Lakukan minimal 1 aktivitas (Misal: Cek harga promo aplikasi/klaim voucher).",
+                "Screenshot bukti kode referral di profil & bukti aktivitas.",
+                "Kirim ke Admin untuk klaim reward."
+            ],
+            syarat: [
+                "Wajib Pengguna Baru.",
+                "Wajib masukkan kode referral ALABMK.",
+                "Harus mencoba fitur di dalam aplikasi (Cari Promo/Cuan)."
+            ]
         }
     ];
+    
+
 
 
     // --- 3. STATE MANAGEMENT ---
@@ -1368,26 +1698,29 @@
        SYSTEM: AUTHENTICATION (LOCK SCREEN MODE)
        ========================================= */
 
-    // 1. CEK SESI SAAT WEB DIBUKA
+    // 1. CEK SESI SAAT WEB DIBUKA (LOGIC BARU: AUTO GUEST)
     function checkSession() {
         const saved = localStorage.getItem("nexus_session");
         
-        // Sembunyikan web utama dulu
-        document.getElementById('main-interface').style.display = 'none';
+        // Default: Sembunyikan Auth Screen, Tampilkan Main Interface
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('main-interface').style.display = 'block';
 
         if (saved) {
-            // Kalo ada sesi tersimpan
+            // Kalo ada sesi tersimpan (Member Lama)
             const session = JSON.parse(saved);
             if(session.type === 'guest') {
-                guestLogin(true); // Login tamu otomatis
+                guestLogin(true); 
             } else {
-                loginUser(session.username, true); // Login member otomatis
+                loginUser(session.username, true); 
             }
         } else {
-            // Kalo gak ada sesi -> MUNCULKAN LOCK SCREEN
-            document.getElementById('auth-screen').style.display = 'flex';
+            // Kalo BELUM ada sesi (Orang Baru Klik Link)
+            // JANGAN TAMPILKAN LOCK SCREEN, TAPI LANGSUNG AUTO GUEST
+            guestLogin(true); 
         }
     }
+
 
     // 2. FUNGSI MASUK APLIKASI (PENTING: Ini yang buka gerbang)
     function enterApp() {
@@ -1481,16 +1814,24 @@
         }
     }
 
-    // 5. LOGIC TAMU
+    // 5. LOGIC TAMU (MODIFIED)
     function guestLogin(isAuto = false) {
+        // Set user sebagai Guest
         currentUser = { username: "Guest", balance: 0, history: [] };
         isGuest = true;
         
-        // Simpan Sesi Tamu (Biar pas refresh gak nanya lagi)
-        localStorage.setItem("nexus_session", JSON.stringify({type: 'guest'}));
+        // Kita TIDAK perlu simpan sesi ke localStorage kalau cuma tamu 'lewat'
+        // Kecuali user klik tombol 'Masuk Tamu' secara eksplisit.
+        // Tapi biar aman dan fitur jalan, kita set variable global aja.
         
-        enterApp(); // Buka Gerbang
+        if(!isAuto) {
+             // Kalau user klik tombol "Masuk Tamu" manual, baru simpan sesi
+             localStorage.setItem("nexus_session", JSON.stringify({type: 'guest'}));
+        }
+        
+        enterApp(); // Buka Gerbang Web Utama
     }
+
 
     // 6. TOGGLE FORM (DAFTAR / LOGIN)
     function toggleAuthMode() {
@@ -1726,20 +2067,18 @@
 
 
 
-    // --- UPDATE TAMPILAN UI (FINAL VERSION) ---
+    // --- UPDATE TAMPILAN UI (FINAL VERSION: GABUNGAN) ---
     function updateUI() {
         
         // 1. UPDATE HEADER (LOGIN/DAFTAR vs NAMA USER)
         const headerArea = document.getElementById('header-auth-area');
         if (headerArea) {
             if (isGuest) {
-                // TAMPILAN GUEST DI HEADER
                 headerArea.innerHTML = `
                     <button onclick="openAuthModal('login')" class="cyber-btn-outline" style="padding:5px 10px; font-size:0.7rem; margin-right:5px;">MASUK</button>
                     <button onclick="openAuthModal('register')" class="cyber-btn-glitch" style="padding:5px 10px; font-size:0.7rem; width:auto;">DAFTAR</button>
                 `;
             } else {
-                // TAMPILAN MEMBER DI HEADER
                 headerArea.innerHTML = `
                     <div style="line-height:1.2; text-align:right;">
                         <div style="font-weight:bold; font-size:0.9rem;">${currentUser.username.toUpperCase()}</div>
@@ -1751,10 +2090,9 @@
 
         // 2. LOGIC KOTAK SALDO DI HOME (GEMBOK vs TOMBOL JEJER)
         const homeBalContainer = document.getElementById('home-balance-container');
-        
         if (homeBalContainer) {
             if (isGuest) {
-                // === SKENARIO GUEST: GEMBOK TERKUNCI ===
+                // TAMPILAN GUEST: GEMBOK TERKUNCI
                 homeBalContainer.innerHTML = `
                     <div onclick="Swal.fire({title:'AKSES TERKUNCI', text:'Silakan Login untuk membuka fitur Dompet & Transaksi.', icon:'lock', confirmButtonText:'LOGIN SEKARANG', confirmButtonColor:'var(--gold)'}).then((r)=>{if(r.isConfirmed) openAuthModal('login')})" style="cursor:pointer; opacity:0.8; padding:10px;">
                         <i class="fas fa-lock" style="font-size:2.5rem; color:#555; margin-bottom:15px;"></i>
@@ -1764,17 +2102,14 @@
                 `;
                 homeBalContainer.style.border = "1px dashed #444"; 
             } else {
-                // === SKENARIO MEMBER: SALDO + DUA TOMBOL (JEJER) ===
+                // TAMPILAN MEMBER: SALDO + DUA TOMBOL
                 homeBalContainer.innerHTML = `
                     <small style="color:#888;">SALDO NEXUS PAY</small>
                     <h1 class="gold-neon" style="margin:5px 0 15px 0; font-size:2rem;">Rp ${currentUser.balance.toLocaleString()}</h1>
-                    
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; padding:0 5px;">
-                        
                         <button onclick="showPage('deposit')" class="cyber-btn-glitch" style="font-size:0.8rem; width:100%; padding:12px 0;">
                             <i class="fas fa-plus"></i> ISI
                         </button>
-                        
                         <button onclick="withdrawMoney()" class="cyber-btn-outline" style="font-size:0.8rem; width:100%; padding:12px 0; color:#ff003c; border-color:#ff003c;">
                             <i class="fas fa-arrow-down"></i> TARIK
                         </button>
@@ -1784,9 +2119,9 @@
             }
         }
 
-        // 3. UPDATE SIDEBAR (SAMA SEPERTI SEBELUMNYA)
+        // 3. UPDATE SIDEBAR (INFO USER)
         if (isGuest) {
-            if(document.getElementById('sidebar-username')) document.getElementById('sidebar-username').innerText = "GUEST";
+            if(document.getElementById('sidebar-username')) document.getElementById('sidebar-username').innerText = "GUEST / PENGUNJUNG";
             if(document.getElementById('sidebar-status')) document.getElementById('sidebar-status').innerText = "Visitor Mode";
             if(document.getElementById('sidebar-balance')) document.getElementById('sidebar-balance').innerText = "LOCKED";
             if(document.getElementById('sidebar-id')) document.getElementById('sidebar-id').innerText = "ID: -";
@@ -1797,10 +2132,48 @@
             if(document.getElementById('sidebar-id')) document.getElementById('sidebar-id').innerText = "ID: " + Math.floor(Math.random()*9000 + 1000);
         }
 
-        // 4. PROTEKSI FITUR LAIN
+        // 4. LOGIC INVOICE TAMU (PENTING BUAT OPTION A)
+        // Kalau Tamu lagi beli barang (pendingOrder ada), BUKA gembok deposit area biar invoice muncul
+        const guestMsg = document.getElementById('guest-deposit-msg');
+        const memberArea = document.getElementById('member-deposit-area');
+        if (guestMsg && memberArea) {
+            if (isGuest && !pendingOrder) {
+                guestMsg.style.display = 'block';
+                memberArea.style.display = 'none';
+            } else {
+                guestMsg.style.display = 'none';
+                memberArea.style.display = 'block';
+                // Update tampilan saldo di halaman deposit
+                if(!isGuest && currentUser && document.getElementById('wd-balance-display')) {
+                    document.getElementById('wd-balance-display').innerText = "Rp " + currentUser.balance.toLocaleString();
+                    document.getElementById('user-id-display').innerText = "ID: " + currentUser.username.toUpperCase();
+                }
+            }
+        }
+
+        // 5. UPDATE TOMBOL SIDEBAR (MASUK vs KELUAR)
+        const sidebarBtn = document.querySelector('.logout-btn'); 
+        if(sidebarBtn) {
+            if(isGuest) {
+                // TOMBOL JADI 'MASUK'
+                sidebarBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> MASUK / DAFTAR';
+                sidebarBtn.setAttribute('onclick', "openAuthModal('login')");
+                sidebarBtn.style.color = "var(--gold)"; 
+                sidebarBtn.style.borderColor = "var(--gold)";
+            } else {
+                // TOMBOL JADI 'KELUAR'
+                sidebarBtn.innerHTML = '<i class="fas fa-power-off"></i> KELUAR SISTEM';
+                sidebarBtn.setAttribute('onclick', "logout()");
+                sidebarBtn.style.color = "#ff003c";
+                sidebarBtn.style.borderColor = "#333";
+            }
+        }
+
+        // 6. PROTEKSI HISTORY
         const histList = document.getElementById('history-list');
         if(histList && isGuest) histList.innerHTML = `<div style="text-align:center; padding:20px; color:#444;"><i class="fas fa-lock"></i><br>Login untuk melihat history</div>`;
     }
+
 
 
 
@@ -1830,14 +2203,31 @@
     // --- 7. MARKET LOGIC (GAME, APK, SOSMED) ---
     
     // Fungsi Switch Tab Market (Tombol Akses Cepat Home)
-    window.openStoreTab = (category) => {
-        showPage('store');
-        const map = { 
-            'game': 'view-game', 'apk': 'view-apk', 'convert': 'view-convert', 
-            'sosmed': 'view-sosmed', 'pulsa': 'view-pulsa'
-        };
-        if(map[category]) setTimeout(() => openMarketView(map[category]), 100);
+window.openStoreTab = (category) => {
+    showPage('store');
+    
+    // Mapping ID Tombol ke ID View
+    const map = { 
+        'game': 'view-game', 
+        'apk': 'view-apk', 
+        'convert': 'view-convert', 
+        'sosmed': 'view-sosmed', 
+        'pulsa': 'view-pulsa',
+        'kuota': 'view-kuota',     // <-- Baru
+        'ewallet': 'view-ewallet'  // <-- Baru
     };
+
+    if(map[category]) {
+        setTimeout(() => {
+            openMarketView(map[category]);
+            
+            // Auto Render saat dibuka pertama kali
+            if(category === 'kuota') renderKuota('tri'); // Default tab Tri
+            if(category === 'ewallet') renderEwallet();
+        }, 100);
+    }
+};
+
 
         function openMarketView(id) {
         // 1. Reset Tampilan
@@ -2000,55 +2390,42 @@
        SYSTEM: TRANSACTION LOGIC (UPDATED)
        ========================================= */
 
-    window.buyItem = (itemTitle, priceNum, extraData = '-') => {
-        // 1. Proteksi Guest
-        if (isGuest) {
-            return Swal.fire({
-                title: 'LOGIN DULU',
-                text: 'Silakan login untuk membeli item.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'LOGIN',
-                confirmButtonColor: 'var(--gold)'
-            }).then((res) => {
-                if(res.isConfirmed) openAuthModal('login');
-            });
-        }
-
-        // 2. Simpan Order Sementara
+        // --- UPDATE LOGIC BELI (OPSI A: GUEST DIRECT PAY) ---
+    window.buyItem = (itemTitle, price, extraData = '-') => {
+        // 1. Siapkan Data Pesanan
         pendingOrder = {
             item: itemTitle,
-            price: priceNum,
-            priceFormatted: "Rp " + priceNum.toLocaleString(),
-            data: extraData,
-            priceRaw: priceNum
+            price: price,
+            priceFormatted: "Rp " + price.toLocaleString(),
+            data: extraData
         };
 
-        // 3. LOGIC CEK SALDO (INTI PERUBAHAN)
-        if (currentUser.balance >= priceNum) {
-            // KASUS A: SALDO CUKUP -> Tawarkan Bayar Pakai Saldo
-            Swal.fire({
-                title: 'METODE PEMBAYARAN',
-                text: `Saldo Anda: Rp ${currentUser.balance.toLocaleString()}\nHarga Item: Rp ${priceNum.toLocaleString()}`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: `BAYAR DENGAN SALDO`,
-                confirmButtonColor: '#00ff00',
-                cancelButtonText: 'TRANSFER MANUAL',
-                cancelButtonColor: '#333',
-                background: '#111', color: '#fff'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    processBalancePayment(); // Bayar Pakai Saldo
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    goToManualPayment(); // Pilih Transfer Manual
-                }
-            });
-        } else {
-            // KASUS B: SALDO KURANG -> Langsung Transfer Manual
+        // 2. Logic Pembayaran
+        if (isGuest) {
+            // KHUSUS TAMU: Langsung Bayar Manual (Bypassing Saldo)
             goToManualPayment();
+        } else {
+            // KHUSUS MEMBER: Cek Saldo Dulu
+            if (currentUser.balance >= price) {
+                Swal.fire({
+                    title: 'METODE BAYAR',
+                    text: `Gunakan Saldo Nexus? (Sisa: Rp ${currentUser.balance.toLocaleString()})`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'PAKAI SALDO',
+                    cancelButtonText: 'TRANSFER MANUAL',
+                    background: '#111', color: '#fff', confirmButtonColor: 'var(--gold)'
+                }).then((res) => {
+                    if (res.isConfirmed) processBalancePay();
+                    else if (res.dismiss === Swal.DismissReason.cancel) goToManualPayment();
+                });
+            } else {
+                // Saldo Kurang -> Transfer Manual
+                goToManualPayment();
+            }
         }
-    }
+    };
+
 
     // Sub-Fungsi: Bayar Pakai Saldo
     function processBalancePayment() {
@@ -2075,26 +2452,202 @@ window.open(`https://wa.me/${CONFIG.adminWA}?text=${encodeURIComponent(msg)}`, '
         pendingOrder = null; // Clear order
     }
 
-    // Sub-Fungsi: Buka Halaman Transfer Manual (Logic Lama)
-    function goToManualPayment() {
+    /* =========================================
+       SYSTEM: SPLIT PAYMENT ROUTING (GAME VS PUSAT)
+       ========================================= */
+
+    // 1. DATABASE ADMIN & REKENING
+    const PAYMENT_ROUTES = {
+        // --- DATA PUSAT (ALAM) ---
+        // Kategori: Pulsa, Kuota, Sosmed, APK, Convert, Deposit Saldo
+        GENERAL: {
+            owner: "ALAM (NEXUS PUSAT)",
+            wa: "6283125398104",
+            qris: "assets/qriss.png", // Pastikan file ini ada
+            wallets: [
+                { name: "DANA", no: "0838 9802 3362" },
+                { name: "SEABANK", no: "9015 0012 6233" }
+            ]
+        },
+
+        // --- DATA GAME (ADIT) ---
+        // Kategori: Top Up Game, Jual Akun, Joki
+        GAME: {
+            owner: "ADIT (GAME STORE)",
+            wa: "6285602567552",
+            qris: "assets/qrisAdit.png", // Upload file ini!
+            wallets: [
+                { name: "DANA", no: "0857 6983 4133" },
+                { name: "GOPAY", no: "0838 0373 2810" }
+            ]
+        }
+    };
+
+    // 2. FUNGSI UTAMA TRANSAKSI (UPDATED)
+    // Menambahkan parameter 'category' (default: 'general')
+    // --- UPDATE FUNGSI BELI (VERSI FIX: TAMU BISA BELI) ---
+    window.buyItem = (itemTitle, price, extraData = '-', category = 'general') => {
+        // 1. Siapkan Data Pesanan (Order Masuk Memory Dulu)
+        pendingOrder = {
+            item: itemTitle,
+            price: price,
+            priceFormatted: "Rp " + price.toLocaleString(),
+            data: extraData,
+            priceRaw: price,
+            category: category 
+        };
+
+        // 2. LOGIC PEMBAYARAN PINTAR
+        if (isGuest) {
+            // === SKENARIO TAMU ===
+            // Tamu tidak punya dompet, jadi JANGAN cek saldo.
+            // Langsung lempar ke halaman Invoice / Transfer Manual.
+            goToManualPayment();
+        } else {
+            // === SKENARIO MEMBER ===
+            // Member punya dompet, jadi tawarkan opsi potong saldo.
+            if (currentUser.balance >= price) {
+                Swal.fire({
+                    title: 'METODE BAYAR',
+                    text: `Gunakan Saldo Nexus? (Sisa: Rp ${currentUser.balance.toLocaleString()})`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'PAKAI SALDO',
+                    cancelButtonText: 'TRANSFER MANUAL',
+                    background: '#111', color: '#fff', confirmButtonColor: 'var(--gold)'
+                }).then((res) => {
+                    if (res.isConfirmed) processBalancePayment();
+                    else if (res.dismiss === Swal.DismissReason.cancel) goToManualPayment();
+                });
+            } else {
+                // Saldo Member Kurang -> Transfer Manual
+                goToManualPayment();
+            }
+        }
+    };
+
+
+    // 3. RENDER HALAMAN INVOICE (OTOMATIS GANTI DATA)
+    window.goToManualPayment = () => {
+        if(!pendingOrder) return;
+
+        // Tentukan Target Berdasarkan Kategori Order
+        // Jika kategori 'game', pakai data GAME. Selain itu pakai PUSAT.
+        const target = (pendingOrder.category === 'game') ? PAYMENT_ROUTES.GAME : PAYMENT_ROUTES.GENERAL;
+
+        // Update Teks Invoice
         document.getElementById('inv-item').innerText = pendingOrder.item;
         document.getElementById('inv-data').innerText = pendingOrder.data;
         document.getElementById('inv-price').innerText = pendingOrder.priceFormatted;
 
+        // --- UPDATE TAMPILAN PEMBAYARAN DI HTML ---
+        const depositManualArea = document.getElementById('deposit-manual');
+        
+        // Generate HTML Rekening Secara Dinamis
+        let walletHTML = '';
+        target.wallets.forEach(w => {
+            // Hapus spasi buat tombol copy
+            const cleanNo = w.no.replace(/\s/g, ''); 
+            walletHTML += `
+                <div class="pay-card" style="background:#111; border:1px solid #333; padding:15px; border-radius:10px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h4 style="margin:0; color:var(--gold); font-size:0.9rem;">${w.name}</h4>
+                        <span style="font-size:1.1rem; color:#fff; font-weight:bold;">${w.no}</span>
+                    </div>
+                    <button onclick="copyText('${cleanNo}')" class="cyber-btn-outline" style="padding:5px 10px; font-size:0.8rem;">SALIN</button>
+                </div>
+            `;
+        });
+
+        // Render Ulang Area Manual Transfer
+        depositManualArea.innerHTML = `
+            <div style="text-align:center; margin-bottom:20px;">
+                <p style="font-size:0.9rem; color:#ccc;">Transfer ke <b>${target.owner}</b>:</p>
+            </div>
+
+            <div class="pay-card" style="background:#fff; padding:20px; border-radius:10px; text-align:center; margin-bottom:15px; border:2px solid gold;">
+                <h4 style="color:#000; margin-bottom:10px; font-weight:bold;">SCAN QRIS</h4>
+                <img src="${target.qris}" onerror="this.src='https://via.placeholder.com/200?text=QRIS+ERROR'" style="width:100%; max-width:220px; display:block; margin:0 auto 15px;">
+                <a href="${target.qris}" download="QRIS_NEXUS.png" class="cyber-btn-outline" style="display:block; color:#000; border-color:#000; text-decoration:none;">SIMPAN GAMBAR</a>
+            </div>
+
+            ${walletHTML}
+
+            <div style="background:#1a1a1a; padding:15px; border-radius:10px; margin-top:20px;">
+                <button onclick="confirmPaymentWA()" class="cyber-btn-glitch full-width">KIRIM BUKTI BAYAR</button>
+                <button onclick="cancelOrder()" class="cyber-btn-outline full-width" style="margin-top:10px; color:#ff4444; border-color:#ff4444;">BATALKAN</button>
+            </div>
+        `;
+
+        // Tampilkan
+        document.getElementById('topup-mode').style.display = 'none';
         document.getElementById('invoice-area').style.display = 'block';
-        showPage('deposit'); // Pindah ke halaman deposit/invoice
+        document.getElementById('deposit-manual').style.display = 'block';
+        
+        showPage('deposit');
         window.scrollTo(0,0);
+    };
+
+    // 4. KONFIRMASI WA (SESUAI TARGET)
+    window.confirmPaymentWA = () => {
+        if (!pendingOrder) return;
+        
+        const target = (pendingOrder.category === 'game') ? PAYMENT_ROUTES.GAME : PAYMENT_ROUTES.GENERAL;
+        const user = currentUser ? currentUser.username : "GUEST";
+        
+        const msg = `*KONFIRMASI BAYAR* %0A` +
+                    `---------------------------%0A` +
+                    `User: ${user}%0A` +
+                    `Item: ${pendingOrder.item}%0A` +
+                    `Data: ${pendingOrder.data}%0A` +
+                    `Total: ${pendingOrder.priceFormatted}%0A` +
+                    `---------------------------%0A` +
+                    `Sudah transfer ke ${target.owner}. Mohon proses min.`;
+                    
+        window.open(`https://wa.me/${target.wa}?text=${msg}`, '_blank');
+    };
+
+    // 4. LOGIC KONFIRMASI WA (SESUAI TARGET)
+    window.confirmPaymentWA = () => {
+        if (!pendingOrder) return;
+        
+        const target = checkPaymentTarget(pendingOrder.item);
+        const user = currentUser ? currentUser.username : "GUEST";
+        
+        const msg = `*KONFIRMASI PEMBAYARAN*%0A` +
+                    `---------------------------%0A` +
+                    `User: ${user}%0A` +
+                    `Item: ${pendingOrder.item}%0A` +
+                    `Data: ${pendingOrder.data}%0A` +
+                    `Total: ${pendingOrder.priceFormatted}%0A` +
+                    `---------------------------%0A` +
+                    `Sudah transfer ke ${target.owner}. Mohon diproses min.`;
+                    
+        window.open(`https://wa.me/${target.wa}?text=${msg}`, '_blank');
     }
 
- 
 
-
-    window.confirmTopupData = () => {
-        const id = document.getElementById('inp-id') ? document.getElementById('inp-id').value : '-';
-        if(!id) return Swal.fire("Error", "Isi ID dulu!", "error");
-        document.getElementById('topup-modal').style.display = 'none';
-        buyItem(pendingOrder.item, pendingOrder.price, id);
+    // 4. LOGIC KONFIRMASI WA (Otomatis Bedain Nomor Tujuan)
+    window.confirmPaymentWA = () => {
+        if (!pendingOrder) return;
+        
+        // Ambil data target lagi
+        const target = getPaymentTarget(pendingOrder.item);
+        
+        const msg = `*KONFIRMASI PEMBAYARAN*%0A` +
+                    `---------------------------%0A` +
+                    `User: ${currentUser ? currentUser.username : 'GUEST'}%0A` +
+                    `Item: ${pendingOrder.item}%0A` +
+                    `Data: ${pendingOrder.data}%0A` +
+                    `Total: ${pendingOrder.priceFormatted}%0A` +
+                    `---------------------------%0A` +
+                    `Sudah transfer ke ${target.walletName}/QRIS. Mohon diproses min.`;
+                    
+        // Kirim ke Nomor Target (Adit atau Alam)
+        window.open(`https://wa.me/${target.wa}?text=${msg}`, '_blank');
     }
+
+
     window.closeTopupModal = () => document.getElementById('topup-modal').style.display = 'none';
 
     function processBalancePay() {
@@ -2117,98 +2670,7 @@ window.open(`https://wa.me/${CONFIG.adminWA}?text=${encodeURIComponent(msg)}`, '
         window.open(`https://wa.me/${CONFIG.adminWA}?text=${msg}`, '_blank');
     }
 
-    // --- LOGIC KONFIRMASI PEMBAYARAN (HYBRID: WA + AUTO SALDO) ---
-    window.confirmPaymentWA = () => {
-        // 1. Validasi: Ada order gak?
-        if (!pendingOrder) return Swal.fire("Error", "Tidak ada tagihan aktif.", "error");
 
-        // 2. Buka WhatsApp (Pakai Format Pesan Punya Kamu yg Lengkap)
-        const user = isGuest ? "GUEST" : currentUser.username;
-        const nominalStr = pendingOrder.price.toLocaleString();
-        
-        const msg = `*KONFIRMASI BAYAR*%0A` +
-                    `User: ${user}%0A` +
-                    `Item: ${pendingOrder.item}%0A` +
-                    `Data: ${pendingOrder.data}%0A` +
-                    `Total: Rp ${nominalStr}%0A` +
-                    `Status: Transfer Manual`;
-                    
-        window.open(`https://wa.me/${CONFIG.adminWA}?text=${msg}`, '_blank');
-
-        // 3. SKENARIO 1: GUEST (Cuma numpang bayar)
-        if (isGuest) {
-            Swal.fire("Bukti Terkirim", "Silakan tunggu admin memproses pesanan anda.", "success");
-            pendingOrder = null;
-            // Tutup area invoice manual
-            document.getElementById('invoice-area').style.display = 'none';
-            document.getElementById('deposit-manual').style.display = 'none';
-            return;
-        }
-
-        // 4. SKENARIO 2: MEMBER
-        // Cek dulu: Ini "Isi Saldo" atau "Beli Barang"?
-        const isDeposit = pendingOrder.item.includes("DEPOSIT") || pendingOrder.item.includes("ISI SALDO");
-
-        if (isDeposit) {
-            // === KHUSUS DEPOSIT: JALANKAN TIMER 15 DETIK ===
-            const amountToAdd = parseInt(pendingOrder.price); // Pastikan jadi angka
-
-            let timerInterval;
-            Swal.fire({
-                title: 'VERIFIKASI SISTEM',
-                html: 'Sistem sedang mengecek mutasi otomatis...<br>Mohon tunggu <b>15</b> detik.',
-                timer: 15000, // 15 Detik
-                timerProgressBar: true,
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                    const b = Swal.getHtmlContainer().querySelector('b');
-                    timerInterval = setInterval(() => {
-                        b.textContent = Math.ceil(Swal.getTimerLeft() / 1000);
-                    }, 100);
-                },
-                willClose: () => { clearInterval(timerInterval); }
-            }).then((result) => {
-                // Saat Timer Selesai:
-                if (result.dismiss === Swal.DismissReason.timer) {
-                    // A. Tambah Saldo
-                    currentUser.balance += amountToAdd;
-                    
-                    // B. Catat History
-                    const newHistory = {
-                        date: new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString(),
-                        item: "DEPOSIT SALDO",
-                        amount: amountToAdd,
-                        type: "in" // Tipe: Masuk
-                    };
-                    if(!currentUser.history) currentUser.history = [];
-                    currentUser.history.unshift(newHistory); // Taruh paling atas
-
-                    // C. Simpan ke LocalStorage
-                    let db = JSON.parse(localStorage.getItem("nexus_db"));
-                    db[currentUser.username] = currentUser;
-                    localStorage.setItem("nexus_db", JSON.stringify(db));
-
-                    // D. Refresh UI & Bersihkan Order
-                    updateUI();
-                    pendingOrder = null;
-                    document.getElementById('invoice-area').style.display = 'none';
-                    document.getElementById('deposit-manual').style.display = 'none';
-
-                    Swal.fire("BERHASIL", `Saldo Rp ${nominalStr} berhasil ditambahkan!`, "success")
-                    .then(() => showPage('home'));
-                }
-            });
-
-        } else {
-            // === KALO BELI BARANG (DIAMOND/JOKI) ===
-            // Jangan tambah saldo, cuma kasih notif sukses
-            Swal.fire("Bukti Terkirim", "Admin akan segera memproses item pesanan anda.", "success");
-            pendingOrder = null;
-            document.getElementById('invoice-area').style.display = 'none';
-            document.getElementById('deposit-manual').style.display = 'none';
-        }
-    }
 
     // --- FUNGSI BATALKAN ORDER ---
     window.cancelOrder = () => {
@@ -2540,33 +3002,19 @@ window.open(`https://wa.me/${CONFIG.adminWA}?text=${encodeURIComponent(msg)}`, '
        FITUR: PENDAFTARAN JOKI (NO ORDER)
        ========================================= */
     window.submitJokiRegistration = () => {
-        // 1. Ambil Data
-        const nick = document.getElementById('joki-nick').value;
-        const game = document.getElementById('joki-game').value;
-        const rank = document.getElementById('joki-rank').value;
+    // ... (kode ambil data nick/rank biarkan sama) ...
+    const nick = document.getElementById('joki-nick').value;
+    const game = document.getElementById('joki-game').value; // Pastikan id ini ada/sesuai
+    const rank = document.getElementById('joki-rank').value;
+    
+    if(!nick || !rank) return Swal.fire('Data Kurang', 'Isi semua data!', 'warning');
 
-        // 2. Validasi Sederhana
-        if(!nick || !rank) {
-            return Swal.fire({
-                title: 'Data Kurang',
-                text: 'Harap isi Nickname dan Rank Tertinggi kamu!',
-                icon: 'warning',
-                background: '#111', color: '#fff', confirmButtonColor: 'gold'
-            });
-        }
+    const msg = `*LAMARAN WORKER JOKI*%0A... (Isi pesan sama) ...`;
 
-        // 3. Format Pesan WhatsApp (Lamaran Kerja)
-        const msg = `*LAMARAN WORKER JOKI*%0A` +
-                    `---------------------------%0A` +
-                    `👤 Nama/Nick: ${nick}%0A` +
-                    `🎮 Game: ${game}%0A` +
-                    `🏆 Rank: ${rank}%0A` +
-                    `---------------------------%0A` +
-                    `Halo Admin, saya ingin mendaftar jadi penjoki di Nexus Core. Mohon infonya.`;
+    // LANGSUNG KE WA ADIT (GAME)
+    window.open(`https://wa.me/6285602567552?text=${msg}`, '_blank'); 
+}
 
-        // 4. Kirim ke WA Admin (Langsung, Tanpa Payment)
-        window.open(`https://wa.me/${CONFIG.adminWA}?text=${msg}`, '_blank');
-    }
     /* =========================================
        FITUR: JUAL AKUN (MARKETPLACE)
        ========================================= */
@@ -2870,42 +3318,119 @@ window.open(`https://wa.me/${CONFIG.adminWA}?text=${encodeURIComponent(msg)}`, '
         });
     }
 /* =========================================
-   FITUR BARU: DYNAMIC GAME ENGINE
-   Taruh di bagian paling bawah script
+     /* =========================================
+       DATABASE GAME (UPDATED BY ADIT WAHAHA)
+       ========================================= * =========================================
+   DATABASE GAME (UPDATED IMAGE ASSETS)
    ========================================= */
-
 const GAMES_DB = {
     'ml': {
-        name: "Mobile Legends", logo: "assets/ml.png",
-        inputs: [{id:"uid", label:"User ID", type:"number"}, {id:"zone", label:"Server ID", type:"number"}],
-        items: [{name:"3 Diamond", price:1500}, {name:"86 Diamond", price:23000}, {name:"Weekly Pass", price:28500, tag:"HOT"}]
+        name: "MOBILE LEGENDS",
+        img: "assets/ml.png", // Update
+        inputs: [
+            { id: "id", label: "User ID" },
+            { id: "server", label: "Server ID" }
+        ],
+        items: [
+            { name: "3 Diamonds", price: 2000 },
+            { name: "12 Diamonds", price: 4000 },
+            { name: "19 Diamonds", price: 7000 },
+            { name: "36 Diamonds", price: 11000 },
+            { name: "56 Diamonds", price: 16000 },
+            { name: "86 Diamonds", price: 24500 },
+            { name: "100 Diamonds", price: 27500 },
+            { name: "144 Diamonds", price: 40000 },
+            { name: "185 Diamonds", price: 51500 },
+            { name: "Weekly Diamond Pass", price: 29000 }
+        ]
     },
     'ff': {
-        name: "Free Fire", logo: "assets/ff.png",
-        inputs: [{id:"uid", label:"Player ID", type:"number"}],
-        items: [{name:"70 Diamond", price:9500}, {name:"140 Diamond", price:19000}, {name:"Member Mingguan", price:29000, tag:"HOT"}]
+        name: "FREE FIRE",
+        img: "assets/ff.png", // Update
+        inputs: [
+            { id: "id", label: "Player ID" }
+        ],
+        items: [
+            { name: "70 Diamonds", price: 10000 },
+            { name: "100 Diamonds", price: 15000 },
+            { name: "140 Diamonds", price: 20000 },
+            { name: "210 Diamonds", price: 29000 },
+            { name: "250 Diamonds", price: 36000 },
+            { name: "300 Diamonds", price: 45000 },
+            { name: "355 Diamonds", price: 50000 },
+            { name: "500 Diamonds", price: 70000 },
+            { name: "720 Diamonds", price: 95000 },
+            { name: "Member Mingguan", price: 30000 },
+            { name: "Member Bulanan", price: 93000 },
+            { name: "Level Up Pass", price: 16000 }
+        ]
+    },
+    'pubg': {
+        name: "PUBG MOBILE",
+        img: "assets/Pubg.png", // Update (Sesuai request huruf besar P)
+        inputs: [
+            { id: "id", label: "ID Karakter" }
+        ],
+        items: [
+            { name: "UC 60", price: 14000 },
+            { name: "UC 325", price: 70000 },
+            { name: "UC 660", price: 140000 }
+        ]
     },
     'genshin': {
-        name: "Genshin Impact", logo: "assets/genshin.png",
-        inputs: [{id:"uid", label:"UID", type:"number"}, {id:"server", label:"Server", type:"select", options:["Asia","America","Europe"]}],
-        items: [{name:"60 Genesis", price:15000}, {name:"Welkin Moon", price:75000}]
+        name: "GENSHIN IMPACT",
+        img: "assets/ghensin.png", // Update (Sesuai request 'ghensin')
+        inputs: [
+            { id: "id", label: "UID" },
+            { id: "server", label: "Server" }
+        ],
+        items: [
+            { name: "60 Genesis", price: 15000 },
+            { name: "300 Genesis", price: 75000 },
+            { name: "Welkin Moon", price: 80000 }
+        ]
     },
-    'pubg': { name: "PUBG Mobile", logo: "assets/pubg.png", inputs: [{id:"uid", label:"ID", type:"number"}], items: [{name:"60 UC", price:14000}, {name:"325 UC", price:70000}] },
-    'valorant': { name: "Valorant", logo: "assets/valorant.png", inputs: [{id:"uid", label:"Riot ID", type:"text"}, {id:"tag", label:"Tagline", type:"text"}], items: [{name:"125 VP", price:15000}, {name:"700 VP", price:80000}] },
-    'roblox': { name: "Roblox", logo: "assets/roblox.png", inputs: [{id:"uid", label:"Username", type:"text"}], items: [{name:"80 Robux", price:15000}, {name:"400 Robux", price:75000}] },
-    'honkai': { name: "Honkai Star Rail", logo: "assets/hsr.png", inputs: [{id:"uid", label:"UID", type:"number"}, {id:"server", label:"Server", type:"select", options:["Asia","America"]}], items: [{name:"60 Shards", price:15000}, {name:"Express Supply", price:75000}] }
+    'hok': { // Tambahan karena ada di list request gambar
+        name: "HONOR OF KINGS",
+        img: "assets/hok.png",
+        inputs: [
+            { id: "id", label: "Player ID" }
+        ],
+        items: [
+            { name: "8 Tokens", price: 3000 },
+            { name: "80 Tokens", price: 15000 },
+            { name: "240 Tokens", price: 45000 },
+            { name: "Weekly Card", price: 20000 }
+        ]
+    }
 };
 
+
+
+/* =========================================
+   PERBAIKAN TAMPILAN ICON GAME (FIX)
+   ========================================= */
+
+// 1. Render Grid Game (Menu Utama Top Up)
 window.renderGameGrid = () => {
     const c = document.getElementById('game-grid-container');
     if(!c) return;
     c.innerHTML = "";
+    
     Object.keys(GAMES_DB).forEach(key => {
         const g = GAMES_DB[key];
-        c.innerHTML += `<div class="prod-card-v2" onclick="openGameTopup('${key}')"><img src="${g.logo}" onerror="this.src='https://via.placeholder.com/50'" style="width:40px; margin-bottom:5px;"><h4>${g.name}</h4><button class="cek-harga-btn">TOP UP</button></div>`;
+        
+        // PERBAIKAN: Dulu 'g.logo', sekarang diganti jadi 'g.img'
+        c.innerHTML += `
+        <div class="prod-card-v2" onclick="openGameTopup('${key}')">
+            <img src="${g.img}" onerror="this.src='https://via.placeholder.com/50?text=IMG'" style="width:50px; height:50px; object-fit:contain; margin-bottom:5px;">
+            <h4>${g.name}</h4>
+            <button class="cek-harga-btn">TOP UP</button>
+        </div>`;
     });
 }
 
+// 2. Render Detail Game (Saat game diklik)
 window.openGameTopup = (key) => {
     const g = GAMES_DB[key];
     document.getElementById('game-selector-area').style.display='none';
@@ -2914,7 +3439,9 @@ window.openGameTopup = (key) => {
     area.setAttribute('data-active', key);
     
     document.getElementById('active-game-name').innerText = g.name;
-    document.getElementById('active-game-img').src = g.logo || 'https://via.placeholder.com/50';
+    
+    // PERBAIKAN: Dulu 'g.logo', sekarang diganti jadi 'g.img'
+    document.getElementById('active-game-img').src = g.img || 'https://via.placeholder.com/50';
 
     const inC = document.getElementById('dynamic-inputs');
     inC.innerHTML = "";
@@ -2934,21 +3461,24 @@ window.openGameTopup = (key) => {
     });
 }
 
+
 window.procGameBuy = (item, price) => {
     const key = document.getElementById('game-topup-area').getAttribute('data-active');
     const g = GAMES_DB[key];
     let dataStr = "";
     
-    // Cek Inputan Wajib Diisi
+    // Cek Inputan
     for(let f of g.inputs) {
         let val = document.getElementById(`inp-${f.id}`).value;
         if(!val) return Swal.fire("Data Kurang", `Mohon isi ${f.label}`, "warning");
         dataStr += `${f.label}: ${val} | `;
     }
     
-    // Eksekusi Beli (Panggil fungsi lama)
-    buyItem(`${g.name} - ${item}`, price, dataStr.slice(0, -3));
+    // Eksekusi Beli dengan Flag 'game'
+    // Format: buyItem(Judul, Harga, Data, KATEGORI)
+    buyItem(`${g.name} - ${item}`, price, dataStr.slice(0, -3), 'game'); 
 }
+
 
     window.backToGameSelector = () => {
         document.getElementById('game-topup-area').style.display='none';
@@ -2987,6 +3517,171 @@ window.procGameBuy = (item, price) => {
         const vid = document.querySelector('#about-modal video');
         if(vid) vid.pause();
     }
+/* =========================================
+   FITUR BARU: KUOTA & E-WALLET (TONGZZ CELL)
+   ========================================= */
+
+// 1. DATABASE KUOTA (Sesuai Gambar)
+const KUOTA_DB = {
+    'tri': {
+        name: "Tri Happy", logo: "assets/tri.png", color: "#fff",
+        items: [
+            { name: "2,5GB (Nat)", price: 6600 },
+            { name: "3GB (Nat+)", price: 11000 },
+            { name: "5GB (Nat+)", price: 16600 },
+            { name: "8GB (Nat)", price: 21000 },
+            { name: "9GB (Nat+)", price: 26600 },
+            { name: "9GB (Nat+ Big)", price: 39020 }
+        ]
+    },
+    'axis': {
+        name: "Axis Data", logo: "assets/axis.png", color: "#662d91",
+        items: [
+            { name: "Data 1 GB", price: 8605 },
+            { name: "Data 2 GB", price: 9737 },
+            { name: "Data 3 GB", price: 8851 }, // Sesuai gambar (unik lebih murah)
+            { name: "Data 5 GB", price: 7510 }, // Sesuai gambar
+            { name: "Data 10 GB", price: 9370 },
+            { name: "Data 15 GB", price: 19006 }
+        ]
+    },
+    'indosat': {
+        name: "Indosat Freedom", logo: "assets/indosat.png", color: "#ffc107",
+        items: [
+            { name: "Internet 1GB", price: 27600 },
+            { name: "Internet 2GB", price: 30000 },
+            { name: "Internet 3GB", price: 57600 },
+            { name: "Internet 4GB", price: 63000 }
+        ]
+    }
+};
+
+// 2. LOGIC RENDER KUOTA
+window.renderKuota = (provider) => {
+    const container = document.getElementById('kuota-container');
+    const data = KUOTA_DB[provider];
+    
+    if(!container) return;
+    container.innerHTML = "";
+
+    // Header kecil biar tau lagi buka apa
+    container.innerHTML = `<div style="grid-column:span 2; text-align:center; padding:10px; color:${data.color}; border-bottom:1px solid #333; margin-bottom:10px;">${data.name.toUpperCase()}</div>`;
+
+    data.items.forEach(item => {
+        container.innerHTML += `
+            <div class="prod-card-v2" onclick="buyKuota('${provider}', '${item.name}', ${item.price})">
+                <div style="font-size:1.2rem; font-weight:bold; color:#fff; margin-bottom:5px;">${item.name.replace('Internet ','').replace('Data ','')}</div>
+                <div style="font-size:0.8rem; color:#888;">Masa Aktif: Sesuai Kebijakan</div>
+                <button class="cek-harga-btn" style="margin-top:10px; color:${data.color}; border:1px solid ${data.color}; background:transparent;">
+                    Rp ${item.price.toLocaleString()}
+                </button>
+            </div>
+        `;
+    });
+}
+
+// 3. LOGIC BELI KUOTA (Input Nomor)
+window.buyKuota = (prov, paketName, price) => {
+    Swal.fire({
+        title: 'BELI PAKET DATA',
+        html: `
+            <p style="color:#ccc;">${KUOTA_DB[prov].name} - ${paketName}</p>
+            <h2 class="gold-neon">Rp ${price.toLocaleString()}</h2>
+            <input id="k-number" type="number" class="cyber-input-swal" placeholder="Nomor HP (08xx)">
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'PROSES',
+        confirmButtonColor: 'var(--gold)',
+        background: '#111', color: '#fff',
+        preConfirm: () => {
+            const num = document.getElementById('k-number').value;
+            if(!num) return Swal.showValidationMessage('Nomor HP wajib diisi!');
+            return num;
+        }
+    }).then((res) => {
+        if(res.isConfirmed) {
+            buyItem(`${KUOTA_DB[prov].name} ${paketName}`, price, `Nomor: ${res.value}`);
+        }
+    });
+}
+
+// 4. LOGIC E-WALLET (Admin +2000 dari Nominal)
+window.renderEwallet = () => {
+    const container = document.getElementById('ewallet-container');
+    if(!container) return;
+    
+    const nominals = [20000, 50000, 100000, 200000];
+    const adminFee = 2000; // Sesuai gambar "Biaya Admin Mulai Dari 2.000"
+
+    container.innerHTML = "";
+    
+    nominals.forEach(nom => {
+        const total = nom + adminFee;
+        container.innerHTML += `
+            <div class="prod-card-v2" onclick="buyEwallet(${nom}, ${total})">
+                <i class="fas fa-wallet" style="font-size:2rem; color:#00f2ea; margin-bottom:10px;"></i>
+                <h3 style="margin:0; color:#fff;">${nom/1000}k</h3>
+                <p style="font-size:0.7rem; color:#888;">Harga: Rp ${total.toLocaleString()}</p>
+                <button class="cek-harga-btn" style="margin-top:5px;">BELI</button>
+            </div>
+        `;
+    });
+}
+
+window.buyEwallet = (nominal, price) => {
+    const type = document.getElementById('wallet-type').value;
+    const num = document.getElementById('wallet-number').value;
+
+    if(!num) return Swal.fire("Data Kurang", "Masukkan Nomor HP Tujuan dulu di atas!", "warning");
+
+    Swal.fire({
+        title: 'KONFIRMASI TOP UP',
+        html: `
+            Tujuan: <b>${type} - ${num}</b><br>
+            Nominal: <b>Rp ${nominal.toLocaleString()}</b><br>
+            Harga: <b class="red-neon">Rp ${price.toLocaleString()}</b>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'BAYAR',
+        background: '#111', color: '#fff'
+    }).then((res) => {
+        if(res.isConfirmed) {
+            buyItem(`Top Up ${type} ${nominal/1000}k`, price, `No: ${num}`);
+        }
+    });
+}
+/* =========================================
+   LOGIC TOMBOL JOKI (COMING SOON + DAFTAR)
+   ========================================= */
+window.handleJokiClick = () => {
+    Swal.fire({
+        title: 'COMING SOON',
+        html: `
+            <div style="text-align:center;">
+                <i class="fas fa-tools" style="font-size:3rem; color:#555; margin-bottom:15px;"></i>
+                <p style="color:#ccc; font-size:0.9rem;">
+                    Marketplace Joki sedang dalam tahap pengembangan sistem.
+                </p>
+                <div style="background:#111; padding:10px; border:1px dashed var(--gold); border-radius:5px; margin-top:15px;">
+                    <strong style="color:var(--gold);">JAGO MAIN GAME?</strong><br>
+                    <small style="color:#888;">Kami membuka lowongan untuk Worker/Penjoki.</small>
+                </div>
+            </div>
+        `,
+        background: '#050505',
+        color: '#fff',
+        showCancelButton: true,
+        confirmButtonText: 'DAFTAR WORKER',
+        confirmButtonColor: 'var(--gold)',
+        cancelButtonText: 'TUTUP',
+        cancelButtonColor: '#333'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Arahkan ke halaman formulir pendaftaran Joki yang sudah ada
+            openMarketView('view-joki');
+        }
+    });
+}
 
     </script>
 </body>
