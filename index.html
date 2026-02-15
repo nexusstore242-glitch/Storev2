@@ -2183,14 +2183,33 @@
         document.getElementById('topup-nominal').value = amount;
     }
 
-    window.processTopup = () => {
-        const nominal = document.getElementById('topup-nominal').value;
-        if(!nominal || nominal < 10000) return Swal.fire("Error", "Minimal Top Up Rp 10.000", "warning");
+/* =========================================
+   FIX LOGIC DEPOSIT (ANTI POTONG SALDO SENDIRI)
+   ========================================= */
+window.processTopup = () => {
+    // 1. Ambil Nominal dari Input
+    const inputVal = document.getElementById('topup-nominal').value;
+    const nominal = parseInt(inputVal);
 
-        // Gunakan logic buyItem yang sudah ada untuk membuat tagihan
-        // Item: ISI SALDO, Data: User ID
-        buyItem('DEPOSIT SALDO', parseInt(nominal), `User: ${currentUser ? currentUser.username : 'Guest'}`);
+    // 2. Validasi
+    if (!nominal || nominal < 10000) {
+        return Swal.fire("Error", "Minimal Deposit Rp 10.000", "warning");
     }
+
+    // 3. SET DATA ORDER SECARA MANUAL (JANGAN PAKAI buyItem)
+    // Kita paksa category: 'deposit' agar nanti rutenya ke Admin Pusat
+    pendingOrder = {
+        item: "DEPOSIT SALDO",
+        price: nominal,
+        priceFormatted: "Rp " + nominal.toLocaleString(),
+        data: `User ID: ${currentUser ? currentUser.username : 'GUEST'}`,
+        category: 'deposit' // Kategori khusus
+    };
+
+    // 4. Langsung Arahkan ke Pembayaran Manual (Tanpa Cek Saldo)
+    goToManualPayment();
+}
+
 
 
     function toggleSidebar() {
@@ -2386,266 +2405,320 @@ window.openStoreTab = (category) => {
             }
         });
     }
-    /* =========================================
-       SYSTEM: TRANSACTION LOGIC (UPDATED)
-       ========================================= */
+/* =========================================
+   FIX 2: FUNGSI CATAT ORDER (AUTO DETECT KATEGORI)
+   ========================================= */
+/* =========================================
+   FIX LOGIC: BUY ITEM (PASTIKAN HARGA ANGKA)
+   ========================================= */
+window.buyItem = (itemTitle, price, extraData = '-', category = 'general') => {
+    
+    // Pastikan harga itu ANGKA BULAT, bukan teks
+    const safePrice = parseInt(price); 
 
-        // --- UPDATE LOGIC BELI (OPSI A: GUEST DIRECT PAY) ---
-    window.buyItem = (itemTitle, price, extraData = '-') => {
-        // 1. Siapkan Data Pesanan
-        pendingOrder = {
-            item: itemTitle,
-            price: price,
-            priceFormatted: "Rp " + price.toLocaleString(),
-            data: extraData
-        };
-
-        // 2. Logic Pembayaran
-        if (isGuest) {
-            // KHUSUS TAMU: Langsung Bayar Manual (Bypassing Saldo)
-            goToManualPayment();
-        } else {
-            // KHUSUS MEMBER: Cek Saldo Dulu
-            if (currentUser.balance >= price) {
-                Swal.fire({
-                    title: 'METODE BAYAR',
-                    text: `Gunakan Saldo Nexus? (Sisa: Rp ${currentUser.balance.toLocaleString()})`,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'PAKAI SALDO',
-                    cancelButtonText: 'TRANSFER MANUAL',
-                    background: '#111', color: '#fff', confirmButtonColor: 'var(--gold)'
-                }).then((res) => {
-                    if (res.isConfirmed) processBalancePay();
-                    else if (res.dismiss === Swal.DismissReason.cancel) goToManualPayment();
-                });
-            } else {
-                // Saldo Kurang -> Transfer Manual
-                goToManualPayment();
-            }
-        }
+    // Simpan data ke memori
+    pendingOrder = {
+        item: itemTitle,
+        price: safePrice, // <--- INI PENTING (Biar bisa dikurangin)
+        priceFormatted: "Rp " + safePrice.toLocaleString(),
+        data: extraData,
+        category: category 
     };
 
-
-    // Sub-Fungsi: Bayar Pakai Saldo
-    function processBalancePayment() {
-        // 1. Kurangi Saldo
-        currentUser.balance -= pendingOrder.priceRaw;
-        
-        // 2. Catat History
-        addHistory(pendingOrder.item, pendingOrder.priceRaw, 'out');
-        
-        // 3. Notifikasi Admin (WA) - Format Beda untuk Auto Payment
-        const msg = `*ORDER BARU (LUNAS/SALDO)*%0A` +
-                    `User: ${currentUser.username}%0A` +
-                    `Item: ${pendingOrder.item}%0A` +
-                    `Data: ${pendingOrder.data}%0A` +
-                    `Harga: ${pendingOrder.priceFormatted}%0A` +
-                    `Status: *PAID BY BALANCE* (Saldo Terpotong)`;
-                    
-        // KODE BARU (ANTI POTONG)
-window.open(`https://wa.me/${CONFIG.adminWA}?text=${encodeURIComponent(msg)}`, '_blank');
-
-        
-        // 4. Feedback Sukses
-        Swal.fire("PEMBAYARAN SUKSES", "Saldo berhasil dipotong. Admin akan memproses pesanan anda.", "success");
-        pendingOrder = null; // Clear order
+    // Logic Pembayaran
+    if (isGuest) {
+        goToManualPayment();
+    } else {
+        if (currentUser.balance >= safePrice) {
+            Swal.fire({
+                title: 'METODE BAYAR',
+                html: `Sisa Saldo: <b class="gold-neon">Rp ${currentUser.balance.toLocaleString()}</b><br>Harga: Rp ${safePrice.toLocaleString()}`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'PAKAI SALDO',
+                cancelButtonText: 'TRANSFER MANUAL', 
+                background: '#111', color: '#fff', confirmButtonColor: 'var(--gold)'
+            }).then((res) => {
+                if (res.isConfirmed) processBalancePayment(); 
+                else if (res.dismiss === Swal.DismissReason.cancel) goToManualPayment(); 
+            });
+        } else {
+            goToManualPayment(); 
+        }
     }
+};
+
+
+
+
+/* =========================================
+   FIX LOGIC: POTONG SALDO & RESI WA RAPI
+   ========================================= */
+function processBalancePayment() {
+    // 1. Cek Saldo Lagi (Double Check)
+    if (currentUser.balance < pendingOrder.price) {
+        return Swal.fire("Gagal", "Saldo tidak cukup!", "error");
+    }
+
+    // 2. Kurangi Saldo (PAKAI VARIABEL YANG BENAR)
+    currentUser.balance -= pendingOrder.price; 
+    
+    // 3. Simpan ke Database Lokal
+    let db = JSON.parse(localStorage.getItem("nexus_db"));
+    db[currentUser.username].balance = currentUser.balance;
+    
+    // 4. Catat History
+    const logData = { 
+        item: pendingOrder.item, 
+        price: pendingOrder.price, // Simpan angka asli
+        amount: pendingOrder.price, // Samain fieldnya biar renderHistory gak bingung
+        date: new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString(),
+        type: 'out' 
+    };
+    
+    // Masukkan ke history user aktif & database
+    if(!currentUser.history) currentUser.history = [];
+    currentUser.history.unshift(logData);
+    
+    if(!db[currentUser.username].history) db[currentUser.username].history = [];
+    db[currentUser.username].history.unshift(logData);
+
+    // Batasi history max 50 biar gak berat
+    if(db[currentUser.username].history.length > 50) db[currentUser.username].history.pop();
+    
+    localStorage.setItem("nexus_db", JSON.stringify(db));
+    
+    // 5. Update Tampilan
+    updateUI();
+    
+    // 6. Feedback Sukses
+    Swal.fire({
+        title: "SUKSES!", 
+        text: "Pembayaran berhasil. Saldo terpotong.", 
+        icon: "success",
+        background: '#000', color: '#fff'
+    });
+
+    // 7. KIRIM RESI KE WA (FORMAT RAPI DENGAN \n)
+    // Gunakan \n untuk enter, jangan %0A di sini.
+    const rawMsg = `*ORDER BARU (LUNAS/SALDO)*\n` +
+                   `---------------------------\n` +
+                   `User: ${currentUser.username}\n` +
+                   `Item: ${pendingOrder.item}\n` +
+                   `Data: ${pendingOrder.data}\n` +
+                   `Harga: ${pendingOrder.priceFormatted}\n` +
+                   `Status: PAID BY BALANCE (LUNAS) ✅`;
+    
+    // Encode biar WA bisa baca spasi dan enternya
+    const finalMsg = encodeURIComponent(rawMsg);
+    
+    // Kirim ke Admin Pusat (Config WA)
+    // Pakai location.href biar di HP langsung buka App WA
+    window.location.href = `https://wa.me/${CONFIG.adminWA}?text=${finalMsg}`;
+
+    // Reset Order
+    pendingOrder = null;
+    cancelOrder(); // Tutup tampilan invoice
+}
+
 
     /* =========================================
        SYSTEM: SPLIT PAYMENT ROUTING (GAME VS PUSAT)
        ========================================= */
 
-    // 1. DATABASE ADMIN & REKENING
-    const PAYMENT_ROUTES = {
-        // --- DATA PUSAT (ALAM) ---
-        // Kategori: Pulsa, Kuota, Sosmed, APK, Convert, Deposit Saldo
-        GENERAL: {
-            owner: "ALAM (NEXUS PUSAT)",
-            wa: "6283125398104",
-            qris: "assets/qriss.png", // Pastikan file ini ada
-            wallets: [
-                { name: "DANA", no: "0838 9802 3362" },
-                { name: "SEABANK", no: "9015 0012 6233" }
-            ]
-        },
+/* =========================================
+   FIX 1: DATABASE ADMIN (NOMOR CS)
+   ========================================= */
+const PAYMENT_ROUTES = {
+    // ADMIN PUSAT (Pulsa, Kuota, Sosmed, Convert)
+    GENERAL: {
+        owner: "ALAM (PUSAT)",
+        wa: "6283125398104", // Pastikan pakai 62 di depan, jangan 08
+        qris: "assets/qriss.png",
+        wallets: [
+            { name: "DANA", no: "0838 9802 3362" },
+            { name: "SEABANK", no: "9015 0012 6233" }
+        ]
+    },
 
-        // --- DATA GAME (ADIT) ---
-        // Kategori: Top Up Game, Jual Akun, Joki
-        GAME: {
-            owner: "ADIT (GAME STORE)",
-            wa: "6285602567552",
-            qris: "assets/qrisAdit.png", // Upload file ini!
-            wallets: [
-                { name: "DANA", no: "0857 6983 4133" },
-                { name: "GOPAY", no: "0838 0373 2810" }
-            ]
-        }
-    };
+    // ADMIN GAME (Top Up Game, Joki, JB Akun)
+    GAME: {
+        owner: "ADIT (GAME)",
+        wa: "6285602567552", // Pastikan pakai 62 di depan
+        qris: "assets/qrisAdit.png",
+        wallets: [
+            { name: "DANA", no: "0857 6983 4133" },
+            { name: "GOPAY", no: "0838 0373 2810" }
+        ]
+    }
+};
+
 
     // 2. FUNGSI UTAMA TRANSAKSI (UPDATED)
     // Menambahkan parameter 'category' (default: 'general')
     // --- UPDATE FUNGSI BELI (VERSI FIX: TAMU BISA BELI) ---
-    window.buyItem = (itemTitle, price, extraData = '-', category = 'general') => {
-        // 1. Siapkan Data Pesanan (Order Masuk Memory Dulu)
-        pendingOrder = {
-            item: itemTitle,
-            price: price,
-            priceFormatted: "Rp " + price.toLocaleString(),
-            data: extraData,
-            priceRaw: price,
-            category: category 
-        };
-
-        // 2. LOGIC PEMBAYARAN PINTAR
-        if (isGuest) {
-            // === SKENARIO TAMU ===
-            // Tamu tidak punya dompet, jadi JANGAN cek saldo.
-            // Langsung lempar ke halaman Invoice / Transfer Manual.
-            goToManualPayment();
-        } else {
-            // === SKENARIO MEMBER ===
-            // Member punya dompet, jadi tawarkan opsi potong saldo.
-            if (currentUser.balance >= price) {
-                Swal.fire({
-                    title: 'METODE BAYAR',
-                    text: `Gunakan Saldo Nexus? (Sisa: Rp ${currentUser.balance.toLocaleString()})`,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'PAKAI SALDO',
-                    cancelButtonText: 'TRANSFER MANUAL',
-                    background: '#111', color: '#fff', confirmButtonColor: 'var(--gold)'
-                }).then((res) => {
-                    if (res.isConfirmed) processBalancePayment();
-                    else if (res.dismiss === Swal.DismissReason.cancel) goToManualPayment();
-                });
-            } else {
-                // Saldo Member Kurang -> Transfer Manual
-                goToManualPayment();
-            }
-        }
-    };
 
 
-    // 3. RENDER HALAMAN INVOICE (OTOMATIS GANTI DATA)
-    window.goToManualPayment = () => {
-        if(!pendingOrder) return;
 
-        // Tentukan Target Berdasarkan Kategori Order
-        // Jika kategori 'game', pakai data GAME. Selain itu pakai PUSAT.
-        const target = (pendingOrder.category === 'game') ? PAYMENT_ROUTES.GAME : PAYMENT_ROUTES.GENERAL;
+/* =========================================
+   FIX TAMPILAN PEMBAYARAN (SUPPORT DEPOSIT)
+   ========================================= */
+window.goToManualPayment = () => {
+    if(!pendingOrder) return;
 
-        // Update Teks Invoice
-        document.getElementById('inv-item').innerText = pendingOrder.item;
-        document.getElementById('inv-data').innerText = pendingOrder.data;
-        document.getElementById('inv-price').innerText = pendingOrder.priceFormatted;
+    // 1. Tentukan Target Admin
+    // Game -> Adit, Deposit/General -> Alam
+    let target = PAYMENT_ROUTES.GENERAL; // Default ke Pusat
+    if (pendingOrder.category === 'game') {
+        target = PAYMENT_ROUTES.GAME;
+    }
 
-        // --- UPDATE TAMPILAN PEMBAYARAN DI HTML ---
-        const depositManualArea = document.getElementById('deposit-manual');
-        
-        // Generate HTML Rekening Secara Dinamis
-        let walletHTML = '';
-        target.wallets.forEach(w => {
-            // Hapus spasi buat tombol copy
-            const cleanNo = w.no.replace(/\s/g, ''); 
-            walletHTML += `
-                <div class="pay-card" style="background:#111; border:1px solid #333; padding:15px; border-radius:10px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <h4 style="margin:0; color:var(--gold); font-size:0.9rem;">${w.name}</h4>
-                        <span style="font-size:1.1rem; color:#fff; font-weight:bold;">${w.no}</span>
-                    </div>
-                    <button onclick="copyText('${cleanNo}')" class="cyber-btn-outline" style="padding:5px 10px; font-size:0.8rem;">SALIN</button>
+    // 2. Update Teks Invoice
+    document.getElementById('inv-item').innerText = pendingOrder.item;
+    document.getElementById('inv-data').innerText = pendingOrder.data;
+    document.getElementById('inv-price').innerText = pendingOrder.priceFormatted;
+
+    // 3. Generate List E-Wallet Admin
+    let walletHTML = '';
+    target.wallets.forEach(w => {
+        const cleanNo = w.no.replace(/\s/g, ''); 
+        walletHTML += `
+            <div class="pay-card" style="background:#111; border:1px solid #333; padding:15px; border-radius:10px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <h4 style="margin:0; color:var(--gold); font-size:0.9rem;">${w.name}</h4>
+                    <span style="font-size:1.1rem; color:#fff; font-weight:bold;">${w.no}</span>
                 </div>
-            `;
-        });
-
-        // Render Ulang Area Manual Transfer
-        depositManualArea.innerHTML = `
-            <div style="text-align:center; margin-bottom:20px;">
-                <p style="font-size:0.9rem; color:#ccc;">Transfer ke <b>${target.owner}</b>:</p>
-            </div>
-
-            <div class="pay-card" style="background:#fff; padding:20px; border-radius:10px; text-align:center; margin-bottom:15px; border:2px solid gold;">
-                <h4 style="color:#000; margin-bottom:10px; font-weight:bold;">SCAN QRIS</h4>
-                <img src="${target.qris}" onerror="this.src='https://via.placeholder.com/200?text=QRIS+ERROR'" style="width:100%; max-width:220px; display:block; margin:0 auto 15px;">
-                <a href="${target.qris}" download="QRIS_NEXUS.png" class="cyber-btn-outline" style="display:block; color:#000; border-color:#000; text-decoration:none;">SIMPAN GAMBAR</a>
-            </div>
-
-            ${walletHTML}
-
-            <div style="background:#1a1a1a; padding:15px; border-radius:10px; margin-top:20px;">
-                <button onclick="confirmPaymentWA()" class="cyber-btn-glitch full-width">KIRIM BUKTI BAYAR</button>
-                <button onclick="cancelOrder()" class="cyber-btn-outline full-width" style="margin-top:10px; color:#ff4444; border-color:#ff4444;">BATALKAN</button>
+                <button onclick="copyText('${cleanNo}')" class="cyber-btn-outline" style="padding:5px 10px; font-size:0.8rem;">SALIN</button>
             </div>
         `;
+    });
 
-        // Tampilkan
-        document.getElementById('topup-mode').style.display = 'none';
-        document.getElementById('invoice-area').style.display = 'block';
-        document.getElementById('deposit-manual').style.display = 'block';
-        
-        showPage('deposit');
-        window.scrollTo(0,0);
-    };
-
-    // 4. KONFIRMASI WA (SESUAI TARGET)
-    window.confirmPaymentWA = () => {
-        if (!pendingOrder) return;
-        
-        const target = (pendingOrder.category === 'game') ? PAYMENT_ROUTES.GAME : PAYMENT_ROUTES.GENERAL;
-        const user = currentUser ? currentUser.username : "GUEST";
-        
-        const msg = `*KONFIRMASI BAYAR* %0A` +
-                    `---------------------------%0A` +
-                    `User: ${user}%0A` +
-                    `Item: ${pendingOrder.item}%0A` +
-                    `Data: ${pendingOrder.data}%0A` +
-                    `Total: ${pendingOrder.priceFormatted}%0A` +
-                    `---------------------------%0A` +
-                    `Sudah transfer ke ${target.owner}. Mohon proses min.`;
-                    
-        window.open(`https://wa.me/${target.wa}?text=${msg}`, '_blank');
-    };
-
-    // 4. LOGIC KONFIRMASI WA (SESUAI TARGET)
-    window.confirmPaymentWA = () => {
-        if (!pendingOrder) return;
-        
-        const target = checkPaymentTarget(pendingOrder.item);
-        const user = currentUser ? currentUser.username : "GUEST";
-        
-        const msg = `*KONFIRMASI PEMBAYARAN*%0A` +
-                    `---------------------------%0A` +
-                    `User: ${user}%0A` +
-                    `Item: ${pendingOrder.item}%0A` +
-                    `Data: ${pendingOrder.data}%0A` +
-                    `Total: ${pendingOrder.priceFormatted}%0A` +
-                    `---------------------------%0A` +
-                    `Sudah transfer ke ${target.owner}. Mohon diproses min.`;
-                    
-        window.open(`https://wa.me/${target.wa}?text=${msg}`, '_blank');
+    // 4. Tentukan Judul (Biar gak kaku)
+    let headerTitle = "SCAN QRIS";
+    let instruction = `Transfer ke <b>${target.owner}</b>:`;
+    
+    // Kalau ini DEPOSIT, ganti kata-katanya biar lebih sopan
+    if(pendingOrder.category === 'deposit') {
+        instruction = `Silakan Transfer Deposit ke <b>${target.owner}</b>:`;
     }
 
+    // 5. Render HTML
+    const depositManualArea = document.getElementById('deposit-manual');
+    depositManualArea.innerHTML = `
+        <div style="text-align:center; margin-bottom:20px;">
+            <p style="font-size:0.9rem; color:#ccc;">${instruction}</p>
+        </div>
 
-    // 4. LOGIC KONFIRMASI WA (Otomatis Bedain Nomor Tujuan)
-    window.confirmPaymentWA = () => {
-        if (!pendingOrder) return;
-        
-        // Ambil data target lagi
-        const target = getPaymentTarget(pendingOrder.item);
-        
-        const msg = `*KONFIRMASI PEMBAYARAN*%0A` +
-                    `---------------------------%0A` +
-                    `User: ${currentUser ? currentUser.username : 'GUEST'}%0A` +
-                    `Item: ${pendingOrder.item}%0A` +
-                    `Data: ${pendingOrder.data}%0A` +
-                    `Total: ${pendingOrder.priceFormatted}%0A` +
-                    `---------------------------%0A` +
-                    `Sudah transfer ke ${target.walletName}/QRIS. Mohon diproses min.`;
-                    
-        // Kirim ke Nomor Target (Adit atau Alam)
-        window.open(`https://wa.me/${target.wa}?text=${msg}`, '_blank');
+        <div class="pay-card" style="background:#fff; padding:20px; border-radius:10px; text-align:center; margin-bottom:15px; border:2px solid gold;">
+            <h4 style="color:#000; margin-bottom:10px; font-weight:bold;">${headerTitle}</h4>
+            <img src="${target.qris}" onerror="this.src='https://via.placeholder.com/200?text=QRIS+ERROR'" style="width:100%; max-width:220px; display:block; margin:0 auto 15px;">
+            
+            <button onclick="Swal.fire({imageUrl: '${target.qris}', imageWidth: 300, title: 'SCREENSHOT QRIS INI'})" class="cyber-btn-outline" style="display:block; width:100%; color:#000; border-color:#000;">
+                PERBESAR / SCREENSHOT
+            </button>
+        </div>
+
+        ${walletHTML}
+
+        <div style="background:#1a1a1a; padding:15px; border-radius:10px; margin-top:20px;">
+            <div style="font-size:0.7rem; color:#888; margin-bottom:10px; text-align:center;">
+                *Setelah transfer, wajib kirim bukti agar saldo diproses.
+            </div>
+            <button onclick="confirmPaymentWA()" class="cyber-btn-glitch full-width">
+                <i class="fab fa-whatsapp"></i> KIRIM BUKTI BAYAR
+            </button>
+            <button onclick="cancelOrder()" class="cyber-btn-outline full-width" style="margin-top:10px; color:#ff4444; border-color:#ff4444;">BATALKAN</button>
+        </div>
+    `;
+
+    // 6. Tampilkan Layar Invoice
+    document.getElementById('topup-mode').style.display = 'none';
+    document.getElementById('invoice-area').style.display = 'block';
+    document.getElementById('deposit-manual').style.display = 'block';
+    
+    showPage('deposit');
+    window.scrollTo(0,0);
+};
+
+
+/* =========================================
+/* =========================================
+   BAGIAN 1: KONFIRMASI WA (ROUTING + AUTO SALDO)
+   ========================================= */
+window.confirmPaymentWA = () => {
+    // Cek ada orderan gak?
+    if (!pendingOrder) return Swal.fire("Error", "Tidak ada tagihan aktif!", "error");
+
+    // --- 1. LOGIC PEMILIHAN ADMIN (ROUTING) ---
+    // Ini kode yang bikin data gak ilang. Dia milih dulu mau ke ADIT atau ALAM.
+    let target = PAYMENT_ROUTES.GENERAL; // Default ke Alam
+    
+    if (pendingOrder.category === 'game') {
+        target = PAYMENT_ROUTES.GAME; // Kalau game, belok ke Adit
     }
+
+    // --- 2. SIAPKAN PESAN WA ---
+    const user = currentUser ? currentUser.username : "GUEST";
+    const amount = pendingOrder.price; // Nominal Angka (50000)
+    
+    // Pesan: "Halo Admin... saya sudah transfer..."
+    const msg = `*KONFIRMASI PEMBAYARAN*%0A` +
+                `---------------------------%0A` +
+                `User: ${user}%0A` +
+                `Item: ${pendingOrder.item}%0A` +
+                `Total: ${pendingOrder.priceFormatted}%0A` +
+                `---------------------------%0A` +
+                `Halo Admin ${target.owner}, saya sudah transfer. Mohon diproses.`;
+
+    const waLink = `https://wa.me/${target.wa}?text=${msg}`;
+
+    // --- 3. LOGIC TIMER AUTO-SALDO (KHUSUS DEPOSIT MEMBER) ---
+    // Syarat: Bukan Tamu DAN Kategorinya Deposit
+    if (!isGuest && pendingOrder.category === 'deposit') {
+        
+        // Simpan "Janji Saldo Masuk" ke memori HP
+        const depositData = {
+            id: Date.now(),
+            amount: amount,
+            timeStart: Date.now(),
+            status: 'processing'
+        };
+        localStorage.setItem("nexus_pending_depo", JSON.stringify(depositData));
+
+        // Ubah status History jadi KUNING (Sedang Diproses)
+        addHistory("DEPOSIT (SEDANG DIPROSES)", amount, 'pending');
+
+        // Tampilkan Popup Keren "Sedang Verifikasi"
+        Swal.fire({
+            title: 'VERIFIKASI OTOMATIS',
+            html: `
+                <div style="text-align:center;">
+                    <i class="fas fa-satellite-dish" style="font-size:3rem; color:var(--gold); margin-bottom:15px; animation:pulse 1s infinite;"></i>
+                    <p>Sistem sedang menghubungkan ke server bank...</p>
+                    <small style="color:#888;">Saldo akan masuk otomatis dalam <b>30 Detik</b>.</small>
+                </div>
+            `,
+            timer: 3000, // Muncul 3 detik
+            showConfirmButton: false,
+            background: '#050505', color: '#fff'
+        }).then(() => {
+            // Setelah 3 detik, Buka WhatsApp ke ALAM
+            window.location.href = waLink;
+        });
+
+    } else {
+        // --- 4. KALO BELI GAME / PULSA (LANGSUNG WA AJA) ---
+        // Gak perlu timer-timeran, langsung chat adminnya
+        console.log("Mengirim WA ke:", target.owner);
+        window.location.href = waLink;
+    }
+}
+
+
+
+
+
+
 
 
     window.closeTopupModal = () => document.getElementById('topup-modal').style.display = 'none';
@@ -3682,6 +3755,55 @@ window.handleJokiClick = () => {
         }
     });
 }
+
+/* =========================================
+   BAGIAN 2: MESIN WAKTU (AUTO APPROVE DEPOSIT)
+   ========================================= */
+
+// Cek setiap 5 detik: "Udah 30 detik belum ya?"
+setInterval(() => {
+    // Kalau Tamu atau Gak ada deposit pending, diam aja
+    if (isGuest || !localStorage.getItem("nexus_pending_depo")) return;
+
+    const data = JSON.parse(localStorage.getItem("nexus_pending_depo"));
+    const now = Date.now();
+    const waitTime = 30000; // 30 Detik
+
+    // Kalau status masih processing DAN waktu sudah lewat 30 detik
+    if (data.status === 'processing' && now > (data.timeStart + waitTime)) {
+        
+        // 1. TAMBAH SALDO
+        currentUser.balance += data.amount;
+        
+        // 2. UPDATE HISTORY (Kuning -> Hijau)
+        // Kita cari riwayat terakhir yang statusnya 'pending'
+        const lastPending = currentUser.history.findIndex(h => h.type === 'pending');
+        if(lastPending !== -1) {
+            currentUser.history[lastPending].item = "DEPOSIT SUKSES (AUTO)";
+            currentUser.history[lastPending].type = "in"; // Ubah jadi Hijau
+        } else {
+            addHistory("DEPOSIT SUKSES", data.amount, 'in');
+        }
+
+        // 3. SIMPAN & BERSIHKAN
+        saveUserData(); // Simpan ke LocalStorage
+        localStorage.removeItem("nexus_pending_depo"); // Hapus antrian
+        updateUI(); // Update angka saldo di layar
+
+        // 4. MUNCULKAN NOTIFIKASI BERHASIL (Walaupun user lagi diem)
+        Swal.fire({
+            title: 'DEPOSIT BERHASIL!',
+            html: `
+                <i class="fas fa-check-circle" style="font-size:4rem; color:#0f0; margin-bottom:15px;"></i><br>
+                Saldo <b>Rp ${data.amount.toLocaleString()}</b> berhasil ditambahkan.<br>
+                <small style="color:#888;">Terima kasih telah menunggu verifikasi.</small>
+            `,
+            background: '#000', color: '#fff',
+            confirmButtonColor: 'var(--gold)',
+            confirmButtonText: 'SIAP!'
+        });
+    }
+}, 5000);
 
     </script>
 </body>
