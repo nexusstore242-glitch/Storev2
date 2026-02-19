@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS CORE | V.10 SKELETON</title>
+    <title>NEXUS CORE | WEBSTORE</title> 
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
+
         /* --- FITUR BARU: BADGES, FLASHSALE, LEVEL, REFERRAL --- */
 
     /* STYLE BADGE MENU KOTAK */
@@ -1732,32 +1733,41 @@
 
     // --- 2. DATABASE PRODUK (LENGKAP) ---
     const APK_DATA = [
-    { main: "Netflix Premium", logo: "assets/netflix.png", varian: [{ name: "Netflix Sharing 1P1U", price: 22000 }, { name: "Netflix Sharing 1P2U", price: 20000 }, { name: "Netflix Semi-Private", price: 30000 }] },
-    { main: "Viu Premium", logo: "assets/viu.png", varian: [{ name: "Viu Anti Limit 6 Bulan", price: 5000 }, { name: "Viu Anti Limit 1 Tahun", price: 8000 }, { name: "Viu Anti Limit Lifetime", price: 12000 }] },
-    { main: "WeTV VIP", logo: "assets/wetv.png", varian: [{ name: "WeTV Sharing 1 Bulan", price: 7000 }, { name: "WeTV Sharing TV", price: 10000 }, { name: "WeTV Private 1 Bulan", price: 32000 }] },
-    { main: "iQIYI Premium", logo: "assets/iqiyi.png", varian: [{ name: "iQIYI Sharing 3 Bulan", price: 7000 }, { name: "iQIYI Sharing 1 Tahun", price: 12000 }] },
-    { main: "Bstation / Bilibili", logo: "assets/bstation.png", varian: [{ name: "Bstation Sharing 3 Bulan", price: 7000 }, { name: "Bstation Sharing 1 Tahun", price: 12000 }] },
-    { main: "Loklok", logo: "assets/loklok.png", varian: [{ name: "Loklok Sharing 1 Bulan", price: 18000 }, { name: "Loklok Sharing Basic", price: 15000 }] },
-    { main: "Amazon Prime", logo: "assets/amazonprime.png", varian: [{ name: "Prime Sharing 1 Bulan", price: 6000 }, { name: "Prime Private 1 Bulan", price: 15000 }] },
-    { main: "HBO Go Max", logo: "assets/hbogo.png", varian: [{ name: "HBO Go Sharing 1 Bulan", price: 12000 }] },
-    { main: "Vidio Platinum", logo: "assets/vidio.png", varian: [{ name: "Vidio Mobile Sharing", price: 13000 }, { name: "Vidio Mobile Private", price: 25000 }, { name: "Vidio All Device Sharing", price: 18000 }] },
-        { main: "Spotify Premium", logo: "assets/spotify.png", varian: [{ name: "Spotify Famplan 1 Bln", price: 17500 }, { name: "Spotify Famplan 2 Bln", price: 32000 }] },
-    { main: "Youtube Premium", logo: "assets/youtube.png", varian: [{ name: "Youtube Family Plan", price: 4000 }, { name: "Youtube Individual", price: 9000 }, { name: "Youtube Indiv 3 Bulan", price: 25000 }] },
-    { main: "Canva Pro", logo: "assets/canva.png", varian: [{ name: "Canva Member 1 Bulan", price: 2000 }, { name: "Canva Designer 1 Bulan", price: 3000 }, { name: "Canva Lifetime", price: 9000 }, { name: "Canva Owner (Seller)", price: 8000 }] },
-    { main: "CapCut Pro", logo: "assets/capcut.png", varian: [{ name: "CapCut Sharing 1 Bulan", price: 6000 }, { name: "CapCut Private 1 Bulan", price: 10000 }, { name: "CapCut Sharing 14 Hari", price: 3000 }, { name: "CapCut Private 14 Hari", price: 6000 }] },
-    { main: "Alight Motion", logo: "assets/alightmotion.png", varian: [{ name: "AM Sharing 1 Tahun", price: 3000 }, { name: "AM Private 1 Tahun", price: 5000 }] },
-    { main: "Picsart Gold", logo: "assets/picsart.png", varian: [{ name: "Picsart Sharing 1 Bulan", price: 3000 }, { name: "Picsart Private 1 Bulan", price: 6000 }] },
-    { main: "Meitu VIP", logo: "assets/meitu.png", varian: [{ name: "Meitu Sharing 1 Bulan", price: 15000 }] },
-
-    // PRODUCTIVITY & AI
-    { main: "Scribd", logo: "assets/scribd.png", varian: [{ name: "Scribd Private 30 Hari", price: 6000 }, { name: "Scribd Private 60 Hari", price: 9000 }] },
-    { main: "Wattpad Premium", logo: "assets/wattpad.png", varian: [{ name: "Wattpad Sharing 1 Bulan", price: 6000 }, { name: "Wattpad Sharing 1 Tahun", price: 12000 }] },
-    { main: "ChatGPT Plus", logo: "assets/chatgpt.png", varian: [{ name: "ChatGPT Sharing 1 Bulan", price: 15000 }, { name: "ChatGPT Private 1 Bulan", price: 40000 }] },
-    { main: "Zoom Workplace", logo: "assets/zoom.png", varian: [{ name: "Zoom Private 7 Hari", price: 5000 }, { name: "Zoom Private 14 Hari", price: 8000 }] },
-
-    // BUNDLE
-    { main: "Paket Bundle Hemat", logo: "assets/bundle.png", varian: [{ name: "Creator Pack (Canva+CapCut+AM)", price: 15000 }, { name: "AI Pack (ChatGPT+Canva)", price: 17000 }, { name: "Streamer Pack (Netflix+Spotify)", price: 38000 }, { name: "Student Pack (Canva+Scribd)", price: 7000 }] }
+        { main: "Alight Motion", logo: "assets/alightmotion.png", varian: [{ name: "1 Bulan", price: 6000 }, { name: "1 Tahun", price: 10000 }] },
+        
+        { main: "Apple Music", logo: "assets/applemusic.png", varian: [{ name: "Invite Plan", price: 10000 }, { name: "Individual Plan", price: 15000 }, { name: "Head Plan", price: 20000 }] },
+        
+        { main: "Canva Pro", logo: "assets/canva.png", varian: [{ name: "1 Bulan", price: 6000 }, { name: "2 Bulan", price: 9000 }, { name: "Lifetime", price: 15000 }, { name: "Canva Head 1 Bulan", price: 10000 }, { name: "Canva Head Lifetime", price: 40000 }] },
+        
+        { main: "CapCut Pro", logo: "assets/capcut.png", varian: [{ name: "Sharing 7 Hari Full Garansi", price: 7000 }, { name: "Private 7 Hari No Garansi", price: 8000 }, { name: "Sharing 1 Bulan No Garansi", price: 10000 }, { name: "Sharing 1 Bulan Full Garansi", price: 12000 }, { name: "Private 1 Bulan No Garansi", price: 12000 }, { name: "Private 1 Bulan Full Garansi", price: 15000 }] },
+        
+        { main: "ChatGPT Plus", logo: "assets/chatgpt.png", varian: [{ name: "Via Invite 1 Bulan", price: 12000 }, { name: "Private Individual 1 Bulan", price: 25000 }, { name: "Head", price: 30000 }] },
+        
+        { main: "Disney+", logo: "assets/disney.png", varian: [{ name: "1 Hari", price: 10000 }, { name: "3 Hari", price: 15000 }, { name: "7 Hari", price: 20000 }, { name: "1 Bulan", price: 40000 }] },
+        
+        { main: "Gemini Advanced", logo: "assets/gemini.png", varian: [{ name: "Private 1 Bulan No Garansi", price: 8000 }, { name: "Private 1 Bulan Full Garansi", price: 15000 }] },
+        
+        { main: "Ibis Paint X", logo: "assets/ibispaint.png", varian: [{ name: "Private 1 Bulan No Garansi", price: 10000 }, { name: "Private 1 Bulan Full Garansi", price: 15000 }] },
+        
+        { main: "iQIYI", logo: "assets/iqiyi.png", varian: [{ name: "Standard Sharing 1 Bulan", price: 12000 }, { name: "Standard Private 1 Bulan", price: 30000 }] },
+        
+        { main: "Picsart", logo: "assets/picsart.png", varian: [{ name: "Individual", price: 12000 }, { name: "Private 1 Bulan", price: 15000 }, { name: "Head", price: 22000 }] },
+        
+        { main: "Prime Video", logo: "assets/amazonprime.png", varian: [{ name: "Private 1 Bulan Full Garansi", price: 25000 }] },
+        
+        { main: "Spotify Premium", logo: "assets/spotify.png", varian: [{ name: "Basic Plan", price: 8000 }, { name: "2 Bulan No Garansi", price: 28000 }, { name: "3 Bulan No Garansi", price: 35000 }] },
+        
+        { main: "Telegram Stars", logo: "assets/telegram.png", varian: [{ name: "50 Stars", price: 27000 }, { name: "75 Stars", price: 36000 }, { name: "100 Stars", price: 45000 }, { name: "150 Stars", price: 65000 }, { name: "200 Stars", price: 78000 }, { name: "250 Stars", price: 92000 }, { name: "300 Stars", price: 105000 }, { name: "350 Stars", price: 122000 }, { name: "400 Stars", price: 135000 }, { name: "450 Stars", price: 150000 }, { name: "500 Stars", price: 160000 }, { name: "750 Stars", price: 235000 }, { name: "1000 Stars", price: 305000 }] },
+        
+        { main: "Telegram Premium", logo: "assets/telegram.png", varian: [{ name: "1 Bulan", price: 65000 }, { name: "3 Bulan Gift", price: 235000 }, { name: "6 Bulan Gift", price: 310000 }, { name: "12 Bulan", price: 420000 }, { name: "12 Bulan Gift", price: 550000 }] },
+        
+        { main: "Telegram Gift", logo: "assets/telegram.png", varian: [{ name: "15 Stars", price: 12000 }, { name: "25 Stars", price: 18000 }, { name: "50 Stars", price: 26000 }, { name: "100 Stars", price: 45000 }] },
+        
+        { main: "Vidio", logo: "assets/vidio.png", varian: [{ name: "TV Only 1 Bulan", price: 12000 }, { name: "TV Only 1 Tahun", price: 25000 }, { name: "Mobile 1 Bulan", price: 35000 }, { name: "All Device 1 Bulan", price: 60000 }] },
+        
+        { main: "WeTV", logo: "assets/wetv.png", varian: [{ name: "Sharing 1 Bulan", price: 20000 }, { name: "Private 1 Bulan", price: 40000 }] }
     ];
+
 
     /* =========================================
        FITUR: SOSMED MARKET + CALCULATOR
@@ -3667,45 +3677,70 @@ window.confirmPaymentWA = () => {
 const GAMES_DB = {
     'ml': {
         name: "MOBILE LEGENDS",
-        img: "assets/ml.png", // Update
+        img: "assets/ml.png",
         inputs: [
             { id: "id", label: "User ID" },
             { id: "server", label: "Server ID" }
         ],
         items: [
-            { name: "3 Diamonds", price: 2000 },
-            { name: "12 Diamonds", price: 4000 },
-            { name: "19 Diamonds", price: 7000 },
-            { name: "36 Diamonds", price: 11000 },
-            { name: "56 Diamonds", price: 16000 },
-            { name: "86 Diamonds", price: 24500 },
-            { name: "100 Diamonds", price: 27500 },
-            { name: "144 Diamonds", price: 40000 },
-            { name: "185 Diamonds", price: 51500 },
-            { name: "Weekly Diamond Pass", price: 29000 }
+            // --- KATEGORI: DIAMOND ---
+            { name: "5 Diamonds", price: 1900 },
+            { name: "19 Diamonds", price: 6000 },
+            { name: "44 Diamonds", price: 12000 },
+            { name: "80 Diamonds", price: 22500 },
+            { name: "100 Diamonds", price: 16000 },
+            { name: "170 Diamonds", price: 44500 },
+            { name: "296 Diamonds", price: 77000 },
+            { name: "300 Diamonds", price: 46000 },
+            { name: "408 Diamonds", price: 105500 },
+            { name: "500 Diamonds", price: 76000 },
+            { name: "568 Diamonds", price: 145000 },
+            { name: "875 Diamonds", price: 222000 },
+            { name: "1000 Diamonds", price: 156000 },
+            { name: "2010 Diamonds", price: 478000 },
+            
+            // --- KATEGORI: MEMBER ---
+            { name: "Weekly Diamond Pass", price: 28000 },
+            { name: "Weekly Elite Pass", price: 17000 },
+            { name: "Monthly Elite Pack", price: 74000 },
+            { name: "Starlight Basic", price: 85000 },
+            { name: "Starlight Premium", price: 205000 },
+            { name: "Twilight Pass", price: 160000 },
+
+            // --- KATEGORI: SOSIAL ---
+            { name: "Gift 20 Diamond", price: 8000 },
+            { name: "30 Gift Agate", price: 17000 },
+            { name: "500 Like Profile", price: 25000 },
+            { name: "500 Like Album", price: 25000 },
+            { name: "1000 Like Profile", price: 38000 },
+            { name: "1000 Like Album", price: 38000 }
         ]
     },
-    'ff': {
+
+        'ff': {
         name: "FREE FIRE",
-        img: "assets/ff.png", // Update
+        img: "assets/ff.png",
         inputs: [
             { id: "id", label: "Player ID" }
         ],
         items: [
-            { name: "70 Diamonds", price: 10000 },
-            { name: "100 Diamonds", price: 15000 },
-            { name: "140 Diamonds", price: 20000 },
-            { name: "210 Diamonds", price: 29000 },
-            { name: "250 Diamonds", price: 36000 },
-            { name: "300 Diamonds", price: 45000 },
-            { name: "355 Diamonds", price: 50000 },
-            { name: "500 Diamonds", price: 70000 },
-            { name: "720 Diamonds", price: 95000 },
-            { name: "Member Mingguan", price: 30000 },
-            { name: "Member Bulanan", price: 93000 },
-            { name: "Level Up Pass", price: 16000 }
+            // --- KATEGORI: DIAMOND ---
+            { name: "5 Diamonds", price: 3000 },
+            { name: "12 Diamonds", price: 5000 },
+            { name: "50 Diamonds", price: 10000 },
+            { name: "70 Diamonds", price: 13000 },
+            { name: "140 Diamonds", price: 25000 },
+            { name: "360 Diamonds", price: 58000 },
+            { name: "720 Diamonds", price: 110000 },
+            { name: "1450 Diamonds", price: 205000 },
+
+            // --- KATEGORI: MEMBER ---
+            { name: "Membership Mingguan", price: 35000 },
+            { name: "Membership Bulanan", price: 95000 },
+            { name: "BP Card", price: 58000 }
         ]
     },
+
     'pubg': {
         name: "PUBG MOBILE",
         img: "assets/Pubg.png", // Update (Sesuai request huruf besar P)
