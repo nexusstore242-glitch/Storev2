@@ -10,6 +10,62 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
+        /* --- FITUR BARU: BADGES, FLASHSALE, LEVEL, REFERRAL --- */
+
+    /* STYLE BADGE MENU KOTAK */
+    .cs-badge-mini {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: var(--gold);
+        color: #000;
+        font-size: 0.5rem;
+        font-weight: bold;
+        padding: 2px 6px;
+        border-bottom-left-radius: 6px;
+        z-index: 2;
+    }
+
+
+    /* 2. FLASH SALE SECTION */
+    .flash-sale-box {
+        margin: 20px 0; padding: 15px; border-radius: 10px;
+        background: linear-gradient(135deg, #2a0a0a 0%, #000 100%);
+        border: 1px solid #ff003c; position: relative; overflow: hidden;
+    }
+    .flash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .countdown-timer { display: flex; gap: 5px; }
+    .time-box { background: #ff003c; color: #fff; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; }
+    .flash-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+    .flash-item { 
+        min-width: 120px; background: #111; border: 1px solid #333; 
+        padding: 10px; border-radius: 8px; text-align: center; position: relative;
+    }
+    .coret-harga { text-decoration: line-through; color: #666; font-size: 0.7rem; }
+    .flash-price { color: #ff003c; font-weight: bold; font-size: 0.9rem; }
+
+    /* 3. MEMBER LEVEL BADGE */
+    .lvl-badge {
+        display: inline-block; padding: 2px 8px; border-radius: 4px;
+        font-size: 0.65rem; font-weight: bold; margin-left: 5px; vertical-align: middle;
+        border: 1px solid; letter-spacing: 1px;
+    }
+    .lvl-bronze { border-color: #cd7f32; color: #cd7f32; background: rgba(205, 127, 50, 0.1); }
+    .lvl-silver { border-color: #c0c0c0; color: #c0c0c0; background: rgba(192, 192, 192, 0.1); }
+    .lvl-gold { border-color: #ffd700; color: #ffd700; background: rgba(255, 215, 0, 0.1); box-shadow: 0 0 5px rgba(255,215,0,0.2); }
+    .lvl-vip { border-color: #ff003c; color: #fff; background: #ff003c; box-shadow: 0 0 10px #ff003c; }
+
+    /* 4. REFERRAL PAGE */
+    .ref-container { text-align: center; padding: 20px; background: #111; border-radius: 10px; border: 1px dashed #ffd700; margin-top: 20px; }
+    .ref-code-box { 
+        background: #000; border: 1px solid #333; padding: 15px; 
+        font-size: 1.5rem; letter-spacing: 3px; color: #ffd700; 
+        margin: 15px 0; border-radius: 5px; cursor: pointer; position: relative;
+    }
+    .ref-code-box:active { transform: scale(0.98); }
+    .ref-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+    .stat-box { background: #1a1a1a; padding: 10px; border-radius: 5px; }
+
         /* STYLE TAMBAHAN CHAT BOT */
     .chat-tag {
         background: rgba(255, 255, 255, 0.05);
@@ -583,18 +639,30 @@
             </button>
         </div>
 
-        <div style="text-align:center; padding:30px 20px; border-bottom:1px dashed #333; background:linear-gradient(to bottom, #111, #050505);">
-            <div style="width:80px; height:80px; margin:0 auto 15px; border-radius:50%; border:2px solid var(--gold); display:flex; align-items:center; justify-content:center; background:#1a1a1a; box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);">
-                <i class="fas fa-user-astronaut" style="font-size:2.5rem; color:var(--gold);"></i>
+        <div style="padding:20px; border-bottom:1px solid #222; background:#0a0a0a; display:flex; align-items:center; gap:15px;">
+            
+            <div style="position:relative; flex-shrink:0;">
+                <div style="width:50px; height:50px; border-radius:50%; border:2px solid var(--gold); overflow:hidden; background:#1a1a1a; display:flex; align-items:center; justify-content:center;">
+                    <i class="fas fa-user-astronaut" style="font-size:1.5rem; color:#fff;"></i>
+                </div>
+                <div style="position:absolute; bottom:0; right:0; width:12px; height:12px; background:#0f0; border:2px solid #0a0a0a; border-radius:50%;"></div>
             </div>
-            <h3 id="sidebar-username" style="color:#fff; margin:0; letter-spacing:1px; font-size:1.2rem;">GUEST</h3>
-            <div id="sidebar-status" style="color:#888; font-size:0.8rem; margin-top:5px; background:#222; display:inline-block; padding:2px 10px; border-radius:10px;">Visitor Mode</div>
-            <div style="margin-top:15px;">
-                <span style="font-size:0.7rem; color:#666;">SALDO NEXUS PAY</span>
-                <div id="sidebar-balance" class="red-neon" style="font-size:1.5rem; font-weight:bold; margin-top:2px;">Rp 0</div>
+
+            <div style="flex:1; min-width:0;"> <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2px;">
+                    <h3 id="sidebar-username" style="margin:0; font-size:1rem; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:110px;">GUEST</h3>
+                    <span id="sidebar-status" style="font-size:0.6rem; background:var(--gold); color:#000; padding:2px 6px; border-radius:4px; font-weight:bold; letter-spacing:0.5px;">VISITOR</span>
+                </div>
+
+                <div style="display:flex; align-items:center; gap:5px;">
+                    <i class="fas fa-wallet" style="font-size:0.7rem; color:#666;"></i>
+                    <div id="sidebar-balance" class="red-neon" style="font-size:1.1rem; font-weight:bold; line-height:1;">Rp 0</div>
+                </div>
+                
+                <div id="sidebar-id" style="font-size:0.65rem; color:#444; margin-top:3px; font-family:monospace;">ID: -</div>
             </div>
-            <div id="sidebar-id" style="font-size:0.7rem; color:#444; margin-top:10px; font-family:monospace;">ID: -</div>
+            
         </div>
+
 
         <div class="sidebar-menu">
             <button onclick="showPage('home')"><i class="fas fa-home"></i> DASHBOARD</button>
@@ -602,6 +670,9 @@
             <button onclick="showPage('deposit')"><i class="fas fa-wallet"></i> ISI SALDO</button>
             <button onclick="showPage('freelance')"><i class="fas fa-laptop-code"></i> MISI & CUAN</button>
             <button onclick="showPage('history')"><i class="fas fa-history"></i> RIWAYAT</button>
+            
+            <button onclick="showPage('referral')"><i class="fas fa-users"></i> REFERRAL SYSTEM</button>
+
             
             <div style="margin-top:20px; border-top:1px solid #222;"></div>
             
@@ -676,6 +747,74 @@
             <div class="dot" style="width:8px; height:8px; background:rgba(255,255,255,0.5); border-radius:50%;"></div>
         </div>
     </div>
+    
+                <div class="flash-scroll">
+                    <div class="flash-item" onclick="buyItem('PROMO: 86 Diamond ML', 19500, 'Flash Sale', 'game')">
+                        <div class="prod-badge badge-hot">HOT</div>
+                        <img src="assets/ml.png" onerror="this.src='https://via.placeholder.com/40?text=ML'" style="width:40px; height:40px; object-fit:contain; margin-bottom:5px;">
+                        <div style="font-size:0.7rem; color:#ccc;">86 DM</div>
+                        <div class="coret-harga">Rp 24.500</div>
+                        <div class="flash-price">Rp 19.500</div>
+                    </div>
+                    
+                    <div class="flash-item" onclick="buyItem('PROMO: 140 Diamond FF', 18500, 'Flash Sale', 'game')">
+                        <div class="prod-badge badge-promo">-15%</div>
+                        <img src="assets/ff.png" onerror="this.src='https://via.placeholder.com/40?text=FF'" style="width:40px; height:40px; object-fit:contain; margin-bottom:5px;">
+                        <div style="font-size:0.7rem; color:#ccc;">140 DM</div>
+                        <div class="coret-harga">Rp 20.000</div>
+                        <div class="flash-price">Rp 18.500</div>
+                    </div>
+                    
+                    <div class="flash-item" onclick="buyItem('PROMO: Weekly Pass', 27000, 'Flash Sale', 'game')">
+                        <div class="prod-badge badge-best">BEST</div>
+                        <img src="assets/ml.png" onerror="this.src='https://via.placeholder.com/40?text=ML'" style="width:40px; height:40px; object-fit:contain; margin-bottom:5px;">
+                        <div style="font-size:0.7rem; color:#ccc;">WDP</div>
+                        <div class="coret-harga">Rp 29.000</div>
+                        <div class="flash-price">Rp 27.000</div>
+                    </div>
+
+                    <div class="flash-item" onclick="buyItem('PROMO: Netflix 1P1U', 19000, 'Flash Sale', 'general')">
+                        <div class="prod-badge badge-promo">SALE</div>
+                        <img src="assets/netflix.png" onerror="this.src='https://via.placeholder.com/40?text=NFLX'" style="width:40px; height:40px; object-fit:contain; margin-bottom:5px;">
+                        <div style="font-size:0.7rem; color:#ccc;">1 Bulan</div>
+                        <div class="coret-harga">Rp 22.000</div>
+                        <div class="flash-price">Rp 19.000</div>
+                    </div>
+
+                    <div class="flash-item" onclick="buyItem('PROMO: Spotify Famplan', 12000, 'Flash Sale', 'general')">
+                        <div class="prod-badge badge-hot">HOT</div>
+                        <img src="assets/spotify.png" onerror="this.src='https://via.placeholder.com/40?text=SPOT'" style="width:40px; height:40px; object-fit:contain; margin-bottom:5px;">
+                        <div style="font-size:0.7rem; color:#ccc;">1 Bulan</div>
+                        <div class="coret-harga">Rp 17.500</div>
+                        <div class="flash-price">Rp 12.000</div>
+                    </div>
+
+                    <div class="flash-item" onclick="buyItem('PROMO: 60 Genesis', 12000, 'Flash Sale', 'game')">
+                        <div class="prod-badge badge-best">BEST</div>
+                        <img src="assets/ghensin.png" onerror="this.src='https://via.placeholder.com/40?text=GI'" style="width:40px; height:40px; object-fit:contain; margin-bottom:5px;">
+                        <div style="font-size:0.7rem; color:#ccc;">60 GC</div>
+                        <div class="coret-harga">Rp 15.000</div>
+                        <div class="flash-price">Rp 12.000</div>
+                    </div>
+
+                    <div class="flash-item" onclick="buyItem('PROMO: 100 Foll IG Indo', 5000, 'Flash Sale', 'general')">
+                        <div class="prod-badge badge-promo">-30%</div>
+                        <i class="fab fa-instagram" style="font-size:2rem; color:#aaa; margin-bottom:9px;"></i>
+                        <div style="font-size:0.7rem; color:#ccc;">100 Foll</div>
+                        <div class="coret-harga">Rp 7.500</div>
+                        <div class="flash-price">Rp 5.000</div>
+                    </div>
+
+                    <div class="flash-item" onclick="buyItem('PROMO: Tri Happy 3GB', 9000, 'Flash Sale', 'general')">
+                        <div class="prod-badge badge-hot">HOT</div>
+                        <img src="assets/tri.png" onerror="this.src='https://via.placeholder.com/40?text=TRI'" style="width:40px; height:40px; object-fit:contain; margin-bottom:5px;">
+                        <div style="font-size:0.7rem; color:#ccc;">3GB Nat+</div>
+                        <div class="coret-harga">Rp 11.000</div>
+                        <div class="flash-price">Rp 9.000</div>
+                    </div>
+                </div>
+
+
 
                 </div>
                 
@@ -732,6 +871,33 @@
     <i class="fas fa-fighter-jet nav-icon" style="color:var(--gold);"></i>
     <span>JOKI</span>
 </div>
+
+
+<div class="m-nav-item" onclick="openCS('RESELLER PANEL')" style="position:relative; overflow:hidden;">
+    <div class="cs-badge-mini">SOON</div>
+    <i class="fas fa-users-cog nav-icon" style="color:var(--gold);"></i>
+    <span>RESELLER</span>
+</div>
+
+<div class="m-nav-item" onclick="openCS('VIP MEMBERSHIP')" style="position:relative; overfl.2#4ow:hidden;">
+    <div class="cs-badge-mini">SOON</div>
+    <i class="fas fa-crown nav-icon" style="color:var(--gold);"></i>
+    <span>VIP CLUB</span>
+</div>
+
+<div class="m-nav-item" onclick="openCS('DIGITAL BRAND')" style="position:relative; overflow:hidden;">
+    <div class="cs-badge-mini">SOON</div>
+    <i class="fas fa-fingerprint nav-icon" style="color:var(--gold);"></i>
+    <span>OWN BRAND</span>
+</div>
+
+<div class="m-nav-item" onclick="openCS('PPOB & TAGIHAN')" style="position:relative; overflow:hidden;">
+    <div class="cs-badge-mini">SOON</div>
+    <i class="fas fa-file-invoice-dollar nav-icon" style="color:var(--gold);"></i>
+    <span>TAGIHAN</span>
+</div>
+
+
 
 </div>
 
@@ -920,26 +1086,119 @@
                 <div id="view-joki" class="market-view" style="display:none;">
                     <button onclick="closeMarketView()" class="cyber-btn-outline full-width">⬅ KEMBALI</button>
                     
-                    <div class="cyber-card" style="margin-top:15px; background:#111; padding:20px; border:1px solid gold; text-align:center;">
-                        <i class="fas fa-trophy" style="font-size:3rem; margin-bottom:15px; color:gold;"></i>
-                        <h3 style="color:gold;">JASA JOKI</h3>
-                        <p style="font-size:0.8rem; color:#ccc;">Lowongan Worker Terbuka!</p>
+                    <div style="text-align:center; margin:15px 0; border-bottom:1px solid #333; padding-bottom:10px;">
+                        <h2 class="gold-neon" style="font-size:1.5rem; letter-spacing:2px;">JASA JOKI MLBB</h2>
+                        <p style="color:#888; font-size:0.8rem;">Push Rank Kilat, Amanah & Anti Banned</p>
+                    </div>
+
+                    <div style="background:#111; padding:15px; border-radius:10px; margin-bottom:15px; border:1px solid #333;">
+                        <h4 style="color:var(--gold); margin-bottom:10px; font-size:0.9rem;"><i class="fas fa-gamepad"></i> TIPE JOKI</h4>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                            <button onclick="selectJokiType('rank')" id="btn-joki-rank" class="cyber-btn-glitch" style="font-size:0.8rem;">JOKI RANK (BINTANG)</button>
+                            <button onclick="selectJokiType('classic')" id="btn-joki-classic" class="cyber-btn-outline" style="font-size:0.8rem;">JOKI CLASSIC (WR)</button>
+                        </div>
+                    </div>
+
+                    <div style="background:#111; padding:15px; border-radius:10px; margin-bottom:15px; border:1px solid #333;">
+                        <h4 style="color:var(--gold); margin-bottom:15px; font-size:0.9rem;"><i class="fas fa-user-ninja"></i> DATA AKUN</h4>
                         
-                        <div style="text-align:left; margin-top:15px;">
-                            <label style="color:#888;">Nickname:</label>
-                            <input type="text" id="joki-nick" class="cyber-input">
-                            <label style="color:#888;">Game & Rank:</label>
-                            <input type="text" id="joki-rank" class="cyber-input" placeholder="Misal: MLBB (Mythic)">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px;">
+                            <div>
+                                <small style="color:#aaa;">Rank Awal</small>
+                                <select id="joki-rank-awal" class="cyber-input" style="width:100%; padding:8px;">
+                                    <option value="Grandmaster">Grandmaster</option>
+                                    <option value="Epic">Epic</option>
+                                    <option value="Legend">Legend</option>
+                                    <option value="Mythic">Mythic</option>
+                                    <option value="Honor">Mythic Honor</option>
+                                </select>
+                            </div>
+                            <div>
+                                <small style="color:#aaa;">Target Rank</small>
+                                <select id="joki-rank-tujuan" class="cyber-input" style="width:100%; padding:8px;">
+                                    <option value="Epic">Epic</option>
+                                    <option value="Legend">Legend</option>
+                                    <option value="Mythic">Mythic</option>
+                                    <option value="Honor">Mythic Honor</option>
+                                    <option value="Glory">Mythic Glory</option>
+                                </select>
+                            </div>
                         </div>
 
-                        <button onclick="submitJokiRegistration()" class="cyber-btn-glitch full-width" style="margin-top:15px; background:gold; color:#000;">
-                            KIRIM LAMARAN (WA)
-                        </button>
+                        <div style="margin-bottom:10px;">
+                            <small style="color:#aaa;">Sisa Bintang Sekarang (Opsional)</small>
+                            <input type="number" id="joki-star" class="cyber-input" placeholder="Contoh: 3 Bintang">
+                        </div>
+
+                        <div style="margin-bottom:10px;">
+                            <small style="color:#aaa;">Login Via</small>
+                            <select id="joki-login" class="cyber-input" style="width:100%;">
+                                <option value="Moonton">Moonton (Recommended)</option>
+                                <option value="VK">VK</option>
+                                <option value="TikTok">TikTok</option>
+                                <option value="Facebook">Facebook</option>
+                            </select>
+                        </div>
+
+                        <div style="margin-bottom:10px;">
+                            <small style="color:#aaa;">Email / No.HP Akun</small>
+                            <input type="text" id="joki-email" class="cyber-input" placeholder="Email Login...">
+                        </div>
+                        <div style="margin-bottom:10px;">
+                            <small style="color:#aaa;">Password Akun</small>
+                            <input type="text" id="joki-pass" class="cyber-input" placeholder="Password...">
+                        </div>
+
+                        <div style="margin-bottom:10px;">
+                            <small style="color:#aaa;">Request Hero / Catatan Penjoki</small>
+                            <textarea id="joki-note" class="cyber-input" rows="2" placeholder="Ex: Pake Ling/Fanny, Jangan nabrak jam 8 malam..."></textarea>
+                        </div>
+                        
+                        <div style="margin-bottom:10px;">
+                            <small style="color:#aaa;">Nomor WhatsApp (Untuk Laporan):</small>
+                            <input type="number" id="joki-wa-user" class="cyber-input" placeholder="08xx...">
+                        </div>
+
+                        <div style="background:rgba(255,0,0,0.1); padding:10px; border-left:3px solid var(--red-core); font-size:0.7rem; color:#ccc; margin-top:10px;">
+                            <i class="fas fa-shield-alt"></i> <b>PRIVASI AMAN:</b> Data akun dikirim terenkripsi langsung ke WhatsApp Admin Adit. Matikan verifikasi 2 langkah (A2F) agar proses cepat.
+                        </div>
                     </div>
+
+                    <button onclick="processJokiOrder()" class="cyber-btn-glitch full-width" style="padding:15px; font-size:1rem; margin-bottom:20px;">
+                        HITUNG & ORDER VIA WA <i class="fab fa-whatsapp"></i>
+                    </button>
                 </div>
+
 
             </section>
 
+            <section id="referral" class="page">
+                <h2 class="sect-title">PROGRAM <span class="gold-neon">REFERRAL</span></h2>
+                
+                <div class="ref-container">
+                    <p style="color:#aaa; font-size:0.9rem;">Bagikan kode unikmu & dapatkan saldo gratis!</p>
+                    
+                    <div class="ref-code-box" onclick="copyReferralCode()">
+                        <span id="my-ref-code">LOADING...</span>
+                        <div style="font-size:0.6rem; color:#666; margin-top:5px;">(TAP UNTUK SALIN)</div>
+                    </div>
+
+                    <div class="ref-stats">
+                        <div class="stat-box">
+                            <h2 class="gold-neon" style="margin:0;">0</h2>
+                            <small style="color:#888;">Teman Bergabung</small>
+                        </div>
+                        <div class="stat-box">
+                            <h2 class="red-neon" style="margin:0;">Rp 0</h2>
+                            <small style="color:#888;">Total Bonus</small>
+                        </div>
+                    </div>
+
+                    <p style="font-size:0.7rem; color:#555; margin-top:15px;">
+                        *Bonus Rp 1.000 otomatis masuk saat teman melakukan deposit pertama minimal Rp 20rb.
+                    </p>
+                </div>
+            </section>
 
 
 
@@ -1235,6 +1494,17 @@
         <small style="color:#0f0; font-size:0.6rem;">Baru saja</small>
     </div>
 </div>
+<div id="cs-modal" class="cs-overlay" style="display:none;">
+    <div class="cs-box">
+        <i class="fas fa-traffic-light" style="font-size:3rem; color:var(--gold); margin-bottom:15px; text-shadow:0 0 10px var(--gold);"></i>
+        <h3 id="cs-title" style="color:#fff; font-family:var(--font-head); margin-bottom:10px;">TITLE</h3>
+        <p style="color:#ccc; font-size:0.9rem; line-height:1.5;">
+            Fitur ini sedang dalam tahap pengembangan sistem.<br>
+            Nantikan update selanjutnya di Nexus Market!
+        </p>
+        <button onclick="closeCS()" class="cyber-btn-outline" style="margin-top:20px; width:100%;">TUTUP</button>
+    </div>
+</div>
 
     <script>
       
@@ -1397,21 +1667,18 @@
         area.scrollTop = area.scrollHeight; // Auto scroll ke bawah
     }
 
-    // 6. TAMPILAN KONTAK ADMIN (SESUAI PEMBAGIAN TUGAS)
     window.showAdminContact = () => {
         const html = `
-            Saya alihkan ke Tim Support ya. Pilih kategori masalahmu:
+            Saya alihkan ke Tim Support ya. Silakan klik tombol di bawah:
             <div style="margin-top:10px; display:flex; flex-direction:column; gap:5px;">
-                <a href="https://wa.me/6285602567552?text=Halo%20Admin%20Game,%20butuh%20bantuan." target="_blank" class="cyber-btn-outline" style="text-align:center; text-decoration:none; color:var(--gold);">
-                    <i class="fas fa-gamepad"></i> Masalah GAME (Adit)
-                </a>
-                <a href="https://wa.me/6283125398104?text=Halo%20Admin%20Pusat,%20butuh%20bantuan." target="_blank" class="cyber-btn-outline" style="text-align:center; text-decoration:none; color:#fff;">
-                    <i class="fas fa-user-shield"></i> Masalah AKUN/LAINNYA (Alam)
+                <a href="https://wa.me/6283125398104?text=Halo%20Admin%20Alam,%20butuh%20bantuan." target="_blank" class="cyber-btn-outline" style="text-align:center; text-decoration:none; color:var(--gold);">
+                    <i class="fas fa-headset"></i> Chat Admin (Alam)
                 </a>
             </div>
         `;
         addMsg(html, 'bot');
     }
+
 
           
         // Pakai window. biar kebaca global
@@ -2533,7 +2800,7 @@ const PAYMENT_ROUTES = {
     // ADMIN PUSAT (Pulsa, Kuota, Sosmed, Convert)
     GENERAL: {
         owner: "ALAM (PUSAT)",
-        wa: "6283125398104", // Pastikan pakai 62 di depan, jangan 08
+        wa: "6283125398104", 
         qris: "assets/qriss.png",
         wallets: [
             { name: "DANA", no: "0838 9802 3362" },
@@ -2543,15 +2810,16 @@ const PAYMENT_ROUTES = {
 
     // ADMIN GAME (Top Up Game, Joki, JB Akun)
     GAME: {
-        owner: "ADIT (GAME)",
-        wa: "6285602567552", // Pastikan pakai 62 di depan
-        qris: "assets/qrisAdit.png",
+        owner: "ALAM (GAME)", // <-- Ganti jadi Alam
+        wa: "6283125398104",  // <-- WA Alam
+        qris: "assets/qriss.png", // <-- QRIS Alam
         wallets: [
-            { name: "DANA", no: "0857 6983 4133" },
-            { name: "GOPAY", no: "0838 0373 2810" }
+            { name: "DANA", no: "0838 9802 3362" }, // <-- DANA Alam
+            { name: "SEABANK", no: "9015 0012 6233" } // <-- SeaBank Alam
         ]
     }
 };
+
 
 
     // 2. FUNGSI UTAMA TRANSAKSI (UPDATED)
@@ -3723,38 +3991,73 @@ window.buyEwallet = (nominal, price) => {
         }
     });
 }
-/* =========================================
-   LOGIC TOMBOL JOKI (COMING SOON + DAFTAR)
-   ========================================= */
-window.handleJokiClick = () => {
-    Swal.fire({
-        title: 'COMING SOON',
-        html: `
-            <div style="text-align:center;">
-                <i class="fas fa-tools" style="font-size:3rem; color:#555; margin-bottom:15px;"></i>
-                <p style="color:#ccc; font-size:0.9rem;">
-                    Marketplace Joki sedang dalam tahap pengembangan sistem.
-                </p>
-                <div style="background:#111; padding:10px; border:1px dashed var(--gold); border-radius:5px; margin-top:15px;">
-                    <strong style="color:var(--gold);">JAGO MAIN GAME?</strong><br>
-                    <small style="color:#888;">Kami membuka lowongan untuk Worker/Penjoki.</small>
-                </div>
-            </div>
-        `,
-        background: '#050505',
-        color: '#fff',
-        showCancelButton: true,
-        confirmButtonText: 'DAFTAR WORKER',
-        confirmButtonColor: 'var(--gold)',
-        cancelButtonText: 'TUTUP',
-        cancelButtonColor: '#333'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Arahkan ke halaman formulir pendaftaran Joki yang sudah ada
-            openMarketView('view-joki');
+/* =====================================    /* =========================================
+       FITUR JOKI (ATM VEXA STYLE) - LOGIC
+       ========================================= */
+    
+    // 1. Buka Menu Joki (Ganti fungsi 'Coming Soon' yg lama)
+    window.handleJokiClick = () => {
+        // Langsung buka halaman form joki
+        openMarketView('view-joki'); 
+    }
+
+    // 2. Ganti Tipe Joki (Visual Tombol)
+    window.selectJokiType = (type) => {
+        const btnRank = document.getElementById('btn-joki-rank');
+        const btnClassic = document.getElementById('btn-joki-classic');
+        
+        // Reset Style
+        btnRank.className = 'cyber-btn-outline';
+        btnClassic.className = 'cyber-btn-outline';
+        
+        // Set Active
+        if(type === 'rank') btnRank.className = 'cyber-btn-glitch';
+        else btnClassic.className = 'cyber-btn-glitch';
+        
+        // Simpan tipe di atribut halaman (biar bisa diambil pas submit)
+        document.getElementById('view-joki').setAttribute('data-tipe', type);
+    }
+
+    // 3. Proses Order ke WA ADIT
+    window.processJokiOrder = () => {
+        // Ambil Data Input
+        const tipe = document.getElementById('view-joki').getAttribute('data-tipe') || 'rank';
+        const rankAwal = document.getElementById('joki-rank-awal').value;
+        const rankTujuan = document.getElementById('joki-rank-tujuan').value;
+        const star = document.getElementById('joki-star').value || '0';
+        const login = document.getElementById('joki-login').value;
+        const email = document.getElementById('joki-email').value;
+        const pass = document.getElementById('joki-pass').value;
+        const note = document.getElementById('joki-note').value;
+        const waUser = document.getElementById('joki-wa-user').value;
+
+        // Validasi Sederhana
+        if(!email || !pass) {
+            return Swal.fire('Data Kurang', 'Email dan Password wajib diisi untuk login penjoki.', 'warning');
         }
-    });
-}
+        if(!waUser) {
+             return Swal.fire('Data Kurang', 'Isi nomor WhatsApp kamu agar admin bisa menghubungi.', 'warning');
+        }
+
+        // Format Pesan WA (Rapi ala Vexa)
+        const msg = `*ORDER JOKI NEXUS* 🎮%0A` +
+                    `---------------------------%0A` +
+                    `📝 *Tipe:* Joki ${tipe.toUpperCase()}%0A` +
+                    `📊 *Rank:* ${rankAwal} (${star}★) ➔ ${rankTujuan}%0A` +
+                    `🔑 *Login:* ${login}%0A` +
+                    `📧 *Email:* ${email}%0A` +
+                    `🔒 *Pass:* ${pass}%0A` +
+                    `📱 *WA User:* ${waUser}%0A` +
+                    `🗒️ *Catatan:* ${note}%0A` +
+                    `---------------------------%0A` +
+                    `Min Adit, tolong dihitung total harganya.`;
+
+        // Kirim ke WA Adit (Admin Game)
+        const nomorAdit = "6285602567552"; // Sesuai data yang kamu kirim
+        
+        window.open(`https://wa.me/${nomorAdit}?text=${msg}`, '_blank');
+    }
+
 
 /* =========================================
    BAGIAN 2: MESIN WAKTU (AUTO APPROVE DEPOSIT)
@@ -3804,6 +4107,54 @@ setInterval(() => {
         });
     }
 }, 5000);
+    // --- 1. FLASH SALE TIMER ---
+    function startFlashSale() {
+        // Set Waktu Berakhir: Hari ini jam 23:59:59
+        const end = new Date();
+        end.setHours(23, 59, 59, 999); 
+        
+        setInterval(() => {
+            const now = new Date().getTime();
+            const distance = end.getTime() - now;
+            
+            if (distance > 0) {
+                const h = Math.floor((distance / (1000 * 60 * 60)) % 24);
+                const m = Math.floor((distance / 1000 / 60) % 60);
+                const s = Math.floor((distance / 1000) % 60);
+                
+                document.getElementById("fs-h").innerText = h < 10 ? "0"+h : h;
+                document.getElementById("fs-m").innerText = m < 10 ? "0"+m : m;
+                document.getElementById("fs-s").innerText = s < 10 ? "0"+s : s;
+            }
+        }, 1000);
+    }
+    // Jalankan timer
+    startFlashSale();
+    // --- 2. REFERRAL SYSTEM ---
+    function initReferral() {
+        // Generate kode unik dari username (Dummy Logic)
+        if(currentUser && !isGuest) {
+            const code = "NEX" + currentUser.username.toUpperCase().substring(0,3) + Math.floor(Math.random()*1000);
+            document.getElementById('my-ref-code').innerText = code;
+        } else {
+            document.getElementById('my-ref-code').innerText = "LOGIN DULU";
+        }
+    }
+
+    window.copyReferralCode = () => {
+        const text = document.getElementById('my-ref-code').innerText;
+        if(text === "LOGIN DULU") return Swal.fire("Eits", "Login dulu bang", "warning");
+        
+        navigator.clipboard.writeText(text);
+        Swal.fire({
+            icon: 'success',
+            title: 'Tersalin!',
+            text: 'Kode: ' + text,
+            timer: 1500,
+            showConfirmButton: false,
+            background: '#111', color: '#fff'
+        });
+    }
 
     </script>
 </body>
