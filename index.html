@@ -1900,7 +1900,22 @@
     }
 
 
-    // 1. DATA JOBS / MISI (UPDATED: SEABANK + PINTARNYA)
+     // DATABASE BAHAN TESTIMONI (BUKTI TF & TEKS)
+    // Teks diubah jadi ala-ala orang yang baru order/bayar (Biar natural)
+    const testiTargets = [
+        { id: 't1', name: "Akun ML Sultan Glory", price: "Rp 1.200.000", reward: 500, tf: "assets/tf_1jt.jpg", teks: "Bismillah, done TF ya min buat angkut Akun ML Sultan Glory-nya. Ditunggu datanya, semoga amanah dan langganan terus di Nexus Core! 🔥" },
+        
+        { id: 't2', name: "Top Up 2010 DM ML", price: "Rp 478.000", reward: 450, tf: "assets/tf_500k.jpg", teks: "Lunas ya min buat Top Up 2010 DM ML. Gass proses min biar bisa langsung gacha event hari ini ⚡" },
+        
+        { id: 't3', name: "Telegram Premium 1Th", price: "Rp 420.000", reward: 400, tf: "assets/tf_400k.jpg", teks: "Done TF buat langganan Telegram Premium 1 Tahun. Kata temen disini paling murah, mari kita buktikan prosesnya 👍" },
+        
+        { id: 't4', name: "Joki Mythic Glory", price: "Rp 300.000", reward: 350, tf: "assets/tf_300k.jpg", teks: "Udah TF ya min buat Joki ke Mythic Glory. Titip akun kesayangan, push secepat kilat min! 🎮" },
+        
+        { id: 't5', name: "Netflix Premium 1 Bulan", price: "Rp 25.000", reward: 300, tf: "assets/tf_25k.jpg", teks: "Lunas min buat Netflix Premium 1 Bulannya. Langsung proses ya, udah gak sabar mau maraton drakor nih 😍" }
+    ];
+
+
+    // 1. DATA JOBS / MISI (GABUNGAN: SEABANK + PINTARNYA + GOPAY + BUZZER)
     const jobs = [
         { 
             id: 1, 
@@ -1913,7 +1928,7 @@
             link: "https://app.seabank.co.id/app/main?module=router&type=me&sub_type=referral&login=true&referralCode=52V2M2", 
             referral: "52V2M2",
             steps: [
-                "Klik tombol <b>DOWNLOAD APP</b> di bawah.",
+                "Klik tombol <b>AMBIL MISI (WA)</b> di bawah.",
                 "Daftar akun pakai No HP / Shopee.",
                 "Masukkan Kode Referral: <b style='color:yellow; font-size:1.2em;'>52V2M2</b> (Wajib!).",
                 "Verifikasi E-KTP & Wajah sampai akun disetujui.",
@@ -1931,15 +1946,15 @@
         { 
             id: 2, 
             title: "Pintarnya: Cari Cuan", 
-            reward: "Rp 3.000", // Margin aman buat lo (Bonus asli up to 9rb)
+            reward: "Rp 3.000", 
             type: "kyc", 
             tag: "NEW", 
-            img: "assets/pintarnya.png", // JANGAN LUPA UPLOAD LOGO INI
+            img: "assets/pintarnya.png", 
             desc: "Daftar Pintarnya, masukkan Kode Referral & Cek Fitur.", 
             link: "https://pintarnya.com/kerja/promo?utm_source=referral_lp&utm_medium=share_link&utm_campaign=referral_program", 
             referral: "ALABMK",
             steps: [
-                "Download aplikasi <b>Pintarnya</b> lewat link di bawah.",
+                "Klik tombol <b>AMBIL MISI (WA)</b> di bawah.",
                 "Daftar Akun Baru & Masukkan Kode Referral: <b style='color:yellow; font-size:1.2em;'>ALABMK</b>.",
                 "Buka menu <b>'Cari Promo'</b> atau <b>'Pintarnya Pro'</b>.",
                 "Lakukan minimal 1 aktivitas (Misal: Cek harga promo aplikasi/klaim voucher).",
@@ -1951,8 +1966,93 @@
                 "Wajib masukkan kode referral ALABMK.",
                 "Harus mencoba fitur di dalam aplikasi (Cari Promo/Cuan)."
             ]
+        },
+        {
+            id: 3,
+            title: "Upgrade GoPay Plus",
+            reward: "Rp 5.000", 
+            type: "kyc",
+            tag: "HOT",
+            img: "assets/gopay.png", 
+            desc: "Download GoPay dari link & upgrade ke GoPay Plus.",
+            link: "Minta Link di WA Admin", 
+            referral: "-",
+            steps: [
+                "Klik tombol <b>AMBIL MISI (WA)</b> di bawah untuk meminta link ke Admin.",
+                "Pastiin kamu download aplikasi GoPay dari link tersebut.",
+                "Ajak temanmu/Daftar langsung dan lakukan <b>Upgrade gratis ke GoPay Plus</b> (Verifikasi KTP).",
+                "Screenshot bukti akun sudah GoPay Plus.",
+                "Kirim ke Admin untuk klaim reward."
+            ],
+            syarat: [
+                "Khusus pengguna yang belum punya GoPay / belum GoPay Plus.",
+                "Wajib download dari link undangan.",
+                "Wajib Upgrade ke GoPay Plus pakai KTP."
+            ]
+        },
+        {
+            id: 4,
+            title: "Buzzer Testimoni Nexus",
+            reward: "Rp 300 - Rp 500",
+            type: "sosmed",
+            tag: "BUZZER",
+            img: "assets/buzzer.png", 
+            desc: "Bantu posting testimoni palsu (marketing) di IG/FB/WA Story pakai bahan yang kita sediain.",
+            isDynamic: true, 
+            referral: "-",
+            link: "-"
+        },
+        
+                {
+            id: 5,
+            title: "Akulaku: Pinjaman Tunai",
+            reward: "Rp 30.000", // Margin lu (Bonus aslinya 50k-100k bertahap)
+            type: "kyc",
+            tag: "HOT",
+            img: "assets/akulaku.png",
+            desc: "Pinjaman Akulaku Gratis Biaya Provisi! Pinjam hingga 3jt dan tenor 3 bulan! Berizin & diawasi OJK.",
+            link: "https://s.akulaku.com/lGNPA4",
+            referral: "Z8DBAZ",
+            steps: [
+                "Klik tombol <b>AMBIL MISI (WA)</b> di bawah.",
+                "Klik link undangan dan masukkan nomor HP kamu.",
+                "Download aplikasi Akulaku, daftar, dan dapatkan limit kredit.",
+                "Ajukan <b>Pinjaman Pertama</b> di Akulaku.",
+                "Screenshot bukti pengajuan pinjaman berhasil cair dan kirim ke Admin."
+            ],
+            syarat: [
+                "Khusus pengguna yang belum pernah mendapatkan limit kredit Akulaku.",
+                "Wajib daftar lewat link & kode referral Z8DBAZ.",
+                "Reward hanya diberikan JIKA pengajuan pinjaman berhasil & cair."
+            ]
+        },
+        {
+            id: 6,
+            title: "Akulaku: Daftar & Limit",
+            reward: "Rp 15.000", // Margin lu (Bonus aslinya 30k buat dapet limit)
+            type: "kyc",
+            tag: "NEW",
+            img: "assets/akulaku.png",
+            desc: "Daftar Akulaku dan dapatkan Limit Kredit. Hadiah tunai menunggumu!",
+            link: "https://s.akulaku.com/Q0P8B0",
+            referral: "6U797N",
+            steps: [
+                "Klik tombol <b>AMBIL MISI (WA)</b> di bawah.",
+                "Klik link undangan dan masukkan nomor HP.",
+                "Download aplikasi Akulaku dan login dengan nomor yang sama.",
+                "Berhasil mengajukan dan mendapatkan <b>Limit Kredit Akulaku</b>.",
+                "Screenshot bukti Limit Kredit berhasil disetujui dan kirim ke Admin."
+            ],
+            syarat: [
+                "Khusus pengguna baru yang belum punya akun/limit Akulaku.",
+                "Wajib klik link undangan dan kode referral 6U797N.",
+                "Reward cair setelah Limit Kredit berhasil didapatkan."
+            ]
         }
+
     ];
+
+
     
 
 
@@ -3038,55 +3138,69 @@ window.confirmPaymentWA = () => {
 
     // --- 9. MISSIONS & FREELANCE (DENGAN PROTEKSI GUEST) ---
     
-    // FUNGSI RENDER MISI
+    // FUNGSI RENDER MISI DENGAN STATUS (BELUM, PROSES, SELESAI)
     window.renderMissions = (filter = 'all') => {
         const container = document.getElementById('mission-list-container');
         if(!container) return;
         
         container.innerHTML = ""; // Bersihkan
 
+        // Pastikan object missionData & buzzerClaims ada di database user
+        if (currentUser && !currentUser.missionData) currentUser.missionData = {}; 
+        if (currentUser && !currentUser.buzzerClaims) currentUser.buzzerClaims = []; 
+
         jobs.forEach(job => {
-            // 1. Filter Tab
             if(filter !== 'all' && job.type !== filter) return;
 
-            // 2. Logic Icon/Gambar
-            let iconHTML = '';
-            if(job.img) {
-                iconHTML = `<img src="${job.img}" onerror="this.src='https://via.placeholder.com/50?text=JOB'" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">`;
-            } else {
-                iconHTML = `<i class="${job.icon}" style="font-size:1.5rem; color:${job.color || '#fff'};"></i>`;
-            }
+            let iconHTML = job.img ? `<img src="${job.img}" onerror="this.src='https://via.placeholder.com/50'" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">` : `<i class="${job.icon}" style="font-size:1.5rem; color:#fff;"></i>`;
+            
+            let tagColor = job.tag === 'HOT' ? '#ff003c' : (job.tag === 'NEW' ? '#00f2ea' : 'var(--gold)');
+            let tagHTML = job.tag ? `<span style="background:${tagColor}; color:#000; font-size:0.6rem; padding:2px 5px; border-radius:3px; font-weight:bold; margin-left:5px;">${job.tag}</span>` : '';
 
-            // 3. Logic Tag
-            let tagHTML = '';
-            if(job.tag) {
-                let tagColor = job.tag === 'HOT' ? '#ff003c' : (job.tag === 'NEW' ? '#00f2ea' : 'var(--gold)');
-                tagHTML = `<span style="background:${tagColor}; color:#000; font-size:0.6rem; padding:2px 5px; border-radius:3px; font-weight:bold; margin-left:5px;">${job.tag}</span>`;
-            }
-
-            // 4. [BARU] LOGIC TAMPILAN GUEST (VISUAL LOCK)
-            let btnText = 'BUKA';
-            let btnStyle = '';
+            // LOGIC STATUS MISI
+            let btnText = 'AMBIL MISI';
+            let btnStyle = 'border-color:var(--gold); color:var(--gold);';
             let clickAction = `openJobDetail(${job.id})`;
-
+            
             if (isGuest) {
-                btnText = '<i class="fas fa-lock"></i>'; // Ikon Gembok
+                btnText = '<i class="fas fa-lock"></i> KUNCI'; 
                 btnStyle = 'background:#222; color:#555; border-color:#333; cursor:not-allowed;';
-                // Kalau diklik muncul popup login
                 clickAction = `Swal.fire({title:'AKSES DIBATASI', text:'Login dulu untuk ambil cuan!', icon:'lock', confirmButtonText:'LOGIN', confirmButtonColor:'var(--gold)'}).then(r=>{if(r.isConfirmed) openAuthModal('login')})`;
+            } else if (job.isDynamic) {
+                // KHUSUS BUZZER LOGIC
+                if (currentUser.missionData[job.id]) {
+                    // Kalau ada misi buzzer yang lagi gantung (nunggu masukin kode klaim)
+                    btnText = '<i class="fas fa-key"></i> KLAIM BONUS';
+                    btnStyle = 'background:#111; color:#00f2ea; border-color:#00f2ea;';
+                    clickAction = `claimMissionReward(${job.id})`;
+                } else if (currentUser.buzzerClaims.length >= testiTargets.length) {
+                    // Kalau semua reward buzzer udah ludes dikerjain
+                    btnText = '<i class="fas fa-check-double"></i> SEMUA SELESAI';
+                    btnStyle = 'background:#111; color:#0f0; border-color:#0f0; opacity:0.6; cursor:not-allowed;';
+                    clickAction = `Swal.fire('Selesai', 'Kamu sudah mengklaim semua reward buzzer yang tersedia.', 'info')`;
+                }
+            } else {
+                // LOGIC MISI NORMAL
+                if (currentUser.missionData[job.id] === 'pending') {
+                    btnText = '<i class="fas fa-spinner fa-spin"></i> PROSES';
+                    btnStyle = 'background:#111; color:#00f2ea; border-color:#00f2ea;';
+                    clickAction = `claimMissionReward(${job.id})`; 
+                } else if (currentUser.missionData[job.id] === 'completed') {
+                    btnText = '<i class="fas fa-check"></i> SELESAI';
+                    btnStyle = 'background:#111; color:#0f0; border-color:#0f0; opacity:0.6; cursor:not-allowed;';
+                    clickAction = `Swal.fire('Misi Selesai', 'Kamu sudah menyelesaikan misi ini.', 'info')`;
+                }
             }
 
-            // 5. Template Kartu
+
             const card = `
-                <div class="mission-card" onclick="${clickAction}" style="cursor:pointer;">
-                    <div class="mission-icon" style="border:none; background:transparent;">
-                        ${iconHTML}
-                    </div>
+                <div class="mission-card">
+                    <div class="mission-icon" style="border:none; background:transparent;">${iconHTML}</div>
                     <div class="mission-info">
                         <h4 style="display:flex; align-items:center;">${job.title} ${tagHTML}</h4>
                         <p style="color:#888;">Reward: <span class="gold-neon">${job.reward}</span></p>
                     </div>
-                    <button class="cyber-btn-outline" style="font-size:0.7rem; padding:5px 15px; ${btnStyle}">
+                    <button onclick="${clickAction}" class="cyber-btn-outline" style="font-size:0.7rem; padding:5px 15px; ${btnStyle}">
                         ${btnText}
                     </button>
                 </div>
@@ -3095,74 +3209,253 @@ window.confirmPaymentWA = () => {
         });
     }
 
-    // FUNGSI DETAIL MISI (PROTEKSI GANDA)
-    window.openJobDetail = (id) => {
-        // [BARU] Proteksi Fungsional (Jaga-jaga kalau visual ditembus)
-        if(isGuest) {
-            return Swal.fire("Akses Ditolak", "Silakan Login untuk mengambil misi ini.", "warning");
-        }
 
+
+    // FUNGSI DETAIL MISI & AUTO WHATSAPP (FIXED 100%)
+    window.openJobDetail = (id) => {
+        // Proteksi Guest
+        if(isGuest) return Swal.fire("Akses Ditolak", "Silakan Login dulu bos!", "warning");
+
+        // Cari job berdasarkan ID yang diklik
         const job = jobs.find(j => j.id === id);
         if(!job) return;
 
-        // A. SKENARIO KYC
-        if(job.type === 'kyc') {
-            let stepList = job.steps.map(s => `<li style="margin-bottom:5px;">${s}</li>`).join('');
+        // --- 1. JIKA INI MISI BUZZER (FAKE ORDER) ---
+        if (job.isDynamic) {
+            if (!currentUser.buzzerClaims) currentUser.buzzerClaims = [];
+
+            let optionsHTML = '<option value="" disabled selected>Pilih Fake Order (Sesuai TF)...</option>';
+            testiTargets.forEach(t => {
+                if (currentUser.buzzerClaims.includes(t.id)) {
+                    optionsHTML += `<option value="${t.id}" disabled>❌ ${t.name} (SUDAH DIKERJAKAN)</option>`;
+                } else {
+                    optionsHTML += `<option value="${t.id}">✅ ${t.name} (${t.price}) - Reward: Rp ${t.reward}</option>`;
+                }
+            });
+
             Swal.fire({
-                title: job.title,
+                title: 'MISI FAKE ORDER 📢',
                 html: `
-                    <img src="${job.img}" style="width:80px; margin-bottom:10px;">
-                    <div style="text-align:left; font-size:0.85rem; color:#ccc; max-height:300px; overflow-y:auto;">
-                        <p style="color:var(--gold); text-align:center; font-weight:bold; font-size:1.1rem;">REWARD: ${job.reward}</p>
-                        <hr style="border-color:#333; margin:10px 0;">
-                        <b>CARA MENGERJAKAN:</b>
-                        <ol style="padding-left:15px; margin-top:5px;">${stepList}</ol>
-                        <br>
-                        <b>SYARAT:</b>
-                        <ul style="padding-left:15px; color:#ff003c;">${job.syarat.map(s=>`<li>${s}</li>`).join('')}</ul>
+                    <p style="font-size:0.8rem; color:#888;">1. Pilih produk palsu buat diorder.<br>2. Download bukti TF-nya.<br>3. Kirim invoice ke WA Admin.</p>
+
+                    <select id="testi-select" class="cyber-input-swal" style="width:100%; margin-bottom:15px;" onchange="loadTestiMaterial(this.value)">
+                        ${optionsHTML}
+                    </select>
+                    
+                    <div id="testi-material-area" style="display:none; text-align:left; background:#111; padding:15px; border-radius:5px; border:1px dashed var(--gold);">
+                        <h4 style="color:var(--gold); font-size:0.9rem; margin-bottom:5px;">📥 DOWNLOAD BUKTI TF:</h4>
+                        <img id="testi-img" src="" style="width:100%; max-height:150px; object-fit:cover; border-radius:5px; margin-bottom:10px;">
+                        <a id="testi-download" href="" download="Bukti_TF_Nexus.jpg" class="cyber-btn-outline" style="display:block; text-align:center; font-size:0.7rem; padding:8px; margin-bottom:5px;"><i class="fas fa-download"></i> SIMPAN BUKTI TF</a>
+                        <p style="font-size:0.7rem; color:#aaa; text-align:center;">*Kirim gambar TF ini ke Admin setelah chat WA terkirim.</p>
                     </div>
                 `,
                 showCancelButton: true,
-                confirmButtonText: 'DOWNLOAD APP',
+                confirmButtonText: '<i class="fab fa-whatsapp"></i> KIRIM INVOICE (WA)',
                 cancelButtonText: 'BATAL',
-                confirmButtonColor: '#ff003c',
-                background: '#111', color: '#fff'
+                confirmButtonColor: '#25D366', background: '#050505', color: '#fff',
+                preConfirm: () => {
+                    const sel = document.getElementById('testi-select').value;
+                    if(!sel) return Swal.showValidationMessage('Pilih produk yang tersedia!');
+                    return { target: testiTargets.find(t => t.id === sel) };
+                }
             }).then((res) => {
                 if(res.isConfirmed) {
-                    navigator.clipboard.writeText(job.referral);
-                    Swal.fire({icon:'success', title:'KODE DISALIN', text:'Redirecting...', timer:1500, showConfirmButton:false, background:'#111'}).then(() => window.open(job.link, '_blank'));
+                    const data = res.value;
+                    
+                    // Set status misi dengan ID target yang dipilih biar sistem tau dia lagi kerjain apa
+                    if(!currentUser.missionData) currentUser.missionData = {};
+                    currentUser.missionData[job.id] = data.target.id; 
+                    saveUserData(); 
+                    renderMissions(); // Ubah tombol jadi "KLAIM BONUS"
+
+                    // Generate format Invoice Palsu ke WA 
+                    const rawMsg = 
+`*NEXUS CORE - INVOICE ORDER* 🛒
+------------------------------------------
+Produk: *${data.target.name}*
+Total Bayar: *${data.target.price}*
+Status: *LUNAS (Cek Bukti TF)*
+------------------------------------------
+Min, pesanan atas nama *${currentUser.username}* udah dibayar ya, bukti TF aku kirim bareng chat ini. Langsung proses! 🔥`;
+
+                    window.open(`https://wa.me/${CONFIG.adminWA}?text=${encodeURIComponent(rawMsg)}`, '_blank');
                 }
             });
-        } 
-        
-        // B. SKENARIO SEWA AKUN
-        else if(job.type === 'sewaakun') {
-            let prices = job.pricelist.map(p => `<div style="background:#222; padding:8px; margin-bottom:5px; border-radius:5px;">${p}</div>`).join('');
-            Swal.fire({
-                title: job.title,
-                html: `<div style="text-align:left; font-size:0.9rem;">${prices}</div>`,
-                confirmButtonText: 'CHAT ADMIN (WA)',
-                confirmButtonColor: '#25D366',
-                background: '#111', color: '#fff'
-            }).then((res) => {
-                if(res.isConfirmed) window.open(`https://wa.me/${CONFIG.adminWA}?text=Halo min, sewa ${job.title}`, '_blank');
-            });
+            return;
         }
 
-        // C. SKENARIO SOSMED
-        else {
-            Swal.fire({
-                title: job.title,
-                text: job.desc,
-                icon: 'info',
-                confirmButtonText: 'KERJAKAN',
-                confirmButtonColor: 'var(--gold)',
-                background: '#111', color: '#fff'
-            }).then((res) => {
-                if(res.isConfirmed) Swal.fire("On Process", "Kirim bukti ke Admin WA", "success");
-            });
+
+
+
+        // --- 2. JIKA INI MISI NORMAL (SeaBank, Pintarnya, GoPay) ---
+        let stepListHTML = job.steps ? job.steps.map(s => `<li style="margin-bottom:5px;">${s}</li>`).join('') : '';
+        let syaratListHTML = job.syarat ? job.syarat.map(s => `<li>${s}</li>`).join('') : '';
+
+        Swal.fire({
+            title: job.title,
+            html: `
+                ${job.img ? `<img src="${job.img}" onerror="this.src='https://via.placeholder.com/50'" style="width:80px; margin-bottom:10px; border-radius:10px;">` : ''}
+                <div style="text-align:left; font-size:0.85rem; color:#ccc; max-height:300px; overflow-y:auto; padding-right:5px;">
+                    <p style="color:var(--gold); text-align:center; font-weight:bold; font-size:1.1rem;">REWARD: ${job.reward}</p>
+                    <hr style="border-color:#333; margin:10px 0;">
+                    ${stepListHTML ? `<b>CARA MENGERJAKAN:</b><ol style="padding-left:15px; margin-top:5px;">${stepListHTML}</ol><br>` : ''}
+                    ${syaratListHTML ? `<b>SYARAT:</b><ul style="padding-left:15px; color:#ff003c;">${syaratListHTML}</ul>` : ''}
+                </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: '<i class="fab fa-whatsapp"></i> AMBIL MISI (WA)',
+            cancelButtonText: 'BATAL',
+            confirmButtonColor: '#25D366', background: '#111', color: '#fff'
+        }).then((res) => {
+            if(res.isConfirmed) {
+                // Pembersih Tag HTML untuk WA
+                const stripHTML = (html) => { let tmp = document.createElement("DIV"); tmp.innerHTML = html; return tmp.textContent || tmp.innerText || ""; };
+                
+                let stepWA = "";
+                if(job.steps) job.steps.forEach((step, index) => { stepWA += `${index + 1}. ${stripHTML(step)}\n`; });
+
+                // Format Pesan WA
+                const rawMsg = 
+`*FORM PENGAMBILAN MISI FREELANCE* 💼
+------------------------------------------
+Halo Admin, saya ingin ikut freelance dan akan mengerjakan sesuai instruksi sistem.
+
+👤 *DATA PEKERJA:*
+- Akun Nexus: *${currentUser.username}*
+
+📋 *DETAIL MISI:*
+- Kategori: *${job.type.toUpperCase()}*
+- Aplikasi/Misi: *${job.title}*
+- Link Target: ${job.link || "-"}
+- Kode Referral: *${job.referral || "-"}*
+
+🛠️ *CARA PENGERJAAN:*
+${stepWA}
+------------------------------------------
+Saya siap mengerjakan misi ini sekarang! 🚀`;
+
+                // Simpan status Pending
+                if(!currentUser.missionData) currentUser.missionData = {};
+                currentUser.missionData[job.id] = 'pending';
+                saveUserData(); 
+                renderMissions();
+
+                Swal.fire({
+                    icon: 'success', title: 'MENGALIHKAN KE WA...', text: 'Kirim pesan otomatis ini ke Admin!', timer: 1500, showConfirmButton: false, background: '#111', color: '#fff'
+                }).then(() => { 
+                    window.open(`https://wa.me/${CONFIG.adminWA}?text=${encodeURIComponent(rawMsg)}`, '_blank'); 
+                });
+            }
+        });
+    }
+
+     // FUNGSI HELPER BUAT MUNCULIN GAMBAR TESTI
+    window.loadTestiMaterial = (val) => {
+        const target = testiTargets.find(t => t.id === val);
+        if(target) {
+            document.getElementById('testi-material-area').style.display = 'block';
+            document.getElementById('testi-img').src = target.tf;
+            document.getElementById('testi-download').href = target.tf;
+            // Teks testi dihapus karena sekarang otomatis masuk ke invoice WA
         }
     }
+
+
+    // FUNGSI KLAIM SALDO MISI PAKE KODE DARI ADMIN
+    window.claimMissionReward = (id) => {
+        const job = jobs.find(j => j.id === id);
+        
+        // KODE STANDAR (MISI NORMAL)
+        const secretCodes = {
+            1: "SEABANK-OK123",  
+            2: "PINTAR-CUAN99",  
+            3: "GOPAY-DONE55"    
+        };
+
+        // KODE KHUSUS BUZZER (T1, T2, T3, dst)
+        const buzzerCodes = {
+            "TESTI-T1": 500,
+            "TESTI-T2": 450,
+            "TESTI-T3": 400,
+            "TESTI-T4": 350,
+            "TESTI-T5": 300
+        };
+
+        // Cek nama order palsu yang lagi aktif buat ditampilin di popup
+        let pendingTargetName = "";
+        if (job.isDynamic) {
+            const targetId = currentUser.missionData[job.id];
+            const targetObj = testiTargets.find(t => t.id === targetId);
+            if(targetObj) pendingTargetName = ` - ${targetObj.name}`;
+        }
+
+        Swal.fire({
+            title: 'KLAIM REWARD',
+            html: `
+                <p style="font-size:0.9rem; color:#ccc;">Misi: <b>${job.title}${pendingTargetName}</b></p>
+                <p style="font-size:0.8rem; color:#888;">Masukkan Kode Pencairan dari Admin WA.</p>
+                <input id="claim-code" type="text" class="cyber-input-swal" placeholder="KODE DARI ADMIN" style="text-align:center; font-weight:bold; letter-spacing:2px; text-transform:uppercase;">
+            `,
+            showCancelButton: true, confirmButtonText: 'CAIRKAN', cancelButtonText: 'TUTUP',
+            confirmButtonColor: 'var(--gold)', background: '#111', color: '#fff',
+            preConfirm: () => {
+                const inputCode = document.getElementById('claim-code').value.toUpperCase().trim();
+                if (!inputCode) return Swal.showValidationMessage('Kode tidak boleh kosong!');
+                
+                if (job.isDynamic) {
+                    // Validasi Kode Buzzer
+                    if(!buzzerCodes[inputCode]) return Swal.showValidationMessage('Kode Klaim Salah!');
+                    
+                    // Pastikan kodenya cocok dengan target yang lagi dia kerjain (Misal ngerjain T1, kode harus TESTI-T1)
+                    const activeTargetId = currentUser.missionData[job.id];
+                    const expectedCode = "TESTI-" + activeTargetId.toUpperCase();
+                    if(inputCode !== expectedCode) return Swal.showValidationMessage(`Salah! Ini kode untuk reward lain.`);
+
+                    return { amount: buzzerCodes[inputCode], isBuzzer: true, targetId: activeTargetId };
+                } else {
+                    // Validasi Kode Misi Normal
+                    if (inputCode !== secretCodes[job.id]) return Swal.showValidationMessage('Kode salah!');
+                    return { amount: parseInt(job.reward.replace(/[^0-9]/g, "")), isBuzzer: false };
+                }
+            }
+        }).then((res) => {
+            if (res.isConfirmed) {
+                const data = res.value;
+                
+                // TAMBAH SALDO
+                currentUser.balance += data.amount;
+                
+                if (data.isBuzzer) {
+                    // 1. Simpan target ini ke daftar "SUDAH SELESAI" biar gak bisa dipilih lagi
+                    if(!currentUser.buzzerClaims) currentUser.buzzerClaims = [];
+                    currentUser.buzzerClaims.push(data.targetId);
+
+                    // 2. HAPUS status pending misi utama, biar tombol balik jadi "AMBIL MISI"
+                    delete currentUser.missionData[job.id]; 
+                } else {
+                    // Kalau misi normal, langsung jadi completed selamanya
+                    currentUser.missionData[job.id] = 'completed'; 
+                }
+                
+                // CATAT HISTORY (Hijau/Masuk)
+                addHistory(`REWARD MISI: ${job.title}`, data.amount, 'in');
+                
+                saveUserData();
+                updateUI();
+                renderMissions(); 
+                
+                Swal.fire({
+                    icon: 'success', title: 'CAIR BOS!', 
+                    html: `Reward <b>Rp ${data.amount.toLocaleString()}</b> berhasil ditambahkan ke saldo.`, 
+                    background: '#000', color: '#fff'
+                });
+            }
+        });
+    }
+
+
+
+
 
 
     // --- 10. UTILS & SIDEBAR FEATURES ---
