@@ -10,6 +10,60 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
+        /* --- FOOTER COPYRIGHT STYLE --- */
+    .page-footer-copyright {
+        text-align: center;
+        padding: 30px 0 10px 0; /* Jarak atas bawah */
+        font-size: 0.7rem;
+        color: #333; /* Warna abu gelap agar tidak terlalu mencolok */
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        font-family: var(--font-head);
+        opacity: 0.8;
+    }
+
+
+/* --- RESPONSIVE DESKTOP FIX --- */
+@media (min-width: 1024px) {
+    /* 1. Membatasi lebar body agar tidak melar se-layar penuh */
+    body {
+        background-color: #000; /* Warna background luar container */
+        display: flex;
+        justify-content: center;
+    }
+
+    /* Container utama (bungkus semua kontenmu di dalam div id="app" atau main) */
+    #app-container {
+        width: 100%;
+        max-width: 480px; /* Standar tampilan mobile di desktop */
+        background: var(--bg);
+        min-height: 100vh;
+        position: relative;
+        box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    }
+
+    /* 2. Mengubah daftar misi jadi 2 kolom di desktop (opsional) */
+    /* Jika ingin tetap 1 kolom tapi rapi, abaikan bagian ini */
+    .mission-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        padding: 10px;
+    }
+
+    /* 3. Menyesuaikan Bottom Nav agar tidak ikut melar */
+    .bottom-nav {
+        left: 50% !important;
+        transform: translateX(-50%);
+        width: 480px !important; /* Harus sama dengan max-width container */
+        border-radius: 20px 20px 0 0;
+    }
+
+    /* 4. Banner Flash Sale agar proporsional */
+    .flash-sale-box {
+        margin: 20px 10px;
+    }
+}
 
         /* --- FITUR BARU: BADGES, FLASHSALE, LEVEL, REFERRAL --- */
 
@@ -2048,7 +2102,32 @@
                 "Wajib klik link undangan dan kode referral 6U797N.",
                 "Reward cair setelah Limit Kredit berhasil didapatkan."
             ]
+        },
+                {
+            id: 7,
+            title: "Sewa WhatsApp (Aktif 24 Jam)",
+            reward: "Rp 30.000 / Hari", 
+            type: "sewaakun", // Cocok dengan filter tombol SEWA AKUN
+            tag: "HOT",
+            img: "https://upload.wikimedia.org/wikipedia/commons/5/5e/WhatsApp_icon.png", // Icon WA
+            desc: "Sewakan nomor WA untuk marketing. Gajian cair langsung ke E-Wallet/Rekening (dihitung per chat).",
+            link: "-",
+            referral: "-",
+            isSewaWA: true, // Flag khusus untuk memunculkan form bank
+            steps: [
+                "Klik tombol <b>AMBIL MISI</b> di bawah.",
+                "Isi formulir dengan Nomor WA yang akan disewakan dan Rekening/E-Wallet untuk gajian.",
+                "Admin akan menghubungi untuk proses scan QR WhatsApp via WA.",
+                "Biarkan WhatsApp tetap aktif dan online.",
+                "Gajian dihitung berdasarkan jumlah chat yang masuk/terkirim setiap harinya."
+            ],
+            syarat: [
+                "Nomor WhatsApp wajib aktif dan sudah terdaftar lama (bukan nomor baru).",
+                "Dilarang logout WA Web selama masa sewa.",
+                "Gajian tidak masuk ke Saldo Nexus, melainkan langsung ditransfer ke Rekening/E-Wallet kamu setiap hari."
+            ]
         }
+
 
     ];
 
@@ -3219,6 +3298,86 @@ window.confirmPaymentWA = () => {
         // Cari job berdasarkan ID yang diklik
         const job = jobs.find(j => j.id === id);
         if(!job) return;
+        // --- 0. JIKA INI MISI SEWA WA (FORM KHUSUS BANK & NO WA) ---
+        if (job.isSewaWA) {
+            Swal.fire({
+                title: 'FORM SEWA WHATSAPP',
+                html: `
+                    <p style="font-size:0.8rem; color:#888; margin-bottom:15px;">
+                        Gajian <b style="color:var(--gold);">Rp 30.000/hari</b> (dihitung berdasarkan jumlah chat masuk/keluar).<br>
+                        Cair langsung ke Rekening/E-Wallet kamu!
+                    </p>
+
+                    <label style="font-size:0.75rem; color:#aaa; text-align:left; display:block; margin-bottom:5px;">Nomor WA yg disewakan:</label>
+                    <input id="sewa-wa-num" type="number" class="cyber-input-swal" placeholder="Cth: 08123456789" style="margin-bottom:15px;">
+                    
+                    <label style="font-size:0.75rem; color:#aaa; text-align:left; display:block; margin-bottom:5px;">Tujuan Transfer Gajian:</label>
+                    <select id="sewa-bank-type" class="cyber-input-swal" style="margin-bottom:10px;">
+                        <option value="" disabled selected>Pilih Bank/E-Wallet...</option>
+                        <option value="DANA">DANA</option>
+                        <option value="GoPay">GoPay</option>
+                        <option value="OVO">OVO</option>
+                        <option value="ShopeePay">ShopeePay</option>
+                        <option value="SeaBank">SeaBank</option>
+                        <option value="BCA">BCA</option>
+                        <option value="BRI">BRI</option>
+                    </select>
+                    <input id="sewa-bank-rek" type="number" class="cyber-input-swal" placeholder="Nomor Rekening / E-Wallet" style="margin-bottom:10px;">
+                    <input id="sewa-bank-name" type="text" class="cyber-input-swal" placeholder="Atas Nama (A.N)">
+                `,
+                showCancelButton: true,
+                confirmButtonText: '<i class="fab fa-whatsapp"></i> KIRIM DATA (WA)',
+                cancelButtonText: 'BATAL',
+                confirmButtonColor: '#25D366', background: '#050505', color: '#fff',
+                preConfirm: () => {
+                    const waNum = document.getElementById('sewa-wa-num').value;
+                    const bankType = document.getElementById('sewa-bank-type').value;
+                    const bankRek = document.getElementById('sewa-bank-rek').value;
+                    const bankName = document.getElementById('sewa-bank-name').value;
+
+                    if (!waNum || !bankType || !bankRek || !bankName) {
+                        return Swal.showValidationMessage('Semua data form wajib diisi!');
+                    }
+                    return { waNum, bankType, bankRek, bankName };
+                }
+            }).then((res) => {
+                if (res.isConfirmed) {
+                    const data = res.value;
+
+                    // Format Pesan WA yang dikirim ke Admin
+                    const rawMsg = 
+`*FORM PENDAFTARAN SEWA WA* 📱
+------------------------------------------
+Halo Admin, saya berminat menyewakan nomor WA untuk marketing.
+
+👤 *DATA AKUN NEXUS:*
+- Username: *${currentUser.username}*
+
+📱 *NOMOR WA DISEWAKAN:*
+- Nomor: *${data.waNum}*
+
+💳 *TUJUAN TRANSFER GAJIAN:*
+- Metode: *${data.bankType}*
+- No Rek: *${data.bankRek}*
+- A/N: *${data.bankName}*
+------------------------------------------
+Saya setuju dengan syarat & ketentuan. Siap dipandu untuk proses koneksi / scan QR! 🚀`;
+
+                    // Simpan status Pending di sistem
+                    if(!currentUser.missionData) currentUser.missionData = {};
+                    currentUser.missionData[job.id] = 'pending';
+                    saveUserData(); 
+                    renderMissions();
+
+                    Swal.fire({
+                        icon: 'success', title: 'MENGALIHKAN KE WA...', text: 'Kirim data otomatis ini ke Admin!', timer: 1500, showConfirmButton: false, background: '#111', color: '#fff'
+                    }).then(() => { 
+                        window.open(`https://wa.me/${CONFIG.adminWA}?text=${encodeURIComponent(rawMsg)}`, '_blank'); 
+                    });
+                }
+            });
+            return; // Hentikan script biar gak lanjut ke pop-up normal
+        }
 
         // --- 1. JIKA INI MISI BUZZER (FAKE ORDER) ---
         if (job.isDynamic) {
@@ -4483,6 +4642,66 @@ setInterval(() => {
             background: '#111', color: '#fff'
         });
     }
+    
+    // --- POPUP KOMUNITAS (TELEGRAM & WA) ---
+    function showCommunityPopup() {
+        // Cek apakah user sudah pernah menutup popup ini
+        if (localStorage.getItem('nexus_community_joined')) return;
+
+        Swal.fire({
+            title: '<span style="font-family: Orbitron; color: var(--gold, #FFD700); font-size: 1.2rem;">JOIN KOMUNITAS NEXUS</span>',
+            html: `
+                <p style="font-family: Rajdhani; font-size: 0.95rem; color: #ccc; margin-bottom: 20px;">
+                    Dapatkan info Misi VIP, Misi Sewa Akun, dan Promo Flash Sale lebih awal. Join ke saluran resmi kami sekarang!
+                </p>
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                    <a href="https://whatsapp.com/channel/0029VbAt0qg6RGJGonmXx418" target="_blank" 
+                       style="background: #25D366; color: #fff; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: bold; font-family: Rajdhani; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3); transition: 0.3s;"
+                       onclick="Swal.close()">
+                        <i class="fab fa-whatsapp" style="margin-right: 8px; font-size: 1.2rem;"></i> SALURAN WHATSAPP
+                    </a>
+                    <a href="https://t.me/NEXUSBOOST" target="_blank" 
+                       style="background: #0088cc; color: #fff; padding: 12px; border-radius: 8px; text-decoration: none; font-weight: bold; font-family: Rajdhani; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(0, 136, 204, 0.3); transition: 0.3s;"
+                       onclick="Swal.close()">
+                        <i class="fab fa-telegram" style="margin-right: 8px; font-size: 1.2rem;"></i> SALURAN TELEGRAM
+                    </a>
+                </div>
+            `,
+            background: '#0a0a0a', // Background gelap ala cyberpunk
+            color: '#fff',
+            showConfirmButton: false, // Sembunyikan tombol OK bawaan
+            showCloseButton: true, // Munculkan tanda X di pojok kanan atas
+            allowOutsideClick: false, // User harus klik X atau join untuk nutup
+            didClose: () => {
+                // Simpan data di memori browser supaya popup gak muncul lagi setelah ditutup
+                localStorage.setItem('nexus_community_joined', 'true');
+            }
+        });
+    }
+
+    // Munculkan popup secara otomatis dengan jeda 2 detik setelah halaman selesai dimuat
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(showCommunityPopup, 2000); 
+    });
+
+    // --- AUTO ADD COPYRIGHT TO ALL PAGES ---
+    function injectCopyright() {
+        // Cari semua elemen section yang punya class 'page'
+        const pages = document.querySelectorAll('section.page');
+        
+        pages.forEach(page => {
+            // Cek apakah sudah ada footer-nya (biar gak double)
+            if (!page.querySelector('.page-footer-copyright')) {
+                const footer = document.createElement('div');
+                footer.className = 'page-footer-copyright';
+                footer.innerHTML = '©nxs group';
+                page.appendChild(footer);
+            }
+        });
+    }
+
+    // Jalankan fungsi saat halaman dimuat
+    window.addEventListener('DOMContentLoaded', injectCopyright);
 
     </script>
 </body>
