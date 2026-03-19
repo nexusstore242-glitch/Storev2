@@ -929,16 +929,31 @@
     <div style="grid-column: 1 / -1; margin-top: 15px;">
         <h4 class="sub-header" style="margin-bottom:15px; color:#fff; font-size:1rem; border-left:4px solid var(--red-core); padding-left:10px;">/// LAYANAN SPESIAL</h4>
 
-        <div class="product-grid" style="grid-template-columns: repeat(2, 1fr); gap: 10px;">
-            <div class="prod-card-v2" onclick="openMapsRating()" style="position:relative; cursor:pointer;">
-                <i class="fas fa-map-marker-alt" style="font-size:2.5rem; color:var(--red-core); margin-bottom:10px; text-shadow:0 0 10px var(--red-core);"></i>
-                <h4 style="font-size:0.85rem; min-height:30px;">Jasa Rating Google Maps <span style="color:var(--gold);">⭐⭐⭐⭐⭐</span></h4>
-                <p style="font-size:0.7rem; color:#888; margin-bottom:10px; line-height:1.4;">
-                    Meningkatkan rating bisnis Google Maps dengan review bintang 5 dari akun real.
-                </p>
-                <button class="cek-harga-btn" style="border: 1px solid var(--red-core); color: var(--red-core); background: transparent;">ORDER SEKARANG</button>
-            </div>
+<div class="prod-card-v2" style="position:relative;">
+    <i class="fas fa-map-marker-alt" style="font-size:2.5rem; color:var(--red-core); margin-bottom:10px; text-shadow:0 0 10px var(--red-core);"></i>
+    
+    <h4 style="font-size:0.85rem; min-height:30px; line-height:1.3;">Optimasi Reputasi<br>Google Business</h4>
+    
+    <div style="margin-bottom:8px;">
+        <div style="font-size:0.75rem; color:var(--gold);">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> 
+            <span style="color:#fff; font-weight:bold; margin-left:3px;">4.5</span>
         </div>
+        <div style="font-size:0.65rem; color:#888; margin-top:2px;">
+            <i class="fas fa-shopping-cart" style="font-size:0.6rem;"></i> 200+ Order Selesai
+        </div>
+    </div>
+
+    <p style="font-size:0.7rem; color:#aaa; margin-bottom:10px; line-height:1.4;">
+        Ulasan bintang 5 dari akun real. Proses drip-feed bertahap, 100% natural & aman.
+    </p>
+    
+    <button onclick="openMapsRating()" class="cek-harga-btn" style="border: 1px solid var(--red-core); color: var(--red-core); background: transparent; cursor: pointer; padding: 8px 0; position: relative; z-index: 10;">
+        PILIH PAKET
+    </button>
+</div>
+
+
     </div>
 
 </div>
@@ -1561,31 +1576,49 @@
 </div>
 
     <script>
-      /* =========================================
-   FITUR: JASA RATING GOOGLE MAPS
+
+/* =========================================
+   FITUR: OPTIMASI GOOGLE MAPS (PREMIUM)
    ========================================= */
+const mapsReputationData = {
+    title: "Optimasi Reputasi Google Business Profile",
+    rating: 4.5,
+    reviewsCount: 200,
+    totalOrders: 200,
+    desc: "Tingkatkan kredibilitas bisnis Anda dengan ulasan bintang 5 dari akun real dan aktif. Proses dikerjakan secara bertahap (drip-feed) sehingga 100% aman dan terlihat natural oleh algoritma Google.",
+    packages: [
+        { id: "pkg-10", name: "10 Review ★★★★★", price: 25000, isBestSeller: false },
+        { id: "pkg-20", name: "20 Review ★★★★★", price: 45000, isBestSeller: false },
+        { id: "pkg-50", name: "50 Review ★★★★★", price: 100000, isBestSeller: false },
+        { id: "pkg-100", name: "100 Review ★★★★★", price: 220000, isBestSeller: true }
+    ]
+};
+
 window.openMapsRating = () => {
+    let optionsHTML = '<option value="" disabled selected>-- Pilih Paket Optimasi --</option>';
+    
+    mapsReputationData.packages.forEach(pkg => {
+        const bestSellerTag = pkg.isBestSeller ? ' 🔥 (BEST SELLER)' : '';
+        optionsHTML += `<option value="${pkg.price}" data-name="${pkg.name}">${pkg.name} - Rp ${pkg.price.toLocaleString()}${bestSellerTag}</option>`;
+    });
+
     Swal.fire({
-        title: 'ORDER RATING MAPS',
+        title: 'ORDER OPTIMASI MAPS',
         html: `
-            <div style="text-align:left; font-size:0.9rem; color:#ccc; margin-bottom:15px; border-bottom:1px dashed #333; padding-bottom:10px;">
-                Tingkatkan kepercayaan pelanggan dengan review <span style="color:var(--gold);">Bintang 5</span> dari akun real dan aktif.
+            <div style="text-align:left; font-size:0.85rem; color:#ccc; margin-bottom:15px; border-bottom:1px dashed #333; padding-bottom:10px; line-height:1.4;">
+                ${mapsReputationData.desc}
             </div>
             
             <label style="font-size:0.75rem; color:#aaa; display:block; text-align:left; margin-bottom:5px;">1. Link Google Maps Lokasi:</label>
-            <input id="maps-link" type="text" class="cyber-input-swal" placeholder="Salin link tempat di sini..." style="margin-bottom:15px;">
+            <input id="maps-link" type="text" class="cyber-input-swal" placeholder="Salin link tempat bisnis di sini..." style="margin-bottom:15px;">
             
-            <label style="font-size:0.75rem; color:#aaa; display:block; text-align:left; margin-bottom:5px;">2. Pilih Paket Rating:</label>
+            <label style="font-size:0.75rem; color:#aaa; display:block; text-align:left; margin-bottom:5px;">2. Pilih Paket:</label>
             <select id="maps-paket" class="cyber-input-swal" style="margin-bottom:15px;" onchange="document.getElementById('maps-price-display').innerText = 'Rp ' + parseInt(this.value).toLocaleString()">
-                <option value="" disabled selected>-- Pilih Paket --</option>
-                <option value="10000" data-name="10 Rating ⭐⭐⭐⭐⭐">10 Rating - Rp 10.000</option>
-                <option value="18000" data-name="20 Rating ⭐⭐⭐⭐⭐">20 Rating - Rp 18.000</option>
-                <option value="40000" data-name="50 Rating ⭐⭐⭐⭐⭐">50 Rating - Rp 40.000</option>
-                <option value="70000" data-name="100 Rating ⭐⭐⭐⭐⭐">100 Rating - Rp 70.000</option>
+                ${optionsHTML}
             </select>
 
-            <label style="font-size:0.75rem; color:#aaa; display:block; text-align:left; margin-bottom:5px;">3. Catatan Tambahan (Opsional):</label>
-            <textarea id="maps-note" class="cyber-input-swal" placeholder="Contoh: Fokus sebutkan pelayanan ramah & tempat bersih..." rows="2" style="margin-bottom:15px;"></textarea>
+            <label style="font-size:0.75rem; color:#aaa; display:block; text-align:left; margin-bottom:5px;">3. Catatan (Fokus Ulasan):</label>
+            <textarea id="maps-note" class="cyber-input-swal" placeholder="Contoh: Fokus sebutkan pelayanan cepat, tempat estetik, admin ramah..." rows="2" style="margin-bottom:15px;"></textarea>
 
             <div style="background:#111; padding:10px; border:1px solid #333; border-radius:5px;">
                 <small style="color:#888;">TOTAL HARGA</small>
@@ -1607,7 +1640,7 @@ window.openMapsRating = () => {
             const note = document.getElementById('maps-note').value.trim();
 
             if (!link) return Swal.showValidationMessage('Link Google Maps wajib diisi!');
-            if (!price) return Swal.showValidationMessage('Silakan pilih paket rating!');
+            if (!price) return Swal.showValidationMessage('Silakan pilih paket optimasi!');
 
             return { link, price: parseInt(price), paketName, note };
         }
@@ -1615,15 +1648,14 @@ window.openMapsRating = () => {
         if (result.isConfirmed) {
             const data = result.value;
             
-            // Tahap 2: Ringkasan Pesanan
             Swal.fire({
                 title: 'RINGKASAN ORDER',
                 html: `
                     <div style="text-align:left; background:#111; padding:15px; border-radius:10px; border:1px dashed var(--red-core); font-size:0.85rem; color:#ccc;">
-                        <div style="margin-bottom:8px;"><strong style="color:#fff;">Produk:</strong><br>Jasa Rating Google Maps</div>
+                        <div style="margin-bottom:8px;"><strong style="color:#fff;">Layanan:</strong><br>${mapsReputationData.title}</div>
                         <div style="margin-bottom:8px;"><strong style="color:#fff;">Paket:</strong><br><span style="color:var(--gold);">${data.paketName}</span></div>
                         <div style="margin-bottom:8px;"><strong style="color:#fff;">Link Lokasi:</strong><br><span style="color:#00f2ea; word-break:break-all;">${data.link}</span></div>
-                        <div style="margin-bottom:15px;"><strong style="color:#fff;">Catatan:</strong><br>${data.note || '<i>Tidak ada catatan</i>'}</div>
+                        <div style="margin-bottom:15px;"><strong style="color:#fff;">Catatan:</strong><br>${data.note || '<i>Natural (Dipilih oleh sistem)</i>'}</div>
                         
                         <hr style="border-color:#333; margin:10px 0;">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -1633,24 +1665,22 @@ window.openMapsRating = () => {
                     </div>
                 `,
                 showCancelButton: true,
-                confirmButtonText: '<i class="fas fa-shopping-cart"></i> ORDER SEKARANG',
+                confirmButtonText: '<i class="fas fa-rocket"></i> PROSES SEKARANG',
                 cancelButtonText: 'KEMBALI',
                 confirmButtonColor: 'var(--red-core)',
                 background: '#050505',
                 color: '#fff'
             }).then((confirmRes) => {
                 if (confirmRes.isConfirmed) {
-                    // Eksekusi fungsi buyItem yang sudah ada di sistem
-                    const itemTitle = `Rating Maps - ${data.paketName}`;
-                    const extraData = `Link: ${data.link} | Note: ${data.note || '-'}`;
-                    
-                    // Mengirim order ke fungsi pusat (kategori 'general' agar langsung diarahkan ke Admin Pusat)
+                    const itemTitle = `Optimasi Maps - ${data.paketName}`;
+                    const extraData = `Link: ${data.link} | Note: ${data.note || 'Natural'}`;
                     buyItem(itemTitle, data.price, extraData, 'general');
                 }
             });
         }
     });
 }
+
 
       
         /* =========================================
