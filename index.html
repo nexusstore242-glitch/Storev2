@@ -929,33 +929,59 @@
     <div style="grid-column: 1 / -1; margin-top: 15px;">
         <h4 class="sub-header" style="margin-bottom:15px; color:#fff; font-size:1rem; border-left:4px solid var(--red-core); padding-left:10px;">/// LAYANAN SPESIAL</h4>
 
-<div class="prod-card-v2" style="position:relative;">
-    <i class="fas fa-map-marker-alt" style="font-size:2.5rem; color:var(--red-core); margin-bottom:10px; text-shadow:0 0 10px var(--red-core);"></i>
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+            
+            <div class="prod-card-v2" style="position:relative;">
+                <i class="fas fa-map-marker-alt" style="font-size:2.5rem; color:var(--red-core); margin-bottom:10px; text-shadow:0 0 10px var(--red-core);"></i>
+                
+                <h4 style="font-size:0.85rem; min-height:30px; line-height:1.3;">Optimasi Reputasi<br>Google Business</h4>
+                
+                <div style="margin-bottom:8px;">
+                    <div style="font-size:0.75rem; color:var(--gold);">
+                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> 
+                        <span style="color:#fff; font-weight:bold; margin-left:3px;">4.5</span>
+                    </div>
+                    <div style="font-size:0.65rem; color:#888; margin-top:2px;">
+                        <i class="fas fa-shopping-cart" style="font-size:0.6rem;"></i> 200+ Order Selesai
+                    </div>
+                </div>
+
+                <p style="font-size:0.7rem; color:#aaa; margin-bottom:10px; line-height:1.4;">
+                    Ulasan bintang 5 dari akun real. Proses drip-feed bertahap, 100% natural & aman.
+                </p>
+                
+                <button onclick="openMapsRating()" class="cek-harga-btn" style="border: 1px solid var(--red-core); color: var(--red-core); background: transparent; cursor: pointer; padding: 8px 0; position: relative; z-index: 10;">
+                    PILIH PAKET
+                </button>
+            </div>
+
+        </div> </div>
+
+
+</div>
+
+<div class="prod-card-v2" style="position:relative; margin-top: 15px;">
+    <i class="fab fa-google-play" style="font-size:2.5rem; color:var(--red-core); margin-bottom:10px; text-shadow:0 0 10px var(--red-core);"></i>
     
-    <h4 style="font-size:0.85rem; min-height:30px; line-height:1.3;">Optimasi Reputasi<br>Google Business</h4>
+    <h4 style="font-size:0.85rem; min-height:30px; line-height:1.3;">Playstore Boost<br>Service</h4>
     
     <div style="margin-bottom:8px;">
         <div style="font-size:0.75rem; color:var(--gold);">
-            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> 
-            <span style="color:#fff; font-weight:bold; margin-left:3px;">4.5</span>
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i> 
+            <span style="color:#fff; font-weight:bold; margin-left:3px;">4.8</span>
         </div>
         <div style="font-size:0.65rem; color:#888; margin-top:2px;">
-            <i class="fas fa-shopping-cart" style="font-size:0.6rem;"></i> 200+ Order Selesai
+            <i class="fas fa-shopping-cart" style="font-size:0.6rem;"></i> 350+ Order Selesai
         </div>
     </div>
 
     <p style="font-size:0.7rem; color:#aaa; margin-bottom:10px; line-height:1.4;">
-        Ulasan bintang 5 dari akun real. Proses drip-feed bertahap, 100% natural & aman.
+        Ulasan natural dari akun real. Tingkatkan ranking aplikasi Anda secara profesional.
     </p>
     
-    <button onclick="openMapsRating()" class="cek-harga-btn" style="border: 1px solid var(--red-core); color: var(--red-core); background: transparent; cursor: pointer; padding: 8px 0; position: relative; z-index: 10;">
+    <button onclick="openPlaystoreBoost()" class="cek-harga-btn" style="border: 1px solid var(--red-core); color: var(--red-core); background: transparent; cursor: pointer; padding: 8px 0; position: relative; z-index: 10;">
         PILIH PAKET
     </button>
-</div>
-
-
-    </div>
-
 </div>
 
                                                
@@ -1681,6 +1707,108 @@ window.openMapsRating = () => {
     });
 }
 
+/* =========================================
+   FITUR: PLAYSTORE BOOST (DROPDOWN STYLE)
+   ========================================= */
+const playstoreBoostData = {
+    title: "Playstore Boost Service",
+    rating: 4.8,
+    reviewsCount: 350,
+    desc: "Tingkatkan rating & review aplikasi Android Anda secara natural, aman, dan profesional. Proses dikerjakan secara bertahap untuk menjaga keamanan aplikasi dari deteksi spam algoritma Google.",
+    packages: [
+        { id: "ps-basic", name: "50 Review ★★★★★", price: 75000, isBestSeller: false },
+        { id: "ps-std", name: "100 Review ★★★★★", price: 140000, isBestSeller: false },
+        { id: "ps-prem", name: "250 Review ★★★★★", price: 325000, isBestSeller: true },
+        { id: "ps-ult", name: "500 Review ★★★★★", price: 600000, isBestSeller: false }
+    ]
+};
+
+window.openPlaystoreBoost = () => {
+    let optionsHTML = '<option value="" disabled selected>-- Pilih Paket Boost --</option>';
+    
+    playstoreBoostData.packages.forEach(pkg => {
+        const bestSellerTag = pkg.isBestSeller ? ' 🔥 (BEST SELLER)' : '';
+        optionsHTML += `<option value="${pkg.price}" data-name="${pkg.name}">${pkg.name} - Rp ${pkg.price.toLocaleString()}${bestSellerTag}</option>`;
+    });
+
+    Swal.fire({
+        title: 'ORDER PLAYSTORE BOOST',
+        html: `
+            <div style="text-align:left; font-size:0.85rem; color:#ccc; margin-bottom:15px; border-bottom:1px dashed #333; padding-bottom:10px; line-height:1.4;">
+                ${playstoreBoostData.desc}
+            </div>
+            
+            <label style="font-size:0.75rem; color:#aaa; display:block; text-align:left; margin-bottom:5px;">1. Link Aplikasi Play Store:</label>
+            <input id="ps-link" type="text" class="cyber-input-swal" placeholder="Salin link aplikasi di sini..." style="margin-bottom:15px;">
+            
+            <label style="font-size:0.75rem; color:#aaa; display:block; text-align:left; margin-bottom:5px;">2. Pilih Paket:</label>
+            <select id="ps-paket" class="cyber-input-swal" style="margin-bottom:15px;" onchange="document.getElementById('ps-price-display').innerText = 'Rp ' + parseInt(this.value).toLocaleString()">
+                ${optionsHTML}
+            </select>
+
+            <label style="font-size:0.75rem; color:#aaa; display:block; text-align:left; margin-bottom:5px;">3. Catatan (Opsional):</label>
+            <textarea id="ps-note" class="cyber-input-swal" placeholder="Contoh: Fokus sebutkan UI bagus, aplikasi ringan..." rows="2" style="margin-bottom:15px;"></textarea>
+
+            <div style="background:#111; padding:10px; border:1px solid #333; border-radius:5px;">
+                <small style="color:#888;">TOTAL HARGA</small>
+                <div id="ps-price-display" class="red-neon" style="font-size:1.5rem; font-weight:bold;">Rp 0</div>
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'LANJUTKAN',
+        cancelButtonText: 'BATAL',
+        confirmButtonColor: 'var(--red-core)',
+        cancelButtonColor: '#333',
+        background: '#050505',
+        color: '#fff',
+        preConfirm: () => {
+            const link = document.getElementById('ps-link').value.trim();
+            const paketDropdown = document.getElementById('ps-paket');
+            const price = paketDropdown.value;
+            const paketName = paketDropdown.options[paketDropdown.selectedIndex]?.getAttribute('data-name');
+            const note = document.getElementById('ps-note').value.trim();
+
+            if (!link) return Swal.showValidationMessage('Link Aplikasi Play Store wajib diisi!');
+            if (!price) return Swal.showValidationMessage('Silakan pilih paket boost!');
+
+            return { link, price: parseInt(price), paketName, note };
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const data = result.value;
+            
+            Swal.fire({
+                title: 'RINGKASAN ORDER',
+                html: `
+                    <div style="text-align:left; background:#111; padding:15px; border-radius:10px; border:1px dashed var(--red-core); font-size:0.85rem; color:#ccc;">
+                        <div style="margin-bottom:8px;"><strong style="color:#fff;">Layanan:</strong><br>${playstoreBoostData.title}</div>
+                        <div style="margin-bottom:8px;"><strong style="color:#fff;">Paket:</strong><br><span style="color:var(--gold);">${data.paketName}</span></div>
+                        <div style="margin-bottom:8px;"><strong style="color:#fff;">Link App:</strong><br><span style="color:#00f2ea; word-break:break-all;">${data.link}</span></div>
+                        <div style="margin-bottom:15px;"><strong style="color:#fff;">Catatan:</strong><br>${data.note || '<i>Natural (Dipilih oleh sistem)</i>'}</div>
+                        
+                        <hr style="border-color:#333; margin:10px 0;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <strong style="color:#fff; font-size:1rem;">Total Bayar:</strong>
+                            <strong class="red-neon" style="font-size:1.2rem;">Rp ${data.price.toLocaleString()}</strong>
+                        </div>
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: '<i class="fas fa-rocket"></i> PROSES SEKARANG',
+                cancelButtonText: 'KEMBALI',
+                confirmButtonColor: 'var(--red-core)',
+                background: '#050505',
+                color: '#fff'
+            }).then((confirmRes) => {
+                if (confirmRes.isConfirmed) {
+                    const itemTitle = `Playstore Boost - ${data.paketName}`;
+                    const extraData = `Link: ${data.link} | Note: ${data.note || 'Natural'}`;
+                    buyItem(itemTitle, data.price, extraData, 'general');
+                }
+            });
+        }
+    });
+}
 
       
         /* =========================================
@@ -2246,7 +2374,51 @@ window.openMapsRating = () => {
                 "Dilarang logout WA Web selama masa sewa.",
                 "Gajian tidak masuk ke Saldo Nexus, melainkan langsung ditransfer ke Rekening/E-Wallet kamu setiap hari."
             ]
+        },
+        
+                {
+            id: 8,
+            title: "Ulas Google Maps",
+            reward: "Gaji via Grup",
+            type: "sosmed",
+            tag: "NEW",
+            icon: "fas fa-map-marker-alt", 
+            desc: "Gabung grup WhatsApp khusus worker Maps untuk tugas harian.",
+            link: "https://chat.whatsapp.com/Bhl1NeyJni0GybXGGEkSFF?mode=gi_t",
+            steps: [
+                "<span style='color:var(--gold); font-weight:bold; font-size:1rem;'><i class='fas fa-exclamation-triangle'></i> ABAIKAN TOMBOL AMBIL MISI DI BAWAH!</span>",
+                "Silakan langsung klik tombol hijau ini untuk otomatis masuk ke grup worker:",
+                "<a href='https://chat.whatsapp.com/Bhl1NeyJni0GybXGGEkSFF?mode=gi_t' target='_blank' style='background:#25D366; color:#fff; padding:8px 15px; border-radius:5px; text-decoration:none; display:inline-block; margin-top:5px; margin-bottom:10px; font-weight:bold; font-family:var(--font-head); letter-spacing:1px;'><i class='fab fa-whatsapp'></i> KLIK GABUNG GRUP WA</a>",
+                "Tunggu instruksi tugas ulasan dari admin di dalam grup.",
+                "Gajian akan langsung ditransfer oleh admin grup (Tidak masuk ke Saldo Nexus)."
+            ],
+            syarat: [
+                "Wajib memiliki akun Google / Gmail aktif.",
+                "Dilarang spam atau rusuh di dalam grup."
+            ]
+        },
+        {
+            id: 9,
+            title: "Ulas Play Store",
+            reward: "Gaji via Grup",
+            type: "sosmed",
+            tag: "HOT",
+            icon: "fab fa-google-play",
+            desc: "Gabung grup WhatsApp khusus worker Play Store untuk rating aplikasi.",
+            link: "https://chat.whatsapp.com/Bhl1NeyJni0GybXGGEkSFF?mode=gi_t",
+            steps: [
+                "<span style='color:var(--gold); font-weight:bold; font-size:1rem;'><i class='fas fa-exclamation-triangle'></i> ABAIKAN TOMBOL AMBIL MISI DI BAWAH!</span>",
+                "Silakan langsung klik tombol hijau ini untuk otomatis masuk ke grup worker:",
+                "<a href='https://chat.whatsapp.com/Bhl1NeyJni0GybXGGEkSFF?mode=gi_t' target='_blank' style='background:#25D366; color:#fff; padding:8px 15px; border-radius:5px; text-decoration:none; display:inline-block; margin-top:5px; margin-bottom:10px; font-weight:bold; font-family:var(--font-head); letter-spacing:1px;'><i class='fab fa-whatsapp'></i> KLIK GABUNG GRUP WA</a>",
+                "Kerjakan tugas download dan berikan rating bintang 5.",
+                "Gajian langsung ditransfer oleh admin grup."
+            ],
+            syarat: [
+                "Wajib menggunakan HP Android.",
+                "Dilarang hapus ulasan setelah dibayar."
+            ]
         }
+
 
 
     ];
